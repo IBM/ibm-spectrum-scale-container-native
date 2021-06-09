@@ -1,0 +1,665 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: scaleclusters.scale.ibm.com
+spec:
+  group: scale.ibm.com
+  names:
+    categories:
+    - scale
+    kind: ScaleCluster
+    listKind: ScaleClusterList
+    plural: scaleclusters
+    shortNames:
+    - gpfs
+    singular: scalecluster
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: the name of the Spectrum Scale cluster
+      jsonPath: .status.clusterName
+      name: Cluster Name
+      type: string
+    - description: the Cluster ID of the Spectrum Scale cluster
+      jsonPath: .status.clusterId
+      name: Cluster ID
+      priority: 10
+      type: integer
+    - description: the filesystem mountpoint path
+      jsonPath: .spec.filesystems[0].mountPoint
+      name: Filesystem Path
+      priority: 10
+      type: string
+    - description: the node responsible for creating the cluster
+      jsonPath: .status.leader
+      name: Leader
+      priority: 10
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: ScaleCluster is the Schema for the scaleclusters API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ScaleClusterSpec defines the desired state of ScaleCluster
+            properties:
+              callhome:
+                properties:
+                  acceptLicense:
+                    description: By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information and your support information anywhere they do business worldwide. For more information, please refer to the Program license agreement and documentation. If you agree, please respond with "true" for acceptance, else with "false" to decline.
+                    type: boolean
+                  companyEmail:
+                    description: companyEmail address of the system administrator who can be contacted by the IBM Support. Usually this e-mail address is directed towards a group or task e-mail address. For example, itsupport@mycompanyname.com.
+                    type: string
+                  companyName:
+                    description: 'companyName of the company to which the contact person belongs. This name can consist of any alphanumeric characters and these non-alphanumeric characters: ''-'', ''_'', ''.'', '' '', '',''.'
+                    type: string
+                  countryCode:
+                    description: countryCode two-letter upper-case country codes as defined in ISO 3166-1 alpha-2.
+                    type: string
+                  customerID:
+                    description: 'customerID of the system administrator who can be contacted by the IBM Support. This can consist of any alphanumeric characters and these non-alphanumeric characters: ''-'', ''_'', ''.''.'
+                    type: string
+                  proxy:
+                    properties:
+                      host:
+                        description: host of poxy server as hostname or IP address
+                        type: string
+                      port:
+                        description: port of proxy server
+                        type: integer
+                      secretName:
+                        description: secretName of a basic-auth secret, which contains username and password for proxy server
+                        type: string
+                    required:
+                    - host
+                    - port
+                    type: object
+                  type:
+                    default: production
+                    description: Marks the cluster as a test or a production system. In case this parameter is not explicitly set, the value is set to production by default.
+                    enum:
+                    - production
+                    - test
+                    type: string
+                required:
+                - acceptLicense
+                - companyEmail
+                - companyName
+                - countryCode
+                - customerID
+                type: object
+              filesystems:
+                items:
+                  properties:
+                    mountOptions:
+                      description: TODO // +kubebuilder:default:=rw
+                      type: string
+                    mountPoint:
+                      description: MountPoint where the filesystem is mounted.  Must start with `/mnt`
+                      pattern: ^\/mnt
+                      type: string
+                    name:
+                      maxLength: 63
+                      pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                      type: string
+                    remoteMount:
+                      properties:
+                        storageCluster:
+                          type: string
+                        storageFs:
+                          type: string
+                      required:
+                      - storageCluster
+                      - storageFs
+                      type: object
+                  required:
+                  - name
+                  type: object
+                minItems: 1
+                type: array
+              hostAliases:
+                items:
+                  properties:
+                    hostname:
+                      type: string
+                    ip:
+                      type: string
+                  required:
+                  - hostname
+                  - ip
+                  type: object
+                type: array
+              images:
+                description: Images name that represents the registry or location to pull from
+                properties:
+                  core:
+                    description: Core Image
+                    type: string
+                  coreInit:
+                    description: Core InitContainer Image
+                    type: string
+                  gui:
+                    description: Gui Image
+                    type: string
+                  logs:
+                    description: Logs Image
+                    type: string
+                  pmcollector:
+                    description: Collector (Performance Monitoring) Image
+                    type: string
+                  postgres:
+                    description: Postgres Image
+                    type: string
+                  sysmon:
+                    description: Monitor Image
+                    type: string
+                type: object
+              license:
+                properties:
+                  accept:
+                    description: Please read https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CPES-BYSVXT&title=IBM%20License%20Agreement BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING THESE TERMS ON BEHALF OF LICENSEE, YOU REPRESENT AND WARRANT THAT YOU HAVE FULL AUTHORITY TO BIND LICENSEE TO THESE TERMS. IF YOU DO NOT AGREE TO THESE TERMS, * DO NOT DOWNLOAD, INSTALL, COPY, ACCESS, CLICK ON AN "ACCEPT" BUTTON, OR USE THE PROGRAM; AND * PROMPTLY RETURN THE UNUSED MEDIA AND DOCUMENTATION TO THE PARTY FROM WHOM IT WAS OBTAINED FOR A REFUND OF THE AMOUNT PAID. IF THE PROGRAM WAS DOWNLOADED, DESTROY ALL COPIES OF THE PROGRAM.
+                    enum:
+                    - true
+                    type: boolean
+                  license:
+                    description: IBM Spectrum Scale edition being used
+                    enum:
+                    - data-access
+                    - data-management
+                    type: string
+                required:
+                - accept
+                - license
+                type: object
+              manageQuorum:
+                description: ManageQuorum `true` will tell the operator to manage number and topology of quorum nodes automatically TODO when we are k8s 1.17+ // +kubebuilder:default:=true
+                type: boolean
+              nodeSelector:
+                additionalProperties:
+                  type: string
+                description: nodeSelector will be applied to daemonset pods
+                type: object
+              nodeSelectorExpressions:
+                description: nodeSelectorExpressions that will apply to daemonset pods
+                items:
+                  description: A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+                  properties:
+                    key:
+                      description: The label key that the selector applies to.
+                      type: string
+                    operator:
+                      description: Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+                      type: string
+                    values:
+                      description: An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+                      items:
+                        type: string
+                      type: array
+                  required:
+                  - key
+                  - operator
+                  type: object
+                type: array
+              remoteClusters:
+                items:
+                  properties:
+                    contactNodes:
+                      description: Provide a list of Contact Nodes for the Storage Cluster
+                      items:
+                        type: string
+                      type: array
+                    gui:
+                      properties:
+                        cacert:
+                          description: RootCA ConfigMap name
+                          type: string
+                        host:
+                          type: string
+                        insecureSkipVerify:
+                          description: InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name. If set true, TLS is susceptible to machine-in-the-middle attacks.
+                          type: boolean
+                        port:
+                          default: 443
+                          type: integer
+                        scheme:
+                          type: string
+                        secretName:
+                          description: SecretName references the secret that contains the username and password of the GUI REST interface.
+                          type: string
+                      type: object
+                    name:
+                      type: string
+                  required:
+                  - gui
+                  - name
+                  type: object
+                minItems: 1
+                type: array
+            required:
+            - filesystems
+            - license
+            type: object
+          status:
+            description: ScaleClusterStatus defines the observed state of ScaleCluster
+            properties:
+              clusterId:
+                format: int64
+                type: integer
+              clusterName:
+                type: string
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, type FooStatus struct{     // Represents the observations of a foo's current state.     // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type     // +patchStrategy=merge     // +listType=map     // +listMapKey=type     Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n     // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              leader:
+                type: string
+              nodes:
+                items:
+                  description: Node
+                  properties:
+                    adminNodeName:
+                      type: string
+                    designation:
+                      description: NodeDesignation
+                      items:
+                        type: string
+                      type: array
+                    license:
+                      description: LicenseType
+                      type: string
+                    name:
+                      type: string
+                    state:
+                      description: NodeState
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: v1
+imagePullSecrets:
+- name: spectrumscale-registrykey
+kind: ServiceAccount
+metadata:
+  name: ibm-spectrum-scale-core
+---
+apiVersion: v1
+imagePullSecrets:
+- name: spectrumscale-registrykey
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ibm-spectrum-scale-core
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  - services
+  - serviceaccounts
+  - configmaps
+  - secrets
+  - services/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  verbs:
+  - '*'
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - update
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - get
+  - create
+- apiGroups:
+  - apps
+  resourceNames:
+  - ibm-spectrum-scale-operator
+  resources:
+  - deployments
+  - deployments/finalizers
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ibm.com
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - scale.ibm.com
+  resources:
+  - scaleclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.ibm.com
+  resources:
+  - scaleclusters
+  - scaleclusters/finalizers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - services
+  - events
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  - persistentvolumes/finalizers
+  - persistentvolumeclaims
+  verbs:
+  - get
+  - list
+  - create
+  - patch
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - get
+- apiGroups:
+  - security.openshift.io
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+  - patch
+  - create
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  - clusterrolebindings
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ibm-spectrum-scale-core
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ibm-spectrum-scale-core
+subjects:
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-core
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ibm-spectrum-scale-operator
+subjects:
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ibm-spectrum-scale-operator
+subjects:
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-operator
+  namespace: ibm-spectrum-scale-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ibm-spectrum-scale-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: ibm-spectrum-scale-operator
+        app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+        app.kubernetes.io/name: ibm-spectrum-scale-operator
+        name: ibm-spectrum-scale-operator
+    spec:
+      containers:
+      - args:
+        - --enable-leader-election
+        - --zap-log-level=info
+        - --zap-stacktrace-level=error
+        command:
+        - /manager
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-operator@sha256:a77491a54caa17b98eb34b2a98962b7653e79ca1b174e35068469d5d6755721e
+        imagePullPolicy: Always
+        name: operator
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 40Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /etc/ssl/service
+          name: cabundle
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      serviceAccountName: ibm-spectrum-scale-operator
+      volumes:
+      - configMap:
+          name: ibm-spectrum-scale-cabundle
+          optional: true
+        name: cabundle

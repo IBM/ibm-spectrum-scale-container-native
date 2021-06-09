@@ -1,0 +1,19 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+roleRef:
+  kind: ClusterRole
+  name: ibm-spectrum-scale-operator
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: ibm-spectrum-scale-operator
+    namespace: ibm-spectrum-scale-ns

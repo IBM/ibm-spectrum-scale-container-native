@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ibm-spectrum-scale-operator
+  template:
+    metadata:
+      labels:
+        name: ibm-spectrum-scale-operator
+        app.kubernetes.io/instance: ibm-spectrum-scale-operator
+        app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+        app.kubernetes.io/name: ibm-spectrum-scale-operator
+    spec:
+      serviceAccountName: ibm-spectrum-scale-operator
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      containers:
+        - name: operator
+          command:
+            - /manager
+          args:
+            - --enable-leader-election
+            # Log level can be set to info or debug
+            - --zap-log-level=info
+            # Stacktrace level can be info or error
+            - --zap-stacktrace-level=error
+            # Encoder can be set to json if desired
+            # - --zap-encoder=json
+          image: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-operator@sha256:a77491a54caa17b98eb34b2a98962b7653e79ca1b174e35068469d5d6755721e
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 40Mi
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: cabundle
+              mountPath: /etc/ssl/service
+      volumes:
+        - name: cabundle
+          configMap:
+            name: "ibm-spectrum-scale-cabundle"
+            optional: true
