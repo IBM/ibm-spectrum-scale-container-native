@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ibm-spectrum-scale-core-profile
+data:
+  profile: |
+    %cluster:
+      pagepool=1G
+      ignorePrefetchLUNCount=yes
+      workerThreads=1024
+      maxFilesToCache=128K
+      maxStatCache=128K
+      maxblocksize=16M
+
+      # Prefetch Tunings
+      initPrefetchBuffers=128
+      prefetchTimeout=30
+      prefetchPct=25
+      prefetchMaxBuffersPerInstance=1024
+      controlSetxattrImmutableSELinux=yes
+      enforceFilesetQuotaOnRoot=yes

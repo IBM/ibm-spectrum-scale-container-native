@@ -1,0 +1,91 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-operator
+    product: ibm-spectrum-scale-core
+    release: ibm-spectrum-scale-operator
+  name: ibm-spectrum-scale-operator
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/exec
+      - services
+      - serviceaccounts
+      - configmaps
+      - secrets
+      - services/finalizers
+    verbs:
+      - "*"
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - roles
+      - rolebindings
+    verbs:
+      - "*"
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - create
+      - update
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - replicasets
+      - statefulsets
+    verbs:
+      - "*"
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+    verbs:
+      - get
+      - create
+  - apiGroups:
+      - apps
+    resourceNames:
+      - ibm-spectrum-scale-operator
+    resources:
+      - deployments
+      - deployments/finalizers
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ibm.com
+    resources:
+      - "*"
+    verbs:
+      - "*"
+  - apiGroups:
+      - scale.ibm.com
+    resources:
+      - scaleclusters/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - scale.ibm.com
+    resources:
+      - scaleclusters
+      - scaleclusters/finalizers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch

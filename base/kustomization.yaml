@@ -1,0 +1,11 @@
+resources:
+  - cluster_role_binding.yaml
+  - cluster_role.yaml
+  - ibm_v1_scalecluster_crd.yaml
+  - operator.yaml
+  - role_binding_scale_core.yaml
+  - role_binding.yaml
+  - role_scale_core.yaml
+  - role.yaml
+  - service_account_core.yaml
+  - service_account.yaml
