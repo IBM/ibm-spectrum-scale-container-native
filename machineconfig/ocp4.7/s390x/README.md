@@ -1,4 +1,5 @@
 # Quickstart
+
 ## MCO Updates
 
 Ensure your machines are correctly configured. 
@@ -11,7 +12,8 @@ oc label machineconfigpool worker pid-crio=config-pid
 oc label machineconfigpool master pid-crio=config-pid
 
 # From the top level directory, run the following command to apply the machine config operator settings
-oc kustomize machineconfig | oc apply -f -
+# specific for s390x
+oc kustomize machineconfig/s390x | oc apply -f -
 ```
 
 Watch `oc get MachineConfigPool` to see the progress of the update.
