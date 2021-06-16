@@ -38,7 +38,7 @@ spec:
             - --zap-stacktrace-level=error
             # Encoder can be set to json if desired
             # - --zap-encoder=json
-          image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:4e2f9c0ce000970f0d723159e5f8ac02336e36ef49f4f8361a3733691344e48e 
+          image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:11ff1994c1174ecb77d661b6013ec6d07727b5ef1e6adb936ed28dd42ef7d323
           resources:
             limits:
               cpu: 100m
