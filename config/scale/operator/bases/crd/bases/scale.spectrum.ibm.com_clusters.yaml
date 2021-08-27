@@ -1,0 +1,588 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: clusters.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: Cluster
+    listKind: ClusterList
+    plural: clusters
+    shortNames:
+    - gpfs
+    singular: cluster
+  scope: Cluster
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Cluster is the Schema for the clusters API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of Cluster
+            properties:
+              daemon:
+                description: Daemon will tell the operator how to configure the gpfs
+                  daemons
+                properties:
+                  clusterNameOverride:
+                    description: clusterName overrides the default name, which is
+                      that of the Daemon resource itself postpended with any resolved
+                      domain suffix. If the clusterName contains any "." characters
+                      then it will be used as-is.
+                    maxLength: 115
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  clusterProfile:
+                    description: IBM Spectrum Scale configuration parameters for the
+                      cluster. Changing these values is unsupported and should not
+                      be changed unless advised by IBM Support
+                    properties:
+                      afmAsyncDelay:
+                        type: string
+                      afmDIO:
+                        type: string
+                      afmHashVersion:
+                        type: string
+                      afmMaxParallelRecoveries:
+                        type: string
+                      controlSetxattrImmutableSELinux:
+                        type: string
+                      enforceFilesetQuotaOnRoot:
+                        type: string
+                      ignorePrefetchLUNCount:
+                        type: string
+                      initPrefetchBuffers:
+                        type: string
+                      maxBufferDescs:
+                        type: string
+                      maxMBpS:
+                        type: string
+                      maxTcpConnsPerNodeConn:
+                        type: string
+                      maxblocksize:
+                        type: string
+                      nsdMaxWorkerThreads:
+                        type: string
+                      nsdMinWorkerThreads:
+                        type: string
+                      nsdMultiQueue:
+                        type: string
+                      nsdRAIDBlockDeviceMaxSectorsKB:
+                        type: string
+                      nsdRAIDBlockDeviceNrRequests:
+                        type: string
+                      nsdRAIDBlockDeviceQueueDepth:
+                        type: string
+                      nsdRAIDBlockDeviceScheduler:
+                        type: string
+                      nsdRAIDBufferPoolSizePct:
+                        type: string
+                      nsdRAIDDefaultGeneratedFD:
+                        type: string
+                      nsdRAIDDiskCheckVWCE:
+                        type: string
+                      nsdRAIDEventLogToConsole:
+                        type: string
+                      nsdRAIDFlusherFWLogHighWatermarkMB:
+                        type: string
+                      nsdRAIDMasterBufferPoolSize:
+                        type: string
+                      nsdRAIDMaxPdiskQueueDepth:
+                        type: string
+                      nsdRAIDNonStealableBufPct:
+                        type: string
+                      nsdRAIDReconstructAggressiveness:
+                        type: string
+                      nsdRAIDSmallThreadRatio:
+                        type: string
+                      nsdRAIDThreadsPerQueue:
+                        type: string
+                      nsdRAIDTracks:
+                        type: string
+                      nsdSmallThreadRatio:
+                        type: string
+                      nspdBufferMemPerQueue:
+                        type: string
+                      nspdQueues:
+                        type: string
+                      nspdThreadsPerQueue:
+                        type: string
+                      numaMemoryInterleave:
+                        type: string
+                      pagepoolMaxPhysMemPct:
+                        type: string
+                      panicOnIOHang:
+                        type: string
+                      pitWorkerThreadsPerNode:
+                        type: string
+                      prefetchPct:
+                        type: string
+                      prefetchThreads:
+                        type: string
+                      prefetchTimeout:
+                        type: string
+                      tscCmdPortRange:
+                        type: string
+                    type: object
+                  hostAliases:
+                    description: hostAliases that will be added to hosts file for
+                      daemon pods
+                    items:
+                      properties:
+                        hostname:
+                          description: Hostname for the associated IP address.
+                          type: string
+                        ip:
+                          description: IP address of the host file entry.
+                          type: string
+                      required:
+                      - hostname
+                      - ip
+                      type: object
+                    type: array
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: nodeSelector will be applied to daemon pods
+                    type: object
+                  nodeSelectorExpressions:
+                    description: nodeSelectorExpressions that will apply to daemon
+                      pods
+                    items:
+                      description: A node selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: The label key that the selector applies to.
+                          type: string
+                        operator:
+                          description: Represents a key's relationship to a set of
+                            values. Valid operators are In, NotIn, Exists, DoesNotExist.
+                            Gt, and Lt.
+                          type: string
+                        values:
+                          description: An array of string values. If the operator
+                            is In or NotIn, the values array must be non-empty. If
+                            the operator is Exists or DoesNotExist, the values array
+                            must be empty. If the operator is Gt or Lt, the values
+                            array must have a single element, which will be interpreted
+                            as an integer. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  roles:
+                    description: roles specify the IBM Spectrum Scale configuration
+                      parameters for nodes that apply to a role. Specifying configuration
+                      parameters for roles is optional and does overwrite a set of
+                      default parameters.
+                    items:
+                      properties:
+                        name:
+                          description: Name of the role. Only afm, storage or client
+                            are allowed.
+                          enum:
+                          - afm
+                          - storage
+                          - client
+                          type: string
+                        profile:
+                          description: IBM Spectrum Scale node-scoped configuration
+                            parameters. Changing these values is unsupported and should
+                            not be changed unless advised by IBM Support
+                          properties:
+                            afmMaxParallelRecoveries:
+                              type: string
+                            controlSetxattrImmutableSELinux:
+                              type: string
+                            ignorePrefetchLUNCount:
+                              type: string
+                            initPrefetchBuffers:
+                              type: string
+                            maxBufferDescs:
+                              type: string
+                            maxMBpS:
+                              type: string
+                            maxTcpConnsPerNodeConn:
+                              type: string
+                            maxblocksize:
+                              type: string
+                            nsdMaxWorkerThreads:
+                              type: string
+                            nsdMinWorkerThreads:
+                              type: string
+                            nsdMultiQueue:
+                              type: string
+                            nsdRAIDBlockDeviceMaxSectorsKB:
+                              type: string
+                            nsdRAIDBlockDeviceNrRequests:
+                              type: string
+                            nsdRAIDBlockDeviceQueueDepth:
+                              type: string
+                            nsdRAIDBlockDeviceScheduler:
+                              type: string
+                            nsdRAIDBufferPoolSizePct:
+                              type: string
+                            nsdRAIDDefaultGeneratedFD:
+                              type: string
+                            nsdRAIDDiskCheckVWCE:
+                              type: string
+                            nsdRAIDEventLogToConsole:
+                              type: string
+                            nsdRAIDFlusherFWLogHighWatermarkMB:
+                              type: string
+                            nsdRAIDMasterBufferPoolSize:
+                              type: string
+                            nsdRAIDMaxPdiskQueueDepth:
+                              type: string
+                            nsdRAIDNonStealableBufPct:
+                              type: string
+                            nsdRAIDReconstructAggressiveness:
+                              type: string
+                            nsdRAIDSmallThreadRatio:
+                              type: string
+                            nsdRAIDThreadsPerQueue:
+                              type: string
+                            nsdRAIDTracks:
+                              type: string
+                            nsdSmallThreadRatio:
+                              type: string
+                            nspdBufferMemPerQueue:
+                              type: string
+                            nspdQueues:
+                              type: string
+                            nspdThreadsPerQueue:
+                              type: string
+                            numaMemoryInterleave:
+                              type: string
+                            pagepoolMaxPhysMemPct:
+                              type: string
+                            panicOnIOHang:
+                              type: string
+                            pitWorkerThreadsPerNode:
+                              type: string
+                            prefetchPct:
+                              type: string
+                            prefetchThreads:
+                              type: string
+                            prefetchTimeout:
+                              type: string
+                            tscCmdPortRange:
+                              type: string
+                          type: object
+                        resources:
+                          description: Resources defines the Memory/CPU resources
+                            target for the core pods
+                          properties:
+                            cpu:
+                              description: CPU is measured in cpu units (i.e 1, 2,
+                                100m, 2500m)
+                              type: string
+                            memory:
+                              description: Memory is measured in bytes as plain integer
+                                or with kubernetes supported suffixes (i.e 128974848,
+                                129e6, 129M, 123Mi)
+                              type: string
+                          type: object
+                      type: object
+                    type: array
+                type: object
+              grafanaBridge:
+                description: GrafanaBridge will tell the operator how to configure
+                  Grafana Bridge
+                properties:
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: nodeSelector specifies the criteria used to determine
+                      which nodes deploy grafana bridge pods. Must be specified to
+                      enable grafana bridge.
+                    type: object
+                  tolerations:
+                    description: tolerations is applied to grafana bridge pods
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              gui:
+                description: Gui will tell the operator how to configure the guis
+                properties:
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: nodeSelector that is applied to GUI pods
+                    type: object
+                  tolerations:
+                    description: tolerations that are applied to GUI pods
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              license:
+                description: license must be accepted by the end user and provides
+                  a way to specify the IBM Spectrum Scale Edition
+                properties:
+                  accept:
+                    description: Please read https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CPES-C5HT84&title=IBM%20License%20Agreement
+                      BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
+                      AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
+                      AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
+                      THESE TERMS ON BEHALF OF LICENSEE, YOU REPRESENT AND WARRANT
+                      THAT YOU HAVE FULL AUTHORITY TO BIND LICENSEE TO THESE TERMS.
+                      IF YOU DO NOT AGREE TO THESE TERMS, * DO NOT DOWNLOAD, INSTALL,
+                      COPY, ACCESS, CLICK ON AN "ACCEPT" BUTTON, OR USE THE PROGRAM;
+                      AND * PROMPTLY RETURN THE UNUSED MEDIA AND DOCUMENTATION TO
+                      THE PARTY FROM WHOM IT WAS OBTAINED FOR A REFUND OF THE AMOUNT
+                      PAID. IF THE PROGRAM WAS DOWNLOADED, DESTROY ALL COPIES OF THE
+                      PROGRAM. Set to true to accept the license
+                    enum:
+                    - true
+                    type: boolean
+                  license:
+                    description: license specifies the IBM Spectrum Scale edition
+                      being used, "data-access" or "data-management".
+                    enum:
+                    - data-access
+                    - data-management
+                    - erasure-code
+                    type: string
+                required:
+                - accept
+                - license
+                type: object
+              pmcollector:
+                description: Pmcollector will tell the operator how to configure the
+                  pmcollectors
+                properties:
+                  nodeSelector:
+                    additionalProperties:
+                      type: string
+                    description: nodeSelector that is applied to pmcollector pods
+                    type: object
+                  tolerations:
+                    description: tolerations that are applied to pmcollector pods
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                type: object
+            required:
+            - license
+            type: object
+          status:
+            description: status defines the observed state of Cluster
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{     // Represents the observations of a
+                    foo's current state.     // Known .status.conditions.type are:
+                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
+                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
+                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
+                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
+                    \n     // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

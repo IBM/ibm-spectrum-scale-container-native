@@ -1,0 +1,110 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
+    app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
+    app.kubernetes.io/name: ibm-spectrum-scale-csi-operator
+    product: ibm-spectrum-scale-csi
+    release: ibm-spectrum-scale-csi-operator
+  name: csi-operator
+  namespace: ibm-spectrum-scale-csi-driver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ibm-spectrum-scale-csi-operator
+  template:
+    metadata:
+      annotations:
+        productID: ibm-spectrum-scale-csi-operator
+        productName: IBM Spectrum Scale CSI Operator
+        productVersion: 2.3.0
+      labels:
+        app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
+        app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
+        app.kubernetes.io/name: ibm-spectrum-scale-csi-operator
+        name: ibm-spectrum-scale-csi-operator
+        product: ibm-spectrum-scale-csi
+        release: ibm-spectrum-scale-csi-operator
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: Exists
+      containers:
+        - name: operator
+          args:
+            - "--metrics-addr=0.0.0.0:8383"
+            - "--enable-leader-election"
+            - "--leader-election-id=ibm-spectrum-scale-csi-operator"
+          env:
+            - name: SHORTNAME_NODE_MAPPING
+              value: "yes"
+            - name: MAX_CONCURRENT_RECONCILES_CSISCALEOPERATOR_CSI_IBM_COM
+              value: "1"
+            - name: MAX_CONCURRENT_RECONCILES_SECRET_
+              value: "1"
+            - name: ANSIBLE_DEBUG_LOGS
+              value: "False"
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CSI_DRIVER_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:447fa45eb1fd6ba2584fad68cf1c80c6a754a9ac2ec187aecff589dcaf2d8e0e
+            - name: CSI_SNAPSHOTTER_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ed98431376c9e944e19a465fe8ea944806714dd95416a0821096c78d66b579bd
+            - name: CSI_ATTACHER_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:60ab9b3e6a030d3038c87c0d6bca2930f58d1d72823e6a4af09767dc83b696a2
+            - name: CSI_PROVISIONER_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:04c55b93a032ad8075cae540d60fc740a72c31006590dbdb61ad4ab9813959d0
+            - name: CSI_LIVENESSPROBE_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:1b7c978a792a8fa4e96244e8059bd71bb49b07e2e5a897fb0c867bdc6db20d5d
+            - name: CSI_NODE_REGISTRAR_IMAGE
+              value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:2dee3fe5fe861bb66c3a4ac51114f3447a4cd35870e0f2e2b558c7a400d89589
+          image: cp.stg.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-operator@sha256:c29e402162893e956a609bb4a59abdcc20c60df63a0dc2cc181a41d1c866f8c7
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - ./health_check.sh
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - ./health_check.sh
+            initialDelaySeconds: 3
+            periodSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+
+          #hostNetwork: false
+          #hostPID: false
+          #hostIPC: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /tmp/ansible-operator/runner
+              name: runner
+      serviceAccountName: ibm-spectrum-scale-csi-operator
+      volumes:
+        - emptyDir: {}
+          name: runner

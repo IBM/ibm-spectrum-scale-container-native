@@ -1,0 +1,19 @@
+namespace: ibm-spectrum-scale
+
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: cluster
+
+resources:
+  - ../bases
+  - ../cluster
+
+patchesStrategicMerge:
+  - delete_filesystem.yaml
+  - cluster.yaml
+
+bases:
+  - ../../../../config/scale/cluster/filesystem/
+  - ../../../../config/scale/cluster/callhome/
+
+# +kubebuilder:scaffold:manifestskustomizesamples

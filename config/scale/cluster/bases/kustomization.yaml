@@ -1,0 +1,11 @@
+namespace: ibm-spectrum-scale
+namePrefix: ibm-spectrum-scale-
+
+resources:
+  - service_account_core.yaml
+  - service_account_gui.yaml
+  - service_account_pmcollector.yaml
+  - service_account_default.yaml
+  - role_binding_privileged.yaml
+  - role_binding_sysmon.yaml
+  - role_sysmon.yaml

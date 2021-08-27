@@ -1,0 +1,10 @@
+# Adds namespace to all resources.
+namespace: ibm-spectrum-scale-csi
+
+namePrefix: ibm-spectrum-scale-
+
+resources:
+- ../manager/
+- ../rbac/
+- ../crd/
+- namespace.yaml

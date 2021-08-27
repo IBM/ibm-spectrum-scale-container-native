@@ -1,0 +1,11 @@
+# For s390x, the following Machine Configuration will increase the VM allocation
+# to a value that necesitates running IBM Spectrum Scale
+resources:
+  - 02-worker-ibm-spectrum-scale-s390x-vmalloc.yaml
+
+# base will apply the requisite Machine Configurations necessary to run IBM Spectrum
+# Scale Container Native storage access:
+#   - Make the kernel packages available; kernel-devel and kernel-headers
+#   - Increase the PID limit
+bases:
+  - ../base

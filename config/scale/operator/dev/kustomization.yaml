@@ -1,0 +1,9 @@
+namespace: ibm-spectrum-scale-operator
+namePrefix: ibm-spectrum-scale-
+
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: operator
+
+resources:
+  - ../bases

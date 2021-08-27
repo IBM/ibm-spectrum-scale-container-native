@@ -1,0 +1,23 @@
+apiVersion: scale.spectrum.ibm.com/v1alpha1
+kind: ClusterManagerConfig
+health:
+  healthProbeBindAddress: :8081
+metrics:
+  bindAddress: 127.0.0.1:8080
+webhook:
+  port: 9443
+leaderElection:
+  leaderElect: true
+  resourceName: scale.spectrum.ibm.com
+  resourceLock: leases
+images:
+  coreECE: cp.stg.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:2a6e3879cc425c7034d4341b87a95e4c99b1f3860c0fbbc5a149ed02e9d0b7d0
+  coreDME: cp.stg.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:fff0c3454f55ef59b36972c1863652d777b06d66b1a7db02a6ea80df733cf16d
+  coreDAE: cp.stg.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:91b3fa6c0ba4de1a5b935b6c21fd911faee121d3ccd1b97fa959229c592645c8
+  coreInit: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:576a2f458376ffdea3c3613d493ee19465d1b713fa1e87074b2af1b3e9157ffe
+  gui: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:680e6b91ea906e4bccd2e06039a2aedce2d122644e5a533a42d1b38d42e6d3e6
+  postgres: cp.stg.icr.io/cp/spectrum/scale/postgres@sha256:a2da8071b8eba341c08577b13b41527eab3968bf1c8d28123b5b07a493a26862
+  logs: cp.stg.icr.io/cp/spectrum/scale/ubi-minimal@sha256:d9b92ea78e76300968f5c9a4a04c2cf220a0bbfac667f77e5e7287692163d898
+  pmcollector: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:dc381b631db418b795df6cf324d3f4c29fd2d9a531edbb9965be5cb82a7bc195
+  sysmon: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:0dadbec887c0ac4adc80718e2c84e6ecfb8310c7af819328ee0c10d4615418e4
+  grafanaBridge: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:eb4b460a963eeafc79f492a3ed5c2c454ed1b9b0c833ae059579b9cdd06bfb9c

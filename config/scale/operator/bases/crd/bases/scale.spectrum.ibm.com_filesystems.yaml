@@ -1,0 +1,215 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: filesystems.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: Filesystem
+    listKind: FilesystemList
+    plural: filesystems
+    shortNames:
+    - fs
+    singular: filesystem
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Filesystem is the Schema for the filesystems API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of Filesystem
+            properties:
+              remote:
+                description: remote specifies the filesystem will be a remote mounted
+                  filesystem
+                properties:
+                  cluster:
+                    description: cluster is the name of the RemoteCluster resource
+                    maxLength: 128
+                    type: string
+                  fs:
+                    description: fs is the name of the filesystem on the RemoteCluster
+                      to mount
+                    type: string
+                required:
+                - cluster
+                - fs
+                type: object
+              vdiskNSD:
+                description: vdiskNSD specifies the filesystem will be a vdiskNSD
+                  filesystem
+                properties:
+                  vdiskSets:
+                    description: vdisksets defines the desired state of vdisksets
+                      that comprise the vdiskNSD filesystem
+                    items:
+                      properties:
+                        blockSize:
+                          description: This is the file system block size (vdisk track
+                            size) for members of the vdisk set. It is constrained
+                            by the selected RAID code. Valid values for 3WayReplication
+                            and 4WayReplication are 256k, 512k, 1m, or 2m. Valid values
+                            for 4+2P and 4+3P are 512k, 1m, 2m, 4m, or 8m. Valid values
+                            for 8+2P and 8+3P are 512k, 1m, 2m, 4m, 8m, or 16m.
+                          type: string
+                        declusteredArray:
+                          description: All recovery groups for which this vdisk set
+                            is defined must have a declustered array with this name
+                            where this vdisk set's members are created. The expectation
+                            is that a vdisk set extends across structurally identical
+                            recovery groups where the named declustered array has
+                            the same characteristics in each recovery group. If there
+                            is only one user declustered array in each recovery group,
+                            it is named DA1 and this is the default. If there is more
+                            than one user declustered array in a recovery group, there
+                            is no default and a declustered array name must be specified.
+                          type: string
+                        nsdUsage:
+                          description: This is the IBM Spectrum Scale file system
+                            data usage for the NSD. Valid values are dataAndMetadata,
+                            metadataOnly, and dataOnly. The default is dataAndMetadata.
+                          type: string
+                        raidCode:
+                          description: 'This is the vdisk RAID code for members of
+                            the vdisk set. Valid values are: 3WayReplication, 4WayReplication,
+                            4+2P, 4+3P, 8+2P, or 8+3P'
+                          type: string
+                        recoveryGroups:
+                          description: One or more recovery groups, each of which
+                            contributes one member vdisk NSD to the vdisk set.
+                          items:
+                            type: string
+                          type: array
+                        setSize:
+                          description: The vdisk set size is the desired aggregate
+                            size of the vdisk set members in one recovery group. The
+                            set size can be specified as a percentage (whole numbers
+                            from 1% to 100% using the % suffix) or as a number of
+                            bytes (a number, optionally followed by one of the base
+                            2 suffixes K, M, G, or T). If the vdisk set size is given
+                            as a percentage, it specifies the raw size to use from
+                            the declustered array including RAID code redundancy.
+                            If the vdisk set size is given as a number of bytes, it
+                            specifies the desired usable size of the vdisk set excluding
+                            RAID code redundancy. The vdisk set size is used to calculate
+                            the usable size of a single vdisk NSD member of the vdisk
+                            set in one recovery group. It is this calculated usable
+                            size that becomes part of the vdisk set definition, so
+                            if the size of a declustered array should ever change,
+                            the size of the individual member vdisk NSDs remains constant.
+                          type: string
+                        storagePool:
+                          description: If the NSD usage is dataAndMetadata or metadataOnly,
+                            the storage pool value must be system and does not need
+                            to be specified. If the NSD usage is dataOnly, the storage
+                            pool must be specified and the value may not be system.
+                          type: string
+                      type: object
+                    type: array
+                type: object
+            type: object
+          status:
+            description: status defines the observed state of Filesystem
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{     // Represents the observations of a
+                    foo's current state.     // Known .status.conditions.type are:
+                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
+                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
+                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
+                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
+                    \n     // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

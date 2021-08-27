@@ -1,0 +1,254 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/node-selector: ""
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale
+---
+apiVersion: v1
+imagePullSecrets:
+- name: ibm-spectrum-scale-registrykey
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-core
+  namespace: ibm-spectrum-scale
+---
+apiVersion: v1
+imagePullSecrets:
+- name: ibm-spectrum-scale-registrykey
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-default
+  namespace: ibm-spectrum-scale
+---
+apiVersion: v1
+imagePullSecrets:
+- name: ibm-spectrum-scale-registrykey
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-gui
+  namespace: ibm-spectrum-scale
+---
+apiVersion: v1
+imagePullSecrets:
+- name: ibm-spectrum-scale-registrykey
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-pmcollector
+  namespace: ibm-spectrum-scale
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-sysmon
+  namespace: ibm-spectrum-scale
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-privileged
+  namespace: ibm-spectrum-scale
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ibm-spectrum-scale-privileged
+subjects:
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-pmcollector
+  namespace: ibm-spectrum-scale
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-gui
+  namespace: ibm-spectrum-scale
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-sysmon
+  namespace: ibm-spectrum-scale
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ibm-spectrum-scale-sysmon
+subjects:
+- kind: ServiceAccount
+  name: ibm-spectrum-scale-core
+  namespace: ibm-spectrum-scale
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Callhome
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: callhome
+  namespace: ibm-spectrum-scale
+spec:
+  # companyEmail address of the system administrator who can be contacted by the IBM Support.
+  # Usually this e-mail address is directed towards a group or task e-mail address. For example, itsupport@mycompanyname.com.
+  companyEmail: null
+  # companyName of the company to which the contact person belongs.
+  # This name can consist of any alphanumeric characters and these non-alphanumeric characters: '-', '_', '.', ' ', ','.
+  companyName: null
+  # countryCode two-letter upper-case country codes as defined in ISO 3166-1 alpha-2.
+  countryCode: null
+  # customerID of the system administrator who can be contacted by the IBM Support.
+  # This can consist of any alphanumeric characters and these non-alphanumeric characters: '-', '_', '.'.
+  customerID: ""
+  license:
+    # By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information and your support information anywhere they do business worldwide. For more information, please refer to the Program license agreement and documentation.
+    # If you agree, please respond with "true" for acceptance, else with "false" to decline.
+    # If callhome is already enabled, it will be disabled if you change this to "false".
+    accept: true | false
+  # Marks the cluster as a "test" or a "production" system. In case this parameter is not explicitly set, the value is set to "production" by default.
+  type: test | production
+  # Leave the proxy block commented if a proxy should not be used for uploads
+  # proxy:
+  #   # host of proxy server as hostname or IP address
+  #   host:
+  #   # port of proxy server
+  #   port:
+  #   # secretName of a basic-auth secret, which contains username and password for proxy server
+  #   # Remove the secretName if no authentication to the proxy server is needed.
+  #   secretName:
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Cluster
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale
+  namespace: ibm-spectrum-scale
+spec:
+  daemon:
+    # -------------------------------------------------------------------------------
+    # hostAliases is optional
+    # -------------------------------------------------------------------------------
+    # hostAliases is used in an environment where DNS cannot resolve the remote (storage) cluster
+    # note: changing this field after first deployment will require manual pod deletions.
+    # hostAliases:
+    #   - hostname: example.com
+    #     ip: 10.0.0.1
+    clusterProfile:
+      controlSetxattrImmutableSELinux: "yes"
+      enforceFilesetQuotaOnRoot: "yes"
+      ignorePrefetchLUNCount: "yes"
+      initPrefetchBuffers: "128"
+      maxblocksize: 16M
+      prefetchPct: "25"
+      prefetchTimeout: "30"
+    # -------------------------------------------------------------------------------
+    # nodeSelector is a User Configurable field.
+    # -------------------------------------------------------------------------------
+    # In conjunction with the nodeSelector configuration, the operator also
+    # applies node affinity according to supported architectures and OS.
+    # More info on node selectors:
+    #       https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    # -------------------------------------------------------------------------------
+    # roles is required
+    # -------------------------------------------------------------------------------
+    # roles is used to set the cluster configuration parameters
+    #   applied to all nodes
+    #   - during initial cluster creation
+    #   - and when changing these parameters at later time
+    roles:
+    - name: client
+      resources:
+        memory: 4Gi
+  # -------------------------------------------------------------------------------
+  # grafana bridge is optional
+  # -------------------------------------------------------------------------------
+  # Uncomment the grafanaBridge field to enable
+  # grafanaBridge: {}
+  # -------------------------------------------------------------------------------
+  # User must accept the Spectrum Scale license to deploy a CNSA cluster.
+  # By specifying "accept: true" below, user agrees to the terms and conditions set
+  # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
+  # at https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CPES-C5HT84&title=IBM%20License%20Agreement
+  #
+  # Enter either data-access or data-management to the license.license field. Customers entitled to
+  # the Data Management Edition can use either data-management or data-access. Customers entitled to
+  # the Data Access Edition can only use data-access.
+  # -------------------------------------------------------------------------------
+  license:
+    accept: false
+    license: data-access
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Filesystem
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: remote-sample
+  namespace: ibm-spectrum-scale
+spec:
+  remote:
+    cluster: remotecluster-sample
+    fs: fs1
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: RemoteCluster
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: remotecluster-sample
+  namespace: ibm-spectrum-scale
+spec:
+  contactNodes:
+  - storagecluster1node1
+  - storagecluster1node2
+  gui:
+    cacert: cacert-storage-cluster-1
+    # This is the secret that contains the CSIAdmin user
+    # credentials in the ibm-spectrum-scale-csi namespace.
+    csiSecretName: csi-remote-mount-storage-cluster-1
+    host: guihost.example.com
+    insecureSkipVerify: false
+    # This is the secret that contains the ContainerOperator user
+    # credentials in the ibm-spectrum-scale namespace
+    secretName: cnsa-remote-mount-storage-cluster-1
