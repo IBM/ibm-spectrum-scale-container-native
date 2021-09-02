@@ -1,0 +1,430 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - services
+  verbs:
+  - create
+  - delete
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - patch
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - csi.ibm.com
+  resources:
+  - csiscaleoperators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - csi.ibm.com
+  resources:
+  - csiscaleoperators/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - csi.ibm.com
+  resources:
+  - csiscaleoperators/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - oauth.openshift.io
+  resources:
+  - oauthclients
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - route.openshift.io
+  resources:
+  - routes
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - callhomes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - callhomes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - callhomes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - clusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - clusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - clusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - daemons
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - daemons/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - daemons/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - encryptionconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - encryptionconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - encryptionconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - filesystems
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - filesystems/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - filesystems/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - grafanabridges
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - grafanabridges/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - grafanabridges/status
+  verbs:
+  - delete
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - guis
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - guis/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - guis/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - pmcollectors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - pmcollectors/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - pmcollectors/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - recoverygroups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - recoverygroups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - recoverygroups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - remoteclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - remoteclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - remoteclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

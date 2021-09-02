@@ -1,0 +1,15 @@
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: EncryptionConfig
+metadata:
+  name: encryption-config-sample
+spec:
+  secret: keyserver-credentials
+  server: keyserver.example.com
+  port: 9443
+  tenant: sampleTenant
+  client: sampleClient
+  remoteRKM: sampleRKM
+  cacert: sample-ca-cert
+  filesystems:
+    - name: vdisknsd-sample
+      algorithm: DEFAULTNISTSP800131A

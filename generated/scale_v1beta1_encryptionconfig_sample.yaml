@@ -1,0 +1,19 @@
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: EncryptionConfig
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: encryption-config-sample
+  namespace: ibm-spectrum-scale
+spec:
+  cacert: sample-ca-cert
+  client: sampleClient
+  filesystems:
+  - algorithm: DEFAULTNISTSP800131A
+    name: vdisknsd-sample
+  port: 9443
+  remoteRKM: sampleRKM
+  secret: keyserver-credentials
+  server: keyserver.example.com
+  tenant: sampleTenant

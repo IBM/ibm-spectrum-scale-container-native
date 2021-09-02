@@ -1,0 +1,33 @@
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Callhome
+metadata:
+  name: callhome
+spec:
+  license:
+    # By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information and your support information anywhere they do business worldwide. For more information, please refer to the Program license agreement and documentation.
+    # If you agree, please respond with "true" for acceptance, else with "false" to decline.
+    # If callhome is already enabled, it will be disabled if you change this to "false".
+    accept: true | false
+  # companyName of the company to which the contact person belongs.
+  # This name can consist of any alphanumeric characters and these non-alphanumeric characters: '-', '_', '.', ' ', ','.
+  companyName:
+  # customerID of the system administrator who can be contacted by the IBM Support.
+  # This can consist of any alphanumeric characters and these non-alphanumeric characters: '-', '_', '.'.
+  customerID: ""
+  # companyEmail address of the system administrator who can be contacted by the IBM Support.
+  # Usually this e-mail address is directed towards a group or task e-mail address. For example, itsupport@mycompanyname.com.
+  companyEmail:
+  # countryCode two-letter upper-case country codes as defined in ISO 3166-1 alpha-2.
+  countryCode:
+  # Marks the cluster as a "test" or a "production" system. In case this parameter is not explicitly set, the value is set to "production" by default.
+  type: test | production
+  # Leave the proxy block commented if a proxy should not be used for uploads
+  # proxy:
+  #   # host of proxy server as hostname or IP address
+  #   host:
+  #   # port of proxy server
+  #   port:
+  #   # secretName of a basic-auth secret, which contains username and password for proxy server
+  #   # Remove the secretName if no authentication to the proxy server is needed.
+  #   secretName:
