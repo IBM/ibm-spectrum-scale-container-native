@@ -9,7 +9,6 @@ resources:
   - ../cluster
 
 patchesStrategicMerge:
-  - delete_filesystem.yaml
   - cluster.yaml
 
 bases:

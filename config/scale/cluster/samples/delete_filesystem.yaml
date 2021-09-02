@@ -1,7 +1,0 @@
-# delete the ECE filesystem pieces
----
-$patch: delete
-apiVersion: scale.spectrum.ibm.com/v1beta1
-kind: Filesystem
-metadata:
-  name: vdisknsd-sample

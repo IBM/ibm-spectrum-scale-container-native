@@ -2063,7 +2063,7 @@ spec:
             description: spec defines the desired state of RemoteCluster
             properties:
               contactNodes:
-                description: contactNodes provides of list of Contact Nodes to use for the Remote Cluster.
+                description: contactNodes are optional and provides a list of nodes from the storage cluster to be used as the remote cluster contact nodes.  The names should be the daemon node names.  If not specified, the operator will use any 3 nodes detected from the storage cluster.
                 items:
                   type: string
                 type: array
@@ -2829,16 +2829,16 @@ data:
       resourceName: scale.spectrum.ibm.com
       resourceLock: leases
     images:
-      coreECE: cp.stg.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:2a6e3879cc425c7034d4341b87a95e4c99b1f3860c0fbbc5a149ed02e9d0b7d0
-      coreDME: cp.stg.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:fff0c3454f55ef59b36972c1863652d777b06d66b1a7db02a6ea80df733cf16d
-      coreDAE: cp.stg.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:91b3fa6c0ba4de1a5b935b6c21fd911faee121d3ccd1b97fa959229c592645c8
-      coreInit: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:576a2f458376ffdea3c3613d493ee19465d1b713fa1e87074b2af1b3e9157ffe
-      gui: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:680e6b91ea906e4bccd2e06039a2aedce2d122644e5a533a42d1b38d42e6d3e6
-      postgres: cp.stg.icr.io/cp/spectrum/scale/postgres@sha256:a2da8071b8eba341c08577b13b41527eab3968bf1c8d28123b5b07a493a26862
-      logs: cp.stg.icr.io/cp/spectrum/scale/ubi-minimal@sha256:d9b92ea78e76300968f5c9a4a04c2cf220a0bbfac667f77e5e7287692163d898
-      pmcollector: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:dc381b631db418b795df6cf324d3f4c29fd2d9a531edbb9965be5cb82a7bc195
-      sysmon: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:0dadbec887c0ac4adc80718e2c84e6ecfb8310c7af819328ee0c10d4615418e4
-      grafanaBridge: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:eb4b460a963eeafc79f492a3ed5c2c454ed1b9b0c833ae059579b9cdd06bfb9c
+      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:2a6e3879cc425c7034d4341b87a95e4c99b1f3860c0fbbc5a149ed02e9d0b7d0
+      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:fff0c3454f55ef59b36972c1863652d777b06d66b1a7db02a6ea80df733cf16d
+      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:91b3fa6c0ba4de1a5b935b6c21fd911faee121d3ccd1b97fa959229c592645c8
+      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:576a2f458376ffdea3c3613d493ee19465d1b713fa1e87074b2af1b3e9157ffe
+      gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:3cde3a35dec927ea37a726a1e1285d9889322435ba74c6b256c96711ed7f8e89
+      postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:a2da8071b8eba341c08577b13b41527eab3968bf1c8d28123b5b07a493a26862
+      logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:d9b92ea78e76300968f5c9a4a04c2cf220a0bbfac667f77e5e7287692163d898
+      pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:dc381b631db418b795df6cf324d3f4c29fd2d9a531edbb9965be5cb82a7bc195
+      sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:0dadbec887c0ac4adc80718e2c84e6ecfb8310c7af819328ee0c10d4615418e4
+      grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:eb4b460a963eeafc79f492a3ed5c2c454ed1b9b0c833ae059579b9cdd06bfb9c
 kind: ConfigMap
 metadata:
   labels:
@@ -2903,18 +2903,18 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: CSI_DRIVER_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:447fa45eb1fd6ba2584fad68cf1c80c6a754a9ac2ec187aecff589dcaf2d8e0e
+          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:447fa45eb1fd6ba2584fad68cf1c80c6a754a9ac2ec187aecff589dcaf2d8e0e
         - name: CSI_SNAPSHOTTER_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ed98431376c9e944e19a465fe8ea944806714dd95416a0821096c78d66b579bd
+          value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ed98431376c9e944e19a465fe8ea944806714dd95416a0821096c78d66b579bd
         - name: CSI_ATTACHER_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:60ab9b3e6a030d3038c87c0d6bca2930f58d1d72823e6a4af09767dc83b696a2
+          value: cp.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:60ab9b3e6a030d3038c87c0d6bca2930f58d1d72823e6a4af09767dc83b696a2
         - name: CSI_PROVISIONER_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:04c55b93a032ad8075cae540d60fc740a72c31006590dbdb61ad4ab9813959d0
+          value: cp.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:04c55b93a032ad8075cae540d60fc740a72c31006590dbdb61ad4ab9813959d0
         - name: CSI_LIVENESSPROBE_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:1b7c978a792a8fa4e96244e8059bd71bb49b07e2e5a897fb0c867bdc6db20d5d
+          value: cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:1b7c978a792a8fa4e96244e8059bd71bb49b07e2e5a897fb0c867bdc6db20d5d
         - name: CSI_NODE_REGISTRAR_IMAGE
-          value: cp.stg.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:2dee3fe5fe861bb66c3a4ac51114f3447a4cd35870e0f2e2b558c7a400d89589
-        image: cp.stg.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-operator@sha256:c29e402162893e956a609bb4a59abdcc20c60df63a0dc2cc181a41d1c866f8c7
+          value: cp.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:2dee3fe5fe861bb66c3a4ac51114f3447a4cd35870e0f2e2b558c7a400d89589
+        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:c29e402162893e956a609bb4a59abdcc20c60df63a0dc2cc181a41d1c866f8c7
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -2982,7 +2982,7 @@ spec:
         - --zap-log-level=1
         command:
         - /manager
-        image: cp.stg.icr.io/cp/spectrum/scale/ibm-spectrum-scale-operator@sha256:756fde13fa78f20b603bb1fe2c051fc9cb17dd067dc42488466638fa51a90529
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:95be2ad7696f0a5e864c0116f177c8887131c438b31d45255379644dbf88a33b
         livenessProbe:
           httpGet:
             path: /healthz
