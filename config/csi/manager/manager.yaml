@@ -56,7 +56,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: CSI_DRIVER_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:447fa45eb1fd6ba2584fad68cf1c80c6a754a9ac2ec187aecff589dcaf2d8e0e
+              value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:a841871354acdd2e0137e2f05b64e5ceb2aa73f62a666aaeff7fe15171092a36
             - name: CSI_SNAPSHOTTER_IMAGE
               value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ed98431376c9e944e19a465fe8ea944806714dd95416a0821096c78d66b579bd
             - name: CSI_ATTACHER_IMAGE
@@ -67,7 +67,7 @@ spec:
               value: cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:1b7c978a792a8fa4e96244e8059bd71bb49b07e2e5a897fb0c867bdc6db20d5d
             - name: CSI_NODE_REGISTRAR_IMAGE
               value: cp.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:2dee3fe5fe861bb66c3a4ac51114f3447a4cd35870e0f2e2b558c7a400d89589
-          image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:c29e402162893e956a609bb4a59abdcc20c60df63a0dc2cc181a41d1c866f8c7
+          image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:4800e1ee33d575cc653d5c69f3c387f0cca10ae71f33930d3a9c7d3341d7728d
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
