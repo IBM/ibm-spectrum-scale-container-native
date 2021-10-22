@@ -72,8 +72,24 @@ spec:
                             and 4WayReplication are 256k, 512k, 1m, or 2m. Valid values
                             for 4+2P and 4+3P are 512k, 1m, 2m, 4m, or 8m. Valid values
                             for 8+2P and 8+3P are 512k, 1m, 2m, 4m, 8m, or 16m.
+                          enum:
+                          - 256k
+                          - 512k
+                          - 1m
+                          - 2m
+                          - 4m
+                          - 8m
+                          - 16m
+                          - 256K
+                          - 512K
+                          - 1M
+                          - 2M
+                          - 4M
+                          - 8M
+                          - 16M
                           type: string
                         declusteredArray:
+                          default: DA1
                           description: All recovery groups for which this vdisk set
                             is defined must have a declustered array with this name
                             where this vdisk set's members are created. The expectation
@@ -86,14 +102,26 @@ spec:
                             is no default and a declustered array name must be specified.
                           type: string
                         nsdUsage:
+                          default: dataAndMetadata
                           description: This is the IBM Spectrum Scale file system
                             data usage for the NSD. Valid values are dataAndMetadata,
                             metadataOnly, and dataOnly. The default is dataAndMetadata.
+                          enum:
+                          - dataAndMetadata
+                          - metadataOnly
+                          - dataOnly
                           type: string
                         raidCode:
                           description: 'This is the vdisk RAID code for members of
                             the vdisk set. Valid values are: 3WayReplication, 4WayReplication,
                             4+2P, 4+3P, 8+2P, or 8+3P'
+                          enum:
+                          - 3WayReplication
+                          - 4WayReplication
+                          - 4+2P
+                          - 4+3P
+                          - 8+2P
+                          - 8+3P
                           type: string
                         recoveryGroups:
                           description: One or more recovery groups, each of which
@@ -118,6 +146,7 @@ spec:
                             size that becomes part of the vdisk set definition, so
                             if the size of a declustered array should ever change,
                             the size of the individual member vdisk NSDs remains constant.
+                          pattern: ^([1-9]|[1-9][0-9]|100)%$||^([0-9]*)(K|M|G|T)$||^([0-9]){1,8}$
                           type: string
                         storagePool:
                           description: If the NSD usage is dataAndMetadata or metadataOnly,
