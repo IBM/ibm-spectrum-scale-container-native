@@ -1,0 +1,23 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: ContainerRuntimeConfig
+metadata:
+  name: 01-worker-ibm-spectrum-scale-increase-pid-limit
+spec:
+  containerRuntimeConfig:
+    pidsLimit: 4096
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ""
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 00-worker-ibm-spectrum-scale-kernel-devel
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+  extensions:
+  - kernel-devel

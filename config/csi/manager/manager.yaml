@@ -20,7 +20,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-csi-operator
         productName: IBM Spectrum Scale CSI Operator
-        productVersion: 2.3.0
+        productVersion: 2.4.0
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
         app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -34,7 +34,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: beta.kubernetes.io/arch
+                  - key: kubernetes.io/arch
                     operator: Exists
       containers:
         - name: operator
@@ -43,6 +43,7 @@ spec:
             - "--enable-leader-election"
             - "--leader-election-id=ibm-spectrum-scale-csi-operator"
           env:
+            # do not remove: this is required SHORTNAME_NODE_MAPPING="yes" for split hostNetwork node mapping.
             - name: SHORTNAME_NODE_MAPPING
               value: "yes"
             - name: MAX_CONCURRENT_RECONCILES_CSISCALEOPERATOR_CSI_IBM_COM
@@ -56,18 +57,20 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: CSI_DRIVER_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:a841871354acdd2e0137e2f05b64e5ceb2aa73f62a666aaeff7fe15171092a36
+              value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:4d8c41138f2fddac351f82db19c32fe5ad1282e7886f78fe2669f0c30ea5badb
             - name: CSI_SNAPSHOTTER_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ed98431376c9e944e19a465fe8ea944806714dd95416a0821096c78d66b579bd
+              value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:818f35653f2e214db81d655063e81995de9073328a3430498624c140881026a3
             - name: CSI_ATTACHER_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:60ab9b3e6a030d3038c87c0d6bca2930f58d1d72823e6a4af09767dc83b696a2
+              value: cp.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:80dec81b679a733fda448be92a2331150d99095947d04003ecff3dbd7f2a476a
             - name: CSI_PROVISIONER_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:04c55b93a032ad8075cae540d60fc740a72c31006590dbdb61ad4ab9813959d0
+              value: cp.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:6477988532358148d2e98f7c747db4e9250bbc7ad2664bf666348abf9ee1f5aa
             - name: CSI_LIVENESSPROBE_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:1b7c978a792a8fa4e96244e8059bd71bb49b07e2e5a897fb0c867bdc6db20d5d
+              value: cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:529be2c9770add0cdd0c989115222ea9fc1be430c11095eb9f6dafcf98a36e2b
             - name: CSI_NODE_REGISTRAR_IMAGE
-              value: cp.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:2dee3fe5fe861bb66c3a4ac51114f3447a4cd35870e0f2e2b558c7a400d89589
-          image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:4800e1ee33d575cc653d5c69f3c387f0cca10ae71f33930d3a9c7d3341d7728d
+              value: cp.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:f9bcee63734b7b01555ee8fc8fb01ac2922478b2c8934bf8d468dd2916edc405
+            - name: CSI_RESIZER_IMAGE
+              value: cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:6e0546563b18872b0aa0cad7255a26bb9a87cb879b7fc3e2383c867ef4f706fb
+          image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:38751e2b7a4624e588747ed427c2c2146bee320bab74b0bb288f38c2c5d2bddd
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -83,12 +86,13 @@ spec:
             periodSeconds: 1
           resources:
             limits:
-              cpu: 500m
-              memory: 500Mi
+              cpu: 600m
+              memory: 600Mi
+              ephemeral-storage: 5Gi
             requests:
               cpu: 50m
               memory: 50Mi
-
+              ephemeral-storage: 5Gi
           #hostNetwork: false
           #hostPID: false
           #hostIPC: false
