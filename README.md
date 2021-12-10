@@ -1,6 +1,6 @@
 # IBM Spectrum Scale container native
 
-IBM Spectrum Scale in containers allows the deployment of the cluster file system in a Red Hat® OpenShift® cluster. Using a remote mount attached file system, the IBM Spectrum Scale solution provides a persistent data store to be accessed by the applications via the [IBM Spectrum Scale Container Storage Interface (CSI) driver](https://www.ibm.com/docs/en/spectrum-scale-csi?topic=spectrum-scale-container-storage-interface-driver-231) using Persistent Volumes (PVs).
+IBM Spectrum Scale in containers allows the deployment of the cluster file system in a Red Hat® OpenShift® cluster. Using a remote mount attached file system, the IBM Spectrum Scale solution provides a persistent data store to be accessed by the applications via the [IBM Spectrum Scale Container Storage Interface (CSI) driver](https://www.ibm.com/docs/en/spectrum-scale-csi) using Persistent Volumes (PVs).
 
 This project contains a golang-based operator to run and manage the deployment of an IBM Spectrum Scale container native cluster. Entitlement is required to access Spectrum Scale images required to created a container native Spectrum Scale cluster.
 

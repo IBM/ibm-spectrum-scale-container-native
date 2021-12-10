@@ -44,8 +44,7 @@ spec:
                 additionalProperties:
                   type: string
                 description: nodeSelector specifies the criteria used to determine
-                  which nodes deploy grafana bridge pods. Must be specified to enable
-                  grafana bridge.
+                  which nodes deploy grafana bridge pods.
                 type: object
               tolerations:
                 description: tolerations is applied to grafana bridge pods

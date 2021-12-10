@@ -150,6 +150,14 @@ spec:
                   tscCmdPortRange:
                     type: string
                 type: object
+              edition:
+                description: It specifies the IBM Spectrum Scale edition, "data-access"
+                  or "data-management".
+                enum:
+                - data-access
+                - data-management
+                - erasure-code
+                type: string
               hostAliases:
                 description: hostAliases that will be added to hosts file for daemon
                   pods
@@ -167,8 +175,8 @@ spec:
                   type: object
                 type: array
               images:
-                description: core and init image pair that daemon will use with respect
-                  to edition specified by user
+                description: DEPRECATED core and init image pair that daemon will
+                  use with respect to edition specified by user
                 properties:
                   core:
                     type: string
@@ -324,7 +332,7 @@ spec:
                   type: object
                 type: array
             required:
-            - images
+            - edition
             type: object
           status:
             description: status defines the observed state of Daemon
