@@ -15,7 +15,7 @@ images:
   coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:fff0c3454f55ef59b36972c1863652d777b06d66b1a7db02a6ea80df733cf16d
   coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:91b3fa6c0ba4de1a5b935b6c21fd911faee121d3ccd1b97fa959229c592645c8
   coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:576a2f458376ffdea3c3613d493ee19465d1b713fa1e87074b2af1b3e9157ffe
-  gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:3cde3a35dec927ea37a726a1e1285d9889322435ba74c6b256c96711ed7f8e89
+  gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:e9c72df86203e4541b5f508ccebfff4784fa0276c07a9e4ae9bb04bce7b657b3
   postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:a2da8071b8eba341c08577b13b41527eab3968bf1c8d28123b5b07a493a26862
   logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:d9b92ea78e76300968f5c9a4a04c2cf220a0bbfac667f77e5e7287692163d898
   pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:dc381b631db418b795df6cf324d3f4c29fd2d9a531edbb9965be5cb82a7bc195
