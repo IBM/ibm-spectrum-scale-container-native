@@ -633,7 +633,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:fe9d63c2b7733a5f8d7e1bc80e18de0160e298db14342c77aa4c6d2e26c4ee20
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:49149842487ab3c7dbe8b6f683ecf91f09a300bf41accb2f9347f0a070c40843
         imagePullPolicy: Always
         name: operator
         resources:
