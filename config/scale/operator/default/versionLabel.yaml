@@ -1,0 +1,16 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: versionLabeller
+labels:
+  app.kubernetes.io/version: v5.1.3.0
+fieldSpecs:
+  - kind: Deployment
+    path: metadata/labels
+    create: true
+  - kind: Deployment
+    path: spec/template/metadata/labels
+    create: true
+  - kind: Namespace
+    path: metadata/labels
+    create: true

@@ -20,7 +20,14 @@ spec:
     singular: cluster
   scope: Cluster
   versions:
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.license.license
+      name: Edition
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: Cluster is the Schema for the clusters API
@@ -41,8 +48,7 @@ spec:
             description: spec defines the desired state of Cluster
             properties:
               daemon:
-                description: Daemon will tell the operator how to configure the gpfs
-                  daemons
+                description: It tells the operator how to configure the gpfs daemons.
                 properties:
                   clusterNameOverride:
                     description: clusterName overrides the default name, which is
@@ -109,7 +115,15 @@ spec:
                         type: string
                       nsdRAIDMaxPdiskQueueDepth:
                         type: string
+                      nsdRAIDMaxRecoveryRetries:
+                        type: string
+                      nsdRAIDMaxTransientStale2FT:
+                        type: string
+                      nsdRAIDMaxTransientStale3FT:
+                        type: string
                       nsdRAIDNonStealableBufPct:
+                        type: string
+                      nsdRAIDReadRGDescriptorTimeout:
                         type: string
                       nsdRAIDReconstructAggressiveness:
                         type: string
@@ -140,6 +154,11 @@ spec:
                       prefetchThreads:
                         type: string
                       prefetchTimeout:
+                        type: string
+                      tscCmdAllowRemoteConnections:
+                        enum:
+                        - "yes"
+                        - "no"
                         type: string
                       tscCmdPortRange:
                         type: string
@@ -261,7 +280,15 @@ spec:
                               type: string
                             nsdRAIDMaxPdiskQueueDepth:
                               type: string
+                            nsdRAIDMaxRecoveryRetries:
+                              type: string
+                            nsdRAIDMaxTransientStale2FT:
+                              type: string
+                            nsdRAIDMaxTransientStale3FT:
+                              type: string
                             nsdRAIDNonStealableBufPct:
+                              type: string
+                            nsdRAIDReadRGDescriptorTimeout:
                               type: string
                             nsdRAIDReconstructAggressiveness:
                               type: string
@@ -314,8 +341,7 @@ spec:
                     type: array
                 type: object
               grafanaBridge:
-                description: GrafanaBridge will tell the operator how to configure
-                  Grafana Bridge
+                description: It tells the operator how to configure Grafana Bridge.
                 properties:
                   nodeSelector:
                     additionalProperties:
@@ -366,7 +392,7 @@ spec:
                     type: array
                 type: object
               gui:
-                description: Gui will tell the operator how to configure the guis
+                description: It tells the operator how to configure the GUIs.
                 properties:
                   nodeSelector:
                     additionalProperties:
@@ -416,8 +442,8 @@ spec:
                     type: array
                 type: object
               license:
-                description: license must be accepted by the end user and provides
-                  a way to specify the IBM Spectrum Scale Edition
+                description: The license must be accepted by the end user that provides
+                  a way to specify the IBM Spectrum Scale Edition.
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
@@ -432,13 +458,13 @@ spec:
                       AND * PROMPTLY RETURN THE UNUSED MEDIA AND DOCUMENTATION TO
                       THE PARTY FROM WHOM IT WAS OBTAINED FOR A REFUND OF THE AMOUNT
                       PAID. IF THE PROGRAM WAS DOWNLOADED, DESTROY ALL COPIES OF THE
-                      PROGRAM. Set to true to accept the license
+                      PROGRAM.
                     enum:
                     - true
                     type: boolean
                   license:
-                    description: license specifies the IBM Spectrum Scale edition
-                      being used, "data-access" or "data-management".
+                    description: It specifies the IBM Spectrum Scale edition, "data-access"
+                      or "data-management".
                     enum:
                     - data-access
                     - data-management
@@ -449,8 +475,7 @@ spec:
                 - license
                 type: object
               pmcollector:
-                description: Pmcollector will tell the operator how to configure the
-                  pmcollectors
+                description: It tells the operator how to configure the pmcollectors.
                 properties:
                   nodeSelector:
                     additionalProperties:

@@ -11,7 +11,7 @@ spec:
   client: sampleClient
   filesystems:
   - algorithm: DEFAULTNISTSP800131A
-    name: vdisknsd-sample
+    name: remote-sample
   port: 9443
   remoteRKM: sampleRKM
   secret: keyserver-credentials

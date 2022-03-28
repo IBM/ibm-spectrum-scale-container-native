@@ -3,6 +3,7 @@ resources:
 
 patchesStrategicMerge:
 - manager_config_patch.yaml
+- manager_webhook_patch.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -15,6 +16,6 @@ configMapGenerator:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
-- digest: sha256:e986a2664fa450c8b1ef028deb5fc8a27662802fc2cd804211cdd5184c50486b
+- digest: sha256:06fd3f2b5df07752db3422ed7f35214de7f93ea592c098d796c6f32a93087866
   name: controller
   newName: icr.io/cpopen/ibm-spectrum-scale-operator

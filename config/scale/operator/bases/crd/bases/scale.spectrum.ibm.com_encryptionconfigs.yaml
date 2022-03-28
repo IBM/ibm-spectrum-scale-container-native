@@ -38,30 +38,27 @@ spec:
             description: spec defines the desired state of EncryptionConfig
             properties:
               cacert:
-                description: cacert is the name of the ConfigMap storing CA and endpoint
-                  certificates to be used while adding/renewing key server certificate
-                  chain.
+                description: The ConfigMap storing CA and endpoint certificates to
+                  be used while adding/renewing key server certificate chain.
                 type: string
               client:
-                description: client is the Key client to communicate with the key
-                  Server.
+                description: The key client to communicate with the key Server.
                 maxLength: 16
                 type: string
               filesystems:
-                description: filesystems is a list of filesystem to be encrypted.
+                description: If specified, a list of filesystems to be encrypted.
                 items:
                   properties:
                     algorithm:
                       default: DEFAULTNISTSP800131A
-                      description: algorithm specifies the algorithm to be used for
-                        encryption. Valid values are “DEFAULTNISTSP800131AFAST” and
-                        “DEFAULTNISTSP800131A”.
+                      description: The algorithm to be used for encryption. Valid
+                        values are `DEFAULTNISTSP800131AFAST` and `DEFAULTNISTSP800131A`.
                       enum:
                       - DEFAULTNISTSP800131A
                       - DEFAULTNISTSP800131AFAST
                       type: string
                     name:
-                      description: name is the name of the filesystem.
+                      description: The name of the filesystem.
                       type: string
                   required:
                   - name
@@ -69,24 +66,24 @@ spec:
                 type: array
               port:
                 default: 9443
-                description: port can be used to provide a non default port for key
-                  Server.
+                description: It can be used to override the default port for the key
+                  server.
                 type: integer
               remoteRKM:
-                description: remoteRKM is the RKM ID from the remote cluster corresponding
-                  to given key server and tenant
+                description: The RKM ID from the remote cluster corresponding to given
+                  key server and tenant.
                 maxLength: 21
                 type: string
               secret:
-                description: secret is the name of the basic-auth secret containing
-                  the username and password for the key server.
+                description: The name of the basic-auth secret containing the username
+                  and password to the key server.
                 type: string
               server:
-                description: server is the key server name to configure for encryption.
+                description: The key server name to communicate for encryption configuration.
                 type: string
               tenant:
-                description: 'tenant is the default tenant name to the key server.  This
-                  name can consist of any alphanumeric characters and these non-alphanumeric
+                description: 'The default tenant name to the key server. This name
+                  can consist of any alphanumeric characters and only these non-alphanumeric
                   characters: ''_''.'
                 maxLength: 16
                 type: string

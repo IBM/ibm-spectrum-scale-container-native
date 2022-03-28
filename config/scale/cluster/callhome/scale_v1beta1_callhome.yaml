@@ -4,7 +4,8 @@ kind: Callhome
 metadata:
   name: callhome
 spec:
-  license:
+  license: # This is not the Spectrum Scale product license, please read below.
+    #
     # By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information and your support information anywhere they do business worldwide. For more information, please refer to the Program license agreement and documentation.
     # If you agree, please respond with "true" for acceptance, else with "false" to decline.
     # If callhome is already enabled, it will be disabled if you change this to "false".

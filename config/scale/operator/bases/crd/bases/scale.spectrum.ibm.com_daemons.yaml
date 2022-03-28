@@ -22,14 +22,15 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: the name of the IBM Spectrum Scale cluster
-      jsonPath: .status.clusterName
+    - jsonPath: .status.clusterID
+      name: Cluster ID
+      type: string
+    - jsonPath: .status.clusterName
       name: Cluster Name
       type: string
-    - description: the Cluster ID of the IBM Spectrum Scale cluster
-      jsonPath: .status.clusterID
-      name: Cluster ID
-      type: integer
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
     name: v1beta1
     schema:
       openAPIV3Schema:
@@ -115,7 +116,15 @@ spec:
                     type: string
                   nsdRAIDMaxPdiskQueueDepth:
                     type: string
+                  nsdRAIDMaxRecoveryRetries:
+                    type: string
+                  nsdRAIDMaxTransientStale2FT:
+                    type: string
+                  nsdRAIDMaxTransientStale3FT:
+                    type: string
                   nsdRAIDNonStealableBufPct:
+                    type: string
+                  nsdRAIDReadRGDescriptorTimeout:
                     type: string
                   nsdRAIDReconstructAggressiveness:
                     type: string
@@ -146,6 +155,11 @@ spec:
                   prefetchThreads:
                     type: string
                   prefetchTimeout:
+                    type: string
+                  tscCmdAllowRemoteConnections:
+                    enum:
+                    - "yes"
+                    - "no"
                     type: string
                   tscCmdPortRange:
                     type: string
@@ -280,7 +294,15 @@ spec:
                           type: string
                         nsdRAIDMaxPdiskQueueDepth:
                           type: string
+                        nsdRAIDMaxRecoveryRetries:
+                          type: string
+                        nsdRAIDMaxTransientStale2FT:
+                          type: string
+                        nsdRAIDMaxTransientStale3FT:
+                          type: string
                         nsdRAIDNonStealableBufPct:
+                          type: string
+                        nsdRAIDReadRGDescriptorTimeout:
                           type: string
                         nsdRAIDReconstructAggressiveness:
                           type: string

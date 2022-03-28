@@ -20,7 +20,22 @@ spec:
     singular: filesystem
   scope: Namespaced
   versions:
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=="Success")].status
+      name: Established
+      type: string
+    - jsonPath: .spec.remote.cluster
+      name: Remote Cluster
+      priority: 10
+      type: string
+    - jsonPath: .status.maintenanceMode
+      name: Maintenance Mode
+      priority: 10
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: Filesystem is the Schema for the filesystems API
@@ -40,25 +55,80 @@ spec:
           spec:
             description: spec defines the desired state of Filesystem
             properties:
+              local:
+                description: If specified, describes the file system to be a local
+                  filesystem.
+                properties:
+                  blockSize:
+                    default: 4M
+                    description: 'blockSize is the desired block size (default: 4M)'
+                    enum:
+                    - 64k
+                    - 128k
+                    - 256k
+                    - 512k
+                    - 1m
+                    - 2m
+                    - 4m
+                    - 8m
+                    - 16m
+                    - 64k
+                    - 128k
+                    - 256K
+                    - 512K
+                    - 1M
+                    - 2M
+                    - 4M
+                    - 8M
+                    - 16M
+                    type: string
+                  pools:
+                    description: pools is a list of storage configurations that will
+                      make up a filesystem. If no pools are specified, all unused
+                      disks will be used for filesystem creation.
+                    items:
+                      properties:
+                        disks:
+                          description: disks is a list of local disk names to be included
+                            from this pool
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          default: system
+                          description: 'name is the desired name of this pool (default:
+                            system)'
+                          type: string
+                      type: object
+                    type: array
+                  replication:
+                    default: 3-way
+                    description: replication is the number of replicas to create for
+                      each data/metadata block that is written to the filesystem (only
+                      3-way is supported)
+                    enum:
+                    - 3-way
+                    type: string
+                type: object
               remote:
-                description: remote specifies the filesystem will be a remote mounted
-                  filesystem
+                description: If specified, describes the file system to be remote
+                  mounted filesystem.
                 properties:
                   cluster:
-                    description: cluster is the name of the RemoteCluster resource
+                    description: It is the name of the 'remotecluster' custom resource.
                     maxLength: 128
                     type: string
                   fs:
-                    description: fs is the name of the filesystem on the RemoteCluster
-                      to mount
+                    description: It is the name of the filesystem on the remote cluster
+                      to mount.
                     type: string
                 required:
                 - cluster
                 - fs
                 type: object
               vdiskNSD:
-                description: vdiskNSD specifies the filesystem will be a vdiskNSD
-                  filesystem
+                description: If specified, describes the file system to be a vdiskNSD
+                  filesystem.
                 properties:
                   vdiskSets:
                     description: vdisksets defines the desired state of vdisksets
@@ -228,6 +298,41 @@ spec:
                   - reason
                   - status
                   - type
+                  type: object
+                type: array
+              maintenanceMode:
+                description: maintenanceMode indicates if the filesystem maintenance
+                  mode is enabled.
+                enum:
+                - enabled
+                - disabled
+                - unknown
+                - not supported
+                type: string
+              pools:
+                description: pools displays status of the filesystem pools
+                items:
+                  properties:
+                    failureGroups:
+                      items:
+                        properties:
+                          diskCount:
+                            type: integer
+                          failureGroup:
+                            description: failureGroup is the number of this failure
+                              group
+                            type: string
+                          failureGroupMapping:
+                            type: string
+                          totalDiskSize:
+                            type: string
+                        type: object
+                      type: array
+                    name:
+                      default: system
+                      description: 'name is the desired name of this pool (default:
+                        system)'
+                      type: string
                   type: object
                 type: array
             type: object

@@ -20,7 +20,17 @@ spec:
     singular: remotecluster
   scope: Namespaced
   versions:
-  - name: v1beta1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.gui.host
+      name: Host
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Ready")].status
+      name: Ready
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
     schema:
       openAPIV3Schema:
         description: RemoteCluster is the Schema for the remoteclusters API
@@ -41,25 +51,25 @@ spec:
             description: spec defines the desired state of RemoteCluster
             properties:
               contactNodes:
-                description: contactNodes are optional and provides a list of nodes
+                description: This property is optional and provides a list of nodes
                   from the storage cluster to be used as the remote cluster contact
-                  nodes.  The names should be the daemon node names.  If not specified,
-                  the operator will use any 3 nodes detected from the storage cluster.
+                  nodes. The names should be the daemon node names. If not specified,
+                  the operator uses any 3 nodes detected from the storage cluster.
                 items:
                   type: string
                 type: array
               gui:
-                description: gui specifies the details for the IBM Spectrum Scale
-                  Remote Cluster GUI.
+                description: It specifies the details for the IBM Spectrum Scale Remote
+                  Cluster GUI.
                 properties:
                   cacert:
-                    description: cacert specifies the name of the RootCA ConfigMap.
+                    description: It specifies the name of the RootCA ConfigMap.
                     type: string
                   csiSecretName:
                     default: csi-remote-mount-storage-cluster-1
-                    description: csiSecretName references the secret that contains
-                      the username and password of the CSI admin user in the ibm-spectrum-scale-csi
-                      namespace
+                    description: It references the secret that contains the username
+                      and password of the CSI admin user in the ibm-spectrum-scale-csi
+                      namespace.
                     type: string
                   host:
                     description: host of the remote cluster REST API endpoint.  This
@@ -72,16 +82,23 @@ spec:
                     type: boolean
                   port:
                     default: 443
-                    description: port specifies the port of the Remote Cluster.
+                    description: It specifies the port of the Remote Cluster.
                     type: integer
                   scheme:
-                    description: scheme defaults to 'https'. No other value is supported.
+                    default: https
+                    description: The default value is 'https'. No other value is supported.
+                    enum:
+                    - https
                     type: string
                   secretName:
                     description: secretName references the secret in the ibm-spectrum-scale
                       namespace that contains the username and password of the GUI
                       REST interface.
                     type: string
+                required:
+                - csiSecretName
+                - host
+                - secretName
                 type: object
             required:
             - gui
