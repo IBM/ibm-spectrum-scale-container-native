@@ -6,42 +6,50 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: callhomes.scale.spectrum.ibm.com
+  name: localdisks.scale.spectrum.ibm.com
 spec:
   group: scale.spectrum.ibm.com
   names:
     categories:
     - scale
-    kind: Callhome
-    listKind: CallhomeList
-    plural: callhomes
-    singular: callhome
+    kind: LocalDisk
+    listKind: LocalDiskList
+    plural: localdisks
+    shortNames:
+    - ld
+    singular: localdisk
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .status.mode
-      name: Mode
+    - jsonPath: .spec.node
+      name: Node
       type: string
-    - jsonPath: .spec.companyName
-      name: Company Name
+    - jsonPath: .spec.device
+      name: Device
       type: string
-    - jsonPath: .spec.customerID
-      name: Customer ID
+    - jsonPath: .status.conditions[?(@.type=="Ready")].status
+      name: Ready
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Used")].status
+      name: Used
+      type: string
+    - jsonPath: .status.filesystem
+      name: Filesystem
+      type: string
+    - jsonPath: .status.pool
+      name: Pool
       priority: 10
       type: string
-    - jsonPath: .spec.companyEmail
-      name: Company Email
-      type: string
-    - jsonPath: .spec.countryCode
-      name: Country Code
+    - jsonPath: .status.failuregroup
+      name: Failuregroup
       priority: 10
       type: string
-    - jsonPath: .status.conditions[?(@.type=="Enabled")].status
-      name: Enabled
-      type: string
-    - jsonPath: .status.conditions[?(@.type=="Success")].status
-      name: Connected
+    - jsonPath: .status.failuregroupMapping
+      name: Failuregroup Mapping
       priority: 10
+      type: string
+    - jsonPath: .status.size
+      name: Size
       type: string
     - jsonPath: .metadata.creationTimestamp
       name: Age
@@ -49,7 +57,7 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Callhome is the Schema for the callhomes API
+        description: LocalDisc is the Schema for the localdisks API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -64,76 +72,32 @@ spec:
           metadata:
             type: object
           spec:
-            description: spec defines the desired state of Callhome
+            description: spec defines the desired state of LocalDisk
             properties:
-              companyEmail:
-                description: The address of the system administrator who can be contacted
-                  by the IBM Support. Usually this e-mail address is directed towards
-                  a group or task e-mail address. For example, itsupport@mycompanyname.com.
+              device:
+                description: device specifies the block device name that appears in
+                  /dev for the disk
                 type: string
-              companyName:
-                description: The company to which the contact person belongs. This
-                  name can consist of any alphanumeric characters and these non-alphanumeric
-                  characters are '-', '_', '.', ' ', ','.
-                type: string
-              countryCode:
-                description: The two-letter upper-case country codes as defined in
-                  ISO 3166-1 alpha-2.
-                type: string
-              customerID:
-                description: The customer ID of the system administrator who can be
-                  contacted by the IBM Support. This can consist of any alphanumeric
-                  characters and these non-alphanumeric characters are '-', '_', '.'.
-                type: string
-              license:
-                description: License must be accepted by the end user to enable Callhome.
-                properties:
-                  accept:
-                    description: "By accepting this license, you agree to allow IBM
-                      and its subsidiaries to store and use your contact information
-                      and your support information anywhere they do business worldwide.
-                      For more information, please refer to the Program license agreement
-                      and documentation. \n Set to true to agree the license and enable
-                      Callhome. Set to false to disable Callhome."
-                    type: boolean
-                required:
-                - accept
-                type: object
-              proxy:
-                description: If specified, defines a proxy server configuration.
-                properties:
-                  host:
-                    description: The host of proxy server as hostname or IP address.
-                    type: string
-                  port:
-                    description: The port of proxy server.
-                    type: integer
-                  secretName:
-                    description: The secret name of a basic authentication secret,
-                      which contains username and password for proxy server.
-                    type: string
-                required:
-                - host
-                - port
-                type: object
-              type:
-                default: production
-                description: Marks the cluster as a test or a production system. In
-                  case this parameter is not explicitly set, the value is set to production
-                  by default.
-                enum:
-                - production
-                - test
+              existingDataSkipVerify:
+                description: existingDataSkipVerify controls whether existing Spectrum
+                  Scale data structure should be overwritten when creating the disk.
+                  A disk can have Spectrum Scale data structures on if it was used
+                  in a filesystem before and if it has not properly cleaned up. If
+                  false, a "DiskHasFilesystemData" event is displayed if the disk
+                  still has Spectrum Scale data on it, and the disk will not be used.
+                  If true, the disk will be formatted, no matter if it still has data
+                  on it.
+                type: boolean
+              node:
+                description: node specifies the admin name of node where the local
+                  disk lives
                 type: string
             required:
-            - companyEmail
-            - companyName
-            - countryCode
-            - customerID
-            - license
+            - device
+            - node
             type: object
           status:
-            description: status defines the observed state of Callhome
+            description: status defines the observed state of LocalDisk
             properties:
               conditions:
                 items:
@@ -204,16 +168,33 @@ spec:
                   - type
                   type: object
                 type: array
-              mode:
-                description: 'mode is the current mode of operation: test, production,
-                  or disabled.'
-                enum:
-                - production
-                - test
-                - disabled
+              failuregroup:
+                description: failuregroup is the failuregroup number for this localdisk.
+                  The replicas of data blocks are written to localdisks with different
+                  failuregroup numbers.
+                type: string
+              failuregroupMapping:
+                description: failuregroupMapping describes to which Kubernetes object
+                  the failuregroup is mapped to. This can be a Kubernetes node, a
+                  Kubernetes zone or a Kubernetes region.
+                type: string
+              filesystem:
+                description: filesystem is the name of the filesystem that uses this
+                  localdisk. If this is empty, the localdisk is not used by a filesystem.
+                type: string
+              pool:
+                description: pool is the name of the filesystem pool that uses this
+                  localdisk. If this is empty, the localdisk is not used by a filesystem.
+                type: string
+              size:
+                description: size is the size of the localdisk
                 type: string
             required:
-            - mode
+            - failuregroup
+            - failuregroupMapping
+            - filesystem
+            - pool
+            - size
             type: object
         type: object
     served: true

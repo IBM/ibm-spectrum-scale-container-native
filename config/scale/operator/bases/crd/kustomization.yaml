@@ -12,6 +12,8 @@ resources:
   - bases/scale.spectrum.ibm.com_pmcollectors.yaml
   - bases/scale.spectrum.ibm.com_recoverygroups.yaml
   - bases/scale.spectrum.ibm.com_grafanabridges.yaml
+  - bases/scale.spectrum.ibm.com_localdisks.yaml
+  - bases/scale.spectrum.ibm.com_compressionjobs.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

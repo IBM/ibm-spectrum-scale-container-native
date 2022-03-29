@@ -1,0 +1,98 @@
+
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: mutating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /mutate-scale-spectrum-ibm-com-v1beta1-cluster
+  failurePolicy: Fail
+  name: mcluster.scale.spectrum.ibm.com
+  rules:
+  - apiGroups:
+    - scale.spectrum.ibm.com
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - clusters
+  sideEffects: None
+
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-scale-spectrum-ibm-com-v1beta1-cluster
+  failurePolicy: Fail
+  name: vcluster.scale.spectrum.ibm.com
+  rules:
+  - apiGroups:
+    - scale.spectrum.ibm.com
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - clusters
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-scale-spectrum-ibm-com-v1beta1-filesystem
+  failurePolicy: Fail
+  name: vfilesystem.scale.spectrum.ibm.com
+  rules:
+  - apiGroups:
+    - scale.spectrum.ibm.com
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - filesystems
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-scale-spectrum-ibm-com-v1beta1-localdisk
+  failurePolicy: Fail
+  name: vlocaldisk.scale.spectrum.ibm.com
+  rules:
+  - apiGroups:
+    - scale.spectrum.ibm.com
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - localdisks
+  sideEffects: None

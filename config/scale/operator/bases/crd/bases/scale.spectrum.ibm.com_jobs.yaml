@@ -6,50 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: callhomes.scale.spectrum.ibm.com
+  name: jobs.scale.spectrum.ibm.com
 spec:
   group: scale.spectrum.ibm.com
   names:
-    categories:
-    - scale
-    kind: Callhome
-    listKind: CallhomeList
-    plural: callhomes
-    singular: callhome
+    kind: Job
+    listKind: JobList
+    plural: jobs
+    singular: job
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .status.mode
-      name: Mode
-      type: string
-    - jsonPath: .spec.companyName
-      name: Company Name
-      type: string
-    - jsonPath: .spec.customerID
-      name: Customer ID
-      priority: 10
-      type: string
-    - jsonPath: .spec.companyEmail
-      name: Company Email
-      type: string
-    - jsonPath: .spec.countryCode
-      name: Country Code
-      priority: 10
-      type: string
-    - jsonPath: .status.conditions[?(@.type=="Enabled")].status
-      name: Enabled
-      type: string
-    - jsonPath: .status.conditions[?(@.type=="Success")].status
-      name: Connected
-      priority: 10
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1beta1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Callhome is the Schema for the callhomes API
+        description: Job is the Schema for the jobs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -64,77 +34,58 @@ spec:
           metadata:
             type: object
           spec:
-            description: spec defines the desired state of Callhome
+            description: JobSpec defines the desired state of Job
             properties:
-              companyEmail:
-                description: The address of the system administrator who can be contacted
-                  by the IBM Support. Usually this e-mail address is directed towards
-                  a group or task e-mail address. For example, itsupport@mycompanyname.com.
-                type: string
-              companyName:
-                description: The company to which the contact person belongs. This
-                  name can consist of any alphanumeric characters and these non-alphanumeric
-                  characters are '-', '_', '.', ' ', ','.
-                type: string
-              countryCode:
-                description: The two-letter upper-case country codes as defined in
-                  ISO 3166-1 alpha-2.
-                type: string
-              customerID:
-                description: The customer ID of the system administrator who can be
-                  contacted by the IBM Support. This can consist of any alphanumeric
-                  characters and these non-alphanumeric characters are '-', '_', '.'.
-                type: string
-              license:
-                description: License must be accepted by the end user to enable Callhome.
+              MMCommandJob:
                 properties:
-                  accept:
-                    description: "By accepting this license, you agree to allow IBM
-                      and its subsidiaries to store and use your contact information
-                      and your support information anywhere they do business worldwide.
-                      For more information, please refer to the Program license agreement
-                      and documentation. \n Set to true to agree the license and enable
-                      Callhome. Set to false to disable Callhome."
-                    type: boolean
-                required:
-                - accept
+                  args:
+                    items:
+                      type: string
+                    type: array
+                  file:
+                    properties:
+                      contents:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                    - contents
+                    - name
+                    type: object
                 type: object
-              proxy:
-                description: If specified, defines a proxy server configuration.
+              RestApiJob:
                 properties:
-                  host:
-                    description: The host of proxy server as hostname or IP address.
+                  body:
                     type: string
-                  port:
-                    description: The port of proxy server.
-                    type: integer
-                  secretName:
-                    description: The secret name of a basic authentication secret,
-                      which contains username and password for proxy server.
+                  method:
+                    type: string
+                  path:
                     type: string
                 required:
-                - host
-                - port
+                - method
+                - path
                 type: object
-              type:
-                default: production
-                description: Marks the cluster as a test or a production system. In
-                  case this parameter is not explicitly set, the value is set to production
-                  by default.
-                enum:
-                - production
-                - test
+              filesystem:
                 type: string
+              minuteInterval:
+                description: interval in minutes to start a new job
+                type: integer
+              timeout:
+                description: timeout value for the job in minutes
+                type: integer
             required:
-            - companyEmail
-            - companyName
-            - countryCode
-            - customerID
-            - license
+            - minuteInterval
             type: object
           status:
-            description: status defines the observed state of Callhome
+            description: JobStatus defines the observed state of Job
             properties:
+              asyncjobinfo:
+                properties:
+                  jobidentifier:
+                    type: string
+                  podname:
+                    type: string
+                type: object
               conditions:
                 items:
                   description: "Condition contains details for one aspect of the current
@@ -204,16 +155,13 @@ spec:
                   - type
                   type: object
                 type: array
-              mode:
-                description: 'mode is the current mode of operation: test, production,
-                  or disabled.'
-                enum:
-                - production
-                - test
-                - disabled
+              creationTimestamp:
+                format: date-time
                 type: string
-            required:
-            - mode
+              jobid:
+                type: integer
+              jobstate:
+                type: string
             type: object
         type: object
     served: true
