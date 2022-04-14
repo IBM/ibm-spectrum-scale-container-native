@@ -2,7 +2,7 @@
 namespace: ibm-spectrum-scale-csi
 
 resources:
-- github.com/IBM/ibm-spectrum-scale-csi.git?ref=dev
+- github.com/IBM/ibm-spectrum-scale-csi.git?ref=v2.5.0
 - namespace.yaml
 
 patches:
