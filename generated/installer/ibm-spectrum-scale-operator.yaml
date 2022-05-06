@@ -15,7 +15,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v5.1.3.0
+    app.kubernetes.io/version: v5.1.3.1
     control-plane: controller-manager
   name: ibm-spectrum-scale-operator
 ---
@@ -699,7 +699,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-C8WMT3&title=IBM%20License%20Agreement
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CDNM87&title=IBM%20License%20Agreement
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -5080,16 +5080,16 @@ data:
       resourceName: scale.spectrum.ibm.com
       resourceLock: leases
     images:
-      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:a5e68921e7a1779a732d0cb8fa8059891bb57b83dacac96fa0e18f511172f4b2
-      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:bc69aecd2cf5811f0b2d28ef9e889d243e7459a0212c3f0a7b234850f6c9f677
-      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:48d369a9291329c12a5b6bc82def449f6fd6b85221314ceabb0454cd89cf694a
-      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:72af6f654434930f1283313eda2cd7a8d98396c868ab5c0f22020d1aa2dc9935
-      gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:f87546e72ee5a8f95fd5244dacf967c352ab5018abd881ed8c5108d8a18d13f9
+      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:a052b446d9cbf003abcb635d40f83b3dd3e2142125f3e79acabb8268cc83a0c7
+      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:4581e4ede1d5a8b9c1c4aed1f48792fae0bc3a9e67f175de54307b17cef3af0d
+      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:86d1f6778d4a2537a4f1631ea1927c54ec74cbf4af5799b67a645b8d57eaa8c6
+      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:f3e848d7e063607dfc031a8c00c148cb49a44e0d16d21518c42bbf22c7eef09f
+      gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:a3b6791785ee31ab6c3f1b7d42ae875503abd4f65622a45772b01fdc5e824253
       postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:3162a6ead070474b27289f09eac4c865e75f93847a2d7098f718ee5a721637c4
-      logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:2e4bbb2be6e7aff711ddc93f0b07e49c93d41e4c2ffc8ea75f804ad6fe25564e
-      pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:819da7f3e3ed53ce9dbc4fee76c71a503f46a3937b886c5f9136379ef96565f7
-      sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:26d9b9cb9a27d5fe88b675f2d7d9e9a3c20d3589385de614e0da8d2fe107ae39
-      grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:f7d255f133e71467c018dfcc00775af2eb3bd7c30fee9aa511822a933009e4a8
+      logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:b37d34ffce0e59879c776da3f1b1c643674975e6588fe8e8adf60eef25b4a6ca
+      pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:3a1d7a2fa9aaac6500323ad0b0c29258f985be18101ed720e66d12fae1125180
+      sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:dfd28870815ab66a8a2774c36e3374a0cf85b14b758ff853a35e83b5ff604d4b
+      grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:f58a7a37289e9e7c1148dac033f013c0afb19aa510fff97e7e7c2314c936d28d
 kind: ConfigMap
 metadata:
   labels:
@@ -5121,7 +5121,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 2.5.0
+    productVersion: 2.5.1
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
     app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -5140,7 +5140,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-csi-operator
         productName: IBM Spectrum Scale CSI Operator
-        productVersion: 2.5.0
+        productVersion: 2.5.1
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
         app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -5179,14 +5179,14 @@ spec:
         - name: CSI_RESIZER_IMAGE
           value: cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:6e0546563b18872b0aa0cad7255a26bb9a87cb879b7fc3e2383c867ef4f706fb
         - name: CSI_DRIVER_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:695b7107c16fce429f559fc6e26686712f8670bfd1d051b85279efd48a7eb413
+          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:875c3c7a3c13831664b88c000708e49c149d1fa90be3d2bd761c38456b424927
         - name: METRICS_BIND_ADDRESS
           value: "8383"
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:66c8c36e5e1f7f9095a0f6133c57b3598997f1d412cbe9c3ebbea75af2ccc534
+        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:f3645991a4eacd02a55bd2dd4c0550a6fc16e38ce893704158ab53f421b9db7a
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -5227,7 +5227,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v5.1.3.0
+    app.kubernetes.io/version: v5.1.3.1
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale-operator
@@ -5243,7 +5243,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v5.1.3.0
+        app.kubernetes.io/version: v5.1.3.1
         control-plane: controller-manager
     spec:
       containers:
@@ -5252,7 +5252,7 @@ spec:
         - --zap-log-level=1
         command:
         - /manager
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:06fd3f2b5df07752db3422ed7f35214de7f93ea592c098d796c6f32a93087866
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:c8ff1e599f9b6fcac04e99e838e463757d05a5745677bc261bded55027fe0c48
         livenessProbe:
           httpGet:
             path: /healthz

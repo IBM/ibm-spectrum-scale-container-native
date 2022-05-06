@@ -16,6 +16,6 @@ configMapGenerator:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
-- digest: sha256:06fd3f2b5df07752db3422ed7f35214de7f93ea592c098d796c6f32a93087866
+- digest: sha256:c8ff1e599f9b6fcac04e99e838e463757d05a5745677bc261bded55027fe0c48
   name: controller
   newName: icr.io/cpopen/ibm-spectrum-scale-operator
