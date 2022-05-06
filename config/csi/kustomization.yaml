@@ -2,7 +2,7 @@
 namespace: ibm-spectrum-scale-csi
 
 resources:
-- github.com/IBM/ibm-spectrum-scale-csi.git?ref=v2.5.0
+- github.com/IBM/ibm-spectrum-scale-csi.git?ref=v2.5.1
 - namespace.yaml
 
 patches:
@@ -36,8 +36,8 @@ patches:
                   - name: CSI_RESIZER_IMAGE
                     value: cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:6e0546563b18872b0aa0cad7255a26bb9a87cb879b7fc3e2383c867ef4f706fb
                   - name: CSI_DRIVER_IMAGE
-                    value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:695b7107c16fce429f559fc6e26686712f8670bfd1d051b85279efd48a7eb413
-                image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:66c8c36e5e1f7f9095a0f6133c57b3598997f1d412cbe9c3ebbea75af2ccc534
+                    value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:875c3c7a3c13831664b88c000708e49c149d1fa90be3d2bd761c38456b424927
+                image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:f3645991a4eacd02a55bd2dd4c0550a6fc16e38ce893704158ab53f421b9db7a
 
 # images:
 #   - name: csi-operator
