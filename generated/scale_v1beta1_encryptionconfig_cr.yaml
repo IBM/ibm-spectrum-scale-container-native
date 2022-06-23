@@ -9,9 +9,6 @@ metadata:
 spec:
   cacert: sample-ca-cert
   client: sampleClient
-  filesystems:
-  - algorithm: DEFAULTNISTSP800131A
-    name: remote-sample
   port: 9443
   remoteRKM: sampleRKM
   secret: keyserver-credentials

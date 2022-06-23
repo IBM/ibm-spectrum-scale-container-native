@@ -8,8 +8,4 @@ spec:
   port: 9443
   tenant: sampleTenant
   client: sampleClient
-  remoteRKM: sampleRKM
   cacert: sample-ca-cert
-  filesystems:
-    - name: vdisknsd-sample
-      algorithm: DEFAULTNISTSP800131A
