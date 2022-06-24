@@ -11,3 +11,4 @@ spec:
     - name: client
       resources:
         memory: 4Gi
+        cpu: "2"

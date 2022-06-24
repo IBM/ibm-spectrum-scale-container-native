@@ -38,8 +38,8 @@ spec:
             description: spec defines the desired state of EncryptionConfig
             properties:
               cacert:
-                description: The ConfigMap storing CA and endpoint certificates to
-                  be used while adding/renewing key server certificate chain.
+                description: The ConfigMap storing CA and endpoint certificates used
+                  while adding/renewing key server certificate chain.
                 type: string
               client:
                 description: The key client to communicate with the key Server.

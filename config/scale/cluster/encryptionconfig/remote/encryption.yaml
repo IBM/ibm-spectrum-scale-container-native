@@ -1,0 +1,7 @@
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: EncryptionConfig
+metadata:
+  name: encryption-config-sample
+spec:
+  remoteRKM: sampleRKM
