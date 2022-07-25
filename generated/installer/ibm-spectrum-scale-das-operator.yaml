@@ -958,6 +958,6 @@ spec:
             cpu: 100m
             memory: 50Mi
       imagePullSecrets:
-      - name: artifactory-auth
+      - name: ibm-entitlement-key 
       serviceAccountName: ibm-spectrum-scale-das-operator
       terminationGracePeriodSeconds: 10
