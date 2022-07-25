@@ -947,7 +947,7 @@ spec:
           value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:e7e56b8800207a1b38858b4b4d678a0585991f4c44e73213833f2aae203bc78d
         - name: NOOBAAMON_IMAGE
           value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:c52ca470b2ef8e7f4020413d10ad82a4c7c52f8988a10b62dbaba4a254c03a5b
-          image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:87d37e394b9f7bb31a3e1b7e0c8ea611873a793735feb80d58e4646fda5a49d5
+        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:87d37e394b9f7bb31a3e1b7e0c8ea611873a793735feb80d58e4646fda5a49d5
         imagePullPolicy: IfNotPresent
         name: manager
         resources:
@@ -958,6 +958,6 @@ spec:
             cpu: 100m
             memory: 50Mi
       imagePullSecrets:
-      - name: ibm-entitlement-key 
+      - name: ibm-entitlement-key
       serviceAccountName: ibm-spectrum-scale-das-operator
       terminationGracePeriodSeconds: 10
