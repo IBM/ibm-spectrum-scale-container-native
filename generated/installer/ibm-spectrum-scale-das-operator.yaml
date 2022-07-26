@@ -192,7 +192,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-CFIE-CEBMET
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-CFIE-CGHV3J
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -283,10 +283,7 @@ rules:
   - get
   - list
   - watch
-  - create
   - update
-  - patch
-  - delete
 - apiGroups:
   - ""
   resources:
@@ -350,13 +347,11 @@ rules:
   resources:
   - nodes
   verbs:
-  - create
-  - delete
   - get
   - list
   - patch
-  - update
   - watch
+  - update
 - apiGroups:
   - ""
   resources:
@@ -380,10 +375,10 @@ rules:
   verbs:
   - create
   - delete
+  - update
+  - patch
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - ""
@@ -394,8 +389,6 @@ rules:
   - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - ""
@@ -406,9 +399,6 @@ rules:
   - delete
   - get
   - list
-  - patch
-  - update
-  - watch
 - apiGroups:
   - ""
   resources:
@@ -419,8 +409,6 @@ rules:
   - get
   - list
   - patch
-  - update
-  - watch
 - apiGroups:
   - ""
   resources:
@@ -446,11 +434,8 @@ rules:
   resources:
   - daemonsets
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
   - watch
 - apiGroups:
   - apps
@@ -509,8 +494,8 @@ rules:
   verbs:
   - get
   - list
-  - update
   - watch
+  - update
 - apiGroups:
   - ""
   resources:
@@ -804,12 +789,8 @@ rules:
   resources:
   - securitycontextconstraints
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - use
   - watch
 - apiGroups:
@@ -907,7 +888,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 5.1.3.1
+    productVersion: 5.1.4.0
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-das
     app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -929,7 +910,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-das-operator
         productName: IBM Spectrum Scale DAS Operator
-        productVersion: 5.1.3.1
+        productVersion: 5.1.4.0
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-das
         app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -963,10 +944,10 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: DAS_ENDPOINT_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:4c74c000f33e1367d066bfbc69f5996a3dd75c2cf025f0e7082324a997373293
+          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:e7e56b8800207a1b38858b4b4d678a0585991f4c44e73213833f2aae203bc78d
         - name: NOOBAAMON_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:dfd28870815ab66a8a2774c36e3374a0cf85b14b758ff853a35e83b5ff604d4b
-        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:de0a8b5daf7c448e64405c9859fbb3f95d8fcd862cb0a0b4ce8a425939e37250
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:c52ca470b2ef8e7f4020413d10ad82a4c7c52f8988a10b62dbaba4a254c03a5b
+        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:87d37e394b9f7bb31a3e1b7e0c8ea611873a793735feb80d58e4646fda5a49d5
         imagePullPolicy: IfNotPresent
         name: manager
         resources:
