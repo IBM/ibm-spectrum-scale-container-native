@@ -3,7 +3,7 @@ kind: LabelTransformer
 metadata:
   name: versionLabeller
 labels:
-  app.kubernetes.io/version: v5.1.4.0
+  app.kubernetes.io/version: v5.1.4.1
 fieldSpecs:
   - kind: Deployment
     path: metadata/labels
