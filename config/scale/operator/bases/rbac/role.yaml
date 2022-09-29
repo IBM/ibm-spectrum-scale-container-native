@@ -1,4 +1,3 @@
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -9,10 +8,40 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - PersistentVolume
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - configmap
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
   - configmaps
   verbs:
   - create
   - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - endpoints/restricted
+  verbs:
+  - create
   - get
   - list
   - patch
@@ -35,6 +64,7 @@ rules:
   verbs:
   - get
   - list
+  - patch
   - watch
 - apiGroups:
   - ""
@@ -45,6 +75,28 @@ rules:
   - list
   - patch
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims/status
+  verbs:
+  - get
 - apiGroups:
   - ""
   resources:
@@ -68,6 +120,12 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/eviction
+  verbs:
+  - create
 - apiGroups:
   - ""
   resources:
@@ -100,8 +158,28 @@ rules:
   resources:
   - services
   verbs:
+  - create
+  - delete
   - get
   - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
   - watch
 - apiGroups:
   - apps
@@ -118,6 +196,30 @@ rules:
   verbs:
   - create
   - patch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - dnses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - infrastructures
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - networks
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - csi.ibm.com
   resources:
@@ -145,6 +247,14 @@ rules:
   - patch
   - update
 - apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - oauth.openshift.io
   resources:
   - oauthclients
@@ -155,6 +265,13 @@ rules:
   - patch
   - watch
 - apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - patch
+- apiGroups:
   - route.openshift.io
   resources:
   - routes
@@ -164,6 +281,32 @@ rules:
   - list
   - patch
   - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*/finalizers'
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*/status'
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
@@ -186,6 +329,32 @@ rules:
   - scale.spectrum.ibm.com
   resources:
   - callhomes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks/status
   verbs:
   - get
   - patch
@@ -271,6 +440,58 @@ rules:
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
+  - diskjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - diskjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - diskjobs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
   - encryptionconfigs
   verbs:
   - create
@@ -318,8 +539,10 @@ rules:
   - filesystems/status
   verbs:
   - get
+  - list
   - patch
   - update
+  - watch
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
@@ -477,6 +700,138 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - upgradeapprovals
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - upgradeapprovals/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - csidrivers
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - storage.k8s.io
   resources:

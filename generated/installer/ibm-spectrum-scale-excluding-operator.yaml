@@ -15,7 +15,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v5.1.4.0
+    app.kubernetes.io/version: v5.1.5.0
     control-plane: controller-manager
   name: ibm-spectrum-scale-operator
 ---
@@ -23,7 +23,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -162,13 +162,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -253,7 +252,196 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: cloudcsidisks.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: CloudCSIDisk
+    listKind: CloudCSIDiskList
+    plural: cloudcsidisks
+    singular: cloudcsidisk
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudCSIDisk is the Schema for the cloudcsidisks API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudCSIDiskSpec defines the desired state of CloudCSIDisk
+            properties:
+              filesystem:
+                description: filesystem is the name of the filesystem resource
+                maxLength: 253
+                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+              platform:
+                description: 'It specifies the Cloud platform for IBM Spectrum Scale
+                  deployment (Ex: "AWS", "Azure" or "VSphere").'
+                enum:
+                - ""
+                - AWS
+                - Azure
+                - BareMetal
+                - GCP
+                - Libvirt
+                - OpenStack
+                - None
+                - VSphere
+                - oVirt
+                - IBMCloud
+                - KubeVirt
+                - EquinixMetal
+                type: string
+              pool:
+                description: pool is the user provided value for creating spectrum
+                  scale filesystem storage pool.
+                properties:
+                  capacity:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: 'capacity is the user provided value for filesystem
+                      pool size (Ex: 1Ti)'
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  disks:
+                    description: disks is a list of local disk names to be included
+                      from this pool
+                    items:
+                      type: string
+                    type: array
+                  name:
+                    default: system
+                    description: 'name is the desired name of this pool (default:
+                      system)'
+                    type: string
+                  storageClass:
+                    description: storageClass is the storage class that will be verified
+                      and used for disk device creation
+                    type: string
+                type: object
+              replication:
+                default: 3-way
+                description: replication is the number of replicas to create for each
+                  data/metadata block that is written to the filesystem (only 3-way
+                  is supported)
+                enum:
+                - 3-way
+                type: string
+            required:
+            - filesystem
+            - platform
+            - pool
+            type: object
+          status:
+            description: CloudCSIDiskStatus defines the observed state of CloudCSIDisk
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -305,8 +493,7 @@ spec:
                   clusterNameOverride:
                     description: clusterName overrides the default name, which is
                       that of the Daemon resource itself postpended with any resolved
-                      domain suffix. If the clusterName contains any "." characters
-                      then it will be used as-is.
+                      domain suffix.
                     maxLength: 115
                     pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                     type: string
@@ -323,11 +510,36 @@ spec:
                         type: string
                       afmMaxParallelRecoveries:
                         type: string
+                      backgroundSpaceReclaimThreshold:
+                        type: string
+                      cloudEnv:
+                        default: general
+                        enum:
+                        - general
+                        type: string
                       controlSetxattrImmutableSELinux:
                         type: string
                       enforceFilesetQuotaOnRoot:
                         type: string
                       ignorePrefetchLUNCount:
+                        type: string
+                      ignoreReplicaSpaceOnStat:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
+                        type: string
+                      ignoreReplicationForQuota:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
+                        type: string
+                      ignoreReplicationOnStatfs:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
                         type: string
                       initPrefetchBuffers:
                         type: string
@@ -407,6 +619,18 @@ spec:
                         type: string
                       prefetchTimeout:
                         type: string
+                      readReplicaPolicy:
+                        default: local
+                        enum:
+                        - default
+                        - local
+                        - fastest
+                        type: string
+                      traceGenSubDir:
+                        default: /var/mmfs/tmp/traces
+                        enum:
+                        - /var/mmfs/tmp/traces
+                        type: string
                       tscCmdAllowRemoteConnections:
                         enum:
                         - "yes"
@@ -416,8 +640,8 @@ spec:
                         type: string
                     type: object
                   hostAliases:
-                    description: hostAliases that will be added to hosts file for
-                      daemon pods
+                    description: hostAliases that will be added to the internal DNS
+                      that resolves hosts for core pods
                     items:
                       properties:
                         hostname:
@@ -489,6 +713,8 @@ spec:
                             not be changed unless advised by IBM Support
                           properties:
                             afmMaxParallelRecoveries:
+                              type: string
+                            backgroundSpaceReclaimThreshold:
                               type: string
                             controlSetxattrImmutableSELinux:
                               type: string
@@ -576,8 +802,8 @@ spec:
                               type: string
                           type: object
                         resources:
-                          description: Resources defines the Memory/CPU resources
-                            target for the core pods
+                          description: The expected resources that should be requested
+                            for Spectrum Scale core.
                           properties:
                             cpu:
                               description: CPU is measured in cpu units (i.e 1, 2,
@@ -586,7 +812,10 @@ spec:
                             memory:
                               description: Memory is measured in bytes as plain integer
                                 or with kubernetes supported suffixes (i.e 128974848,
-                                129e6, 129M, 123Mi)
+                                129e6, 129M, 123Mi). The value is a target and will
+                                be requested for Spectrum Scale core pods. Resource
+                                request limits on containers impact pod scheduling
+                                and bin packing.
                               type: string
                           type: object
                       type: object
@@ -699,7 +928,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CDNM87&title=IBM%20License%20Agreement
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CHVRQX&title=IBM%20License%20Agreement
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -776,6 +1005,26 @@ spec:
                       type: object
                     type: array
                 type: object
+              site:
+                description: Tells the operator how to configure site zone name resolution.
+                  Site zones must be authoritative.
+                properties:
+                  name:
+                    description: name is the site name.
+                    maxLength: 60
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  zone:
+                    description: zone is the domain name that IBM Spectrum Scale DNS
+                      records for this site will be managed. This will be used to
+                      resolve node names for IBM Spectrum Scale.
+                    maxLength: 253
+                    pattern: ^[a-z0-9]([\-\.a-z0-9]*[a-z0-9])?$
+                    type: string
+                required:
+                - name
+                - zone
+                type: object
             required:
             - license
             type: object
@@ -787,13 +1036,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -868,7 +1116,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -904,6 +1152,7 @@ spec:
       type: string
     - jsonPath: .status.completed.message
       name: Completed Message
+      priority: 10
       type: string
     name: v1alpha1
     schema:
@@ -930,6 +1179,13 @@ spec:
                   run compression job on.
                 maxLength: 253
                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+              maxRetryFailed:
+                default: infinity
+                description: maxRetryFailed is the maximum number of retry attempts
+                  on consecutive failures. If set to "0", no retries are performed.
+                  If set to "infinity", the job will retry failed runs until success.
+                  The default is "infinity".
                 type: string
               run:
                 description: 'run can be: "suspend" or "once".  Default is to always
@@ -961,13 +1217,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -1025,6 +1280,10 @@ spec:
                   - type
                   type: object
                 type: array
+              consecutiveFailedRuns:
+                description: consecutiveFailedRuns is the number of consecutive failed
+                  job runs
+                type: integer
               lastScheduleTime:
                 description: lastScheduleTime is the last time the job was scheduled.
                 format: date-time
@@ -1042,6 +1301,8 @@ spec:
                 required:
                 - id
                 type: object
+            required:
+            - consecutiveFailedRuns
             type: object
         type: object
     served: true
@@ -1077,11 +1338,11 @@ spec:
   versions:
   - additionalPrinterColumns:
     - description: CSIDriver version.
-      jsonPath: .status.version
+      jsonPath: .status.versions[0].version
       name: Version
       type: string
     - description: CSI driver resource creation status.
-      jsonPath: .status.condition[?(@ "status")].status
+      jsonPath: .status.conditions[?(@ "status")].status
       name: Success
       type: string
     name: v1
@@ -2211,7 +2472,7 @@ spec:
           status:
             description: CSIScaleOperatorStatus defines the observed state of CSIScaleOperator
             properties:
-              condition:
+              conditions:
                 description: conditions contains the details for one aspect of the
                   current state of this custom resource.
                 items:
@@ -2282,10 +2543,21 @@ spec:
                   - type
                   type: object
                 type: array
-              version:
+              versions:
                 description: version is the current CSIDriver version installed by
                   the operator.
-                type: string
+                items:
+                  properties:
+                    name:
+                      description: name is the name of the particular operand this
+                        version is for.
+                      type: string
+                    version:
+                      description: version of a particular operand that is currently
+                        being managed.
+                      type: string
+                  type: object
+                type: array
             type: object
         type: object
     served: true
@@ -2303,7 +2575,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -2324,11 +2596,45 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=="Available")].status
+      name: Available
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Updated")].status
+      name: Updated
+      type: string
+    - jsonPath: .status.pods.total
+      name: Pods
+      type: string
+    - jsonPath: .status.podsStatus.running
+      name: Running
+      type: string
+    - jsonPath: .status.podsStatus.starting
+      name: Starting
+      priority: 10
+      type: string
+    - jsonPath: .status.podsStatus.terminating
+      name: Terminating
+      priority: 10
+      type: string
+    - jsonPath: .status.podsStatus.waitingForDelete
+      name: Waiting Delete
+      priority: 10
+      type: string
+    - jsonPath: .status.quorumPods.total
+      name: Quorum
+      priority: 10
+      type: string
+    - jsonPath: .status.quorumPods.running
+      name: Quorum Running
+      priority: 10
+      type: string
     - jsonPath: .status.clusterID
       name: Cluster ID
+      priority: 10
       type: string
     - jsonPath: .status.clusterName
       name: Cluster Name
+      priority: 10
       type: string
     - jsonPath: .metadata.creationTimestamp
       name: Age
@@ -2356,8 +2662,7 @@ spec:
               clusterNameOverride:
                 description: clusterName overrides the default name, which is that
                   of the Daemon resource itself postpended with any resolved domain
-                  suffix. If the clusterName contains any "." characters then it will
-                  be used as-is.
+                  suffix.
                 maxLength: 115
                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                 type: string
@@ -2374,11 +2679,36 @@ spec:
                     type: string
                   afmMaxParallelRecoveries:
                     type: string
+                  backgroundSpaceReclaimThreshold:
+                    type: string
+                  cloudEnv:
+                    default: general
+                    enum:
+                    - general
+                    type: string
                   controlSetxattrImmutableSELinux:
                     type: string
                   enforceFilesetQuotaOnRoot:
                     type: string
                   ignorePrefetchLUNCount:
+                    type: string
+                  ignoreReplicaSpaceOnStat:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
+                    type: string
+                  ignoreReplicationForQuota:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
+                    type: string
+                  ignoreReplicationOnStatfs:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
                     type: string
                   initPrefetchBuffers:
                     type: string
@@ -2458,6 +2788,18 @@ spec:
                     type: string
                   prefetchTimeout:
                     type: string
+                  readReplicaPolicy:
+                    default: local
+                    enum:
+                    - default
+                    - local
+                    - fastest
+                    type: string
+                  traceGenSubDir:
+                    default: /var/mmfs/tmp/traces
+                    enum:
+                    - /var/mmfs/tmp/traces
+                    type: string
                   tscCmdAllowRemoteConnections:
                     enum:
                     - "yes"
@@ -2475,8 +2817,8 @@ spec:
                 - erasure-code
                 type: string
               hostAliases:
-                description: hostAliases that will be added to hosts file for daemon
-                  pods
+                description: hostAliases that will be added to the internal DNS that
+                  resolves hosts for core pods
                 items:
                   properties:
                     hostname:
@@ -2491,8 +2833,9 @@ spec:
                   type: object
                 type: array
               images:
-                description: DEPRECATED core and init image pair that daemon will
-                  use with respect to edition specified by user
+                description: 'Deprecated: use ClusterManagerConfigSpec.Spec.Images
+                  instead. core and init image pair that daemon will use with respect
+                  to edition specified by user'
                 properties:
                   core:
                     type: string
@@ -2553,6 +2896,8 @@ spec:
                         unless advised by IBM Support
                       properties:
                         afmMaxParallelRecoveries:
+                          type: string
+                        backgroundSpaceReclaimThreshold:
                           type: string
                         controlSetxattrImmutableSELinux:
                           type: string
@@ -2640,8 +2985,8 @@ spec:
                           type: string
                       type: object
                     resources:
-                      description: Resources defines the Memory/CPU resources target
-                        for the core pods
+                      description: The expected resources that should be requested
+                        for Spectrum Scale core.
                       properties:
                         cpu:
                           description: CPU is measured in cpu units (i.e 1, 2, 100m,
@@ -2650,13 +2995,35 @@ spec:
                         memory:
                           description: Memory is measured in bytes as plain integer
                             or with kubernetes supported suffixes (i.e 128974848,
-                            129e6, 129M, 123Mi)
+                            129e6, 129M, 123Mi). The value is a target and will be
+                            requested for Spectrum Scale core pods. Resource request
+                            limits on containers impact pod scheduling and bin packing.
                           type: string
                       type: object
                   type: object
                 type: array
+              site:
+                description: Specifies the site name and zone for daemon name resolution.
+                properties:
+                  name:
+                    description: name is the site name.
+                    maxLength: 60
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  zone:
+                    description: zone is the domain name that IBM Spectrum Scale DNS
+                      records for this site will be managed. This will be used to
+                      resolve node names for IBM Spectrum Scale.
+                    maxLength: 253
+                    pattern: ^[a-z0-9]([\-\.a-z0-9]*[a-z0-9])?$
+                    type: string
+                required:
+                - name
+                - zone
+                type: object
             required:
             - edition
+            - site
             type: object
           status:
             description: status defines the observed state of Daemon
@@ -2672,13 +3039,723 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              failureGroup:
+                description: FailureGroup whose pods are upgraded next
+                type: string
+              pods:
+                properties:
+                  desired:
+                    description: Number of desired core pods
+                    type: string
+                  total:
+                    description: Number of existing core pods
+                    type: string
+                required:
+                - desired
+                - total
+                type: object
+              podsStatus:
+                properties:
+                  running:
+                    description: Number of running core pods
+                    type: string
+                  starting:
+                    description: Number of starting core pods
+                    type: string
+                  terminating:
+                    description: Number of terminating core pods
+                    type: string
+                  unknown:
+                    description: Number of core pods with unknown status. Pods scheduled
+                      on unreachable nodes are listed here.
+                    type: string
+                  waitingForDelete:
+                    description: Number of core pods that will be deleted
+                    type: string
+                required:
+                - running
+                - starting
+                - terminating
+                - unknown
+                - waitingForDelete
+                type: object
+              quorumPods:
+                properties:
+                  running:
+                    description: Number of running quorum pods
+                    type: string
+                  total:
+                    description: Total number of quorum pods
+                    type: string
+                required:
+                - running
+                - total
+                type: object
+              roles:
+                items:
+                  properties:
+                    name:
+                      description: Name of the role
+                      type: string
+                    nodeCount:
+                      description: Number of nodes that that are assigned to this
+                        role. Nodes are assigned to a role by label, i.e. "scale.spectrum.ibm.com/role=client"
+                      type: string
+                    nodes:
+                      description: List of nodes that are assigned to the role
+                      type: string
+                    podCount:
+                      description: Number of role pods
+                      type: string
+                    pods:
+                      description: List of role pods
+                      type: string
+                    runningCount:
+                      description: Number of running role pods
+                      type: string
+                  required:
+                  - name
+                  - nodeCount
+                  - nodes
+                  - podCount
+                  - pods
+                  - runningCount
+                  type: object
+                type: array
+              statusDetails:
+                properties:
+                  nodesRebooting:
+                    description: List of core pod nodes that are currently rebooting
+                    type: string
+                  nodesUnreachable:
+                    description: List of core pod nodes that are unreachable
+                    type: string
+                  nodesWaitingForReboot:
+                    description: List of core pod nodes that will be rebooted
+                    type: string
+                  podsStarting:
+                    description: List of starting core pods
+                    type: string
+                  podsTerminating:
+                    description: List of terminating core pods
+                    type: string
+                  podsUnknown:
+                    description: List of core pods with unknown status. Pods scheduled
+                      on unreachable nodes are listed here.
+                    type: string
+                  podsWaitingForDelete:
+                    description: List of core pods that will be deleted soon
+                    type: string
+                  quorumPods:
+                    description: List of pods that act as quorum node for Spectrum
+                      Scale
+                    type: string
+                required:
+                - nodesRebooting
+                - nodesUnreachable
+                - nodesWaitingForReboot
+                - podsStarting
+                - podsTerminating
+                - podsUnknown
+                - podsWaitingForDelete
+                - quorumPods
+                type: object
+              versions:
+                items:
+                  properties:
+                    count:
+                      description: Number of pods that that have this version
+                      type: string
+                    version:
+                      description: Value of the pod's product version (expected format
+                        is x.x.x.x or "unavailable" if pod is unavailable)
+                      type: string
+                  required:
+                  - count
+                  - version
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: diskjobs.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    - scalejobs
+    kind: DiskJob
+    listKind: DiskJobList
+    plural: diskjobs
+    singular: diskjob
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.filesystem
+      name: Filesystem
+      type: string
+    - jsonPath: .spec.action
+      name: Action
+      priority: 10
+      type: string
+    - jsonPath: .status.lastScheduleTime
+      name: Last Schedule Time
+      type: date
+    - jsonPath: .status.lastSuccessfulTime
+      name: Last Successful Time
+      type: date
+    - jsonPath: .status.scheduled.id
+      name: Running
+      type: string
+    - jsonPath: .status.completed.reason
+      name: Completed
+      type: string
+    - jsonPath: .status.consecutiveFailedRuns
+      name: Failed Runs
+      priority: 10
+      type: integer
+    - jsonPath: .status.completed.message
+      name: Completed Message
+      priority: 10
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: DiskJob is the Schema for the jobs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DiskJobSpec defines the desired state of DiskJob
+            properties:
+              action:
+                description: action defines what to do with the disk
+                enum:
+                - start
+                - stop
+                - suspend
+                - resume
+                - empty
+                type: string
+              diskNames:
+                description: diskNames is the list of localdisk resources to run disk
+                  job on. If this is empty or not specified (only allowed for actions
+                  start and resume), all disks are started.
+                items:
+                  type: string
+                type: array
+              filesystem:
+                description: filesystem is the name of the filesystem resource to
+                  run disk job on.
+                maxLength: 253
+                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+              healthEventTriggers:
+                description: healthEventTriggers can contain a list of health events
+                  that trigger running the diskjob
+                items:
+                  description: HealthEvent defines a health event that runs the diskjob
+                  properties:
+                    component:
+                      type: string
+                    eventName:
+                      type: string
+                  required:
+                  - component
+                  - eventName
+                  type: object
+                type: array
+              maxRetryFailed:
+                default: infinity
+                description: maxRetryFailed is the maximum number of retry attempts
+                  on consecutive failures. If set to "0", no retries are performed.
+                  If set to "infinity", the job will retry failed runs until success.
+                  The default is "infinity".
+                type: string
+              run:
+                description: 'run can be: "suspend" or "once".  Default is to always
+                  run on schedule. "suspend" pauses scheduling of subsequent jobs,
+                  it does not apply to Running jobs. "once" will run the job successfully
+                  once according to schedule.'
+                enum:
+                - suspend
+                - once
+                type: string
+              schedule:
+                description: schedule is in Cron format, see https://en.wikipedia.org/wiki/Cron.
+                type: string
+            required:
+            - action
+            - filesystem
+            type: object
+          status:
+            properties:
+              completed:
+                properties:
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                required:
+                - message
+                - reason
+                type: object
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              consecutiveFailedRuns:
+                description: consecutiveFailedRuns is the number of consecutive failed
+                  job runs
+                type: integer
+              lastScheduleTime:
+                description: lastScheduleTime is the last time the job was scheduled.
+                format: date-time
+                type: string
+              lastSuccessfulTime:
+                description: lastSuccessfulTime is the last time the job completed
+                  successfully.
+                format: date-time
+                type: string
+              scheduled:
+                properties:
+                  id:
+                    description: id may be an identifier corresponding to the job.
+                    type: string
+                required:
+                - id
+                type: object
+              startDisksDetails:
+                description: startdisks shows additional status for the currently
+                  ongoing or last completed "start" action.
+                properties:
+                  downDiskNames:
+                    description: List of disk names that are down
+                    type: string
+                  downDisksCount:
+                    description: Number of disks that are down
+                    type: string
+                type: object
+            required:
+            - consecutiveFailedRuns
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: dnsconfigs.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: DNSConfig
+    listKind: DNSConfigList
+    plural: dnsconfigs
+    singular: dnsconfig
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: DNSConfig is the Schema for the dnsconfigs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DNSConfigSpec defines the desired state of DNSConfig
+            properties:
+              forward:
+                description: forward defines the upstream DNS server for a specific
+                  domain
+                properties:
+                  cidrs:
+                    description: cidrs for the reverse zone for which the forward
+                      is authoritative
+                    items:
+                      type: string
+                    minItems: 1
+                    type: array
+                  upstream:
+                    description: upstream is the DNS server to handle the domain DNS
+                      requests
+                    items:
+                      type: string
+                    maxItems: 15
+                    type: array
+                  zone:
+                    description: zone is the zone to forward to the upstream DNS server
+                    type: string
+                required:
+                - cidrs
+                - upstream
+                - zone
+                type: object
+              hosts:
+                description: hosts defines the list of hostname and IP
+                items:
+                  description: HostAlias holds the mapping between IP and hostnames
+                    that will be injected as an entry in the pod's hosts file.
+                  properties:
+                    hostnames:
+                      description: Hostnames for the above IP address.
+                      items:
+                        type: string
+                      type: array
+                    ip:
+                      description: IP address of the host file entry.
+                      type: string
+                  type: object
+                type: array
+              serviceEndpoints:
+                description: serviceEndpoints defines the endpoints of a service
+                properties:
+                  endpoints:
+                    description: endpoints are the backend IPs of the service
+                    items:
+                      type: string
+                    type: array
+                  name:
+                    description: name is the name of the service
+                    type: string
+                required:
+                - endpoints
+                - name
+                type: object
+            type: object
+          status:
+            description: DNSConfigStatus defines the observed state of DNSConfig
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: dnss.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: DNS
+    listKind: DNSList
+    plural: dnss
+    singular: dns
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: DNS is the Schema for the DNS API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of DNS
+            properties:
+              apiVersion:
+                description: 'APIVersion defines the versioned schema of this representation
+                  of an object. Servers should convert recognized schemas to the latest
+                  internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                type: string
+              kind:
+                description: 'Kind is a string value representing the REST resource
+                  this object represents. Servers may infer this from the endpoint
+                  the client submits requests to. Cannot be updated. In CamelCase.
+                  More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                type: string
+              metadata:
+                type: object
+              spec:
+                description: DNSConfigSpec defines the desired state of DNSConfig
+                properties:
+                  forward:
+                    description: forward defines the upstream DNS server for a specific
+                      domain
+                    properties:
+                      cidrs:
+                        description: cidrs for the reverse zone for which the forward
+                          is authoritative
+                        items:
+                          type: string
+                        minItems: 1
+                        type: array
+                      upstream:
+                        description: upstream is the DNS server to handle the domain
+                          DNS requests
+                        items:
+                          type: string
+                        maxItems: 15
+                        type: array
+                      zone:
+                        description: zone is the zone to forward to the upstream DNS
+                          server
+                        type: string
+                    required:
+                    - cidrs
+                    - upstream
+                    - zone
+                    type: object
+                  hosts:
+                    description: hosts defines the list of hostname and IP
+                    items:
+                      description: HostAlias holds the mapping between IP and hostnames
+                        that will be injected as an entry in the pod's hosts file.
+                      properties:
+                        hostnames:
+                          description: Hostnames for the above IP address.
+                          items:
+                            type: string
+                          type: array
+                        ip:
+                          description: IP address of the host file entry.
+                          type: string
+                      type: object
+                    type: array
+                  serviceEndpoints:
+                    description: serviceEndpoints defines the endpoints of a service
+                    properties:
+                      endpoints:
+                        description: endpoints are the backend IPs of the service
+                        items:
+                          type: string
+                        type: array
+                      name:
+                        description: name is the name of the service
+                        type: string
+                    required:
+                    - endpoints
+                    - name
+                    type: object
+                type: object
+              status:
+                description: DNSConfigStatus defines the observed state of DNSConfig
+                type: object
+            type: object
+          status:
+            description: status defines the observed state of DNS
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -2753,7 +3830,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -2762,6 +3839,8 @@ metadata:
 spec:
   group: scale.spectrum.ibm.com
   names:
+    categories:
+    - scale
     kind: EncryptionConfig
     listKind: EncryptionConfigList
     plural: encryptionconfigs
@@ -2789,6 +3868,13 @@ spec:
           spec:
             description: spec defines the desired state of EncryptionConfig
             properties:
+              backupServers:
+                description: If specified, The backup key servers configured for high
+                  availability.
+                items:
+                  type: string
+                maxItems: 5
+                type: array
               cacert:
                 description: The ConfigMap storing CA and endpoint certificates used
                   while adding/renewing key server certificate chain.
@@ -2853,13 +3939,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -2934,7 +4019,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -3017,10 +4102,18 @@ spec:
                     type: string
                   pools:
                     description: pools is a list of storage configurations that will
-                      make up a filesystem. If no pools are specified, all unused
-                      disks will be used for filesystem creation.
+                      make up a filesystem. At least a pool with name 'system' must
+                      be specified.
                     items:
                       properties:
+                        capacity:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: 'capacity is the user provided value for filesystem
+                            pool size (Ex: 1Ti)'
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
                         disks:
                           description: disks is a list of local disk names to be included
                             from this pool
@@ -3032,7 +4125,13 @@ spec:
                           description: 'name is the desired name of this pool (default:
                             system)'
                           type: string
+                        storageClass:
+                          description: storageClass is the storage class that will
+                            be verified and used for disk device creation
+                          type: string
                       type: object
+                    maxItems: 8
+                    minItems: 1
                     type: array
                   replication:
                     default: 3-way
@@ -3042,6 +4141,8 @@ spec:
                     enum:
                     - 3-way
                     type: string
+                required:
+                - pools
                 type: object
               remote:
                 description: If specified, describes the file system to be remote
@@ -3063,6 +4164,32 @@ spec:
                 description: If specified, describes the file system to be a vdiskNSD
                   filesystem.
                 properties:
+                  replication:
+                    default: 1-way
+                    description: 'replication is the number of replicas to create
+                      for each data/metadata block that is written to the filesystem
+                      (default: 1-way). When setting up a stretch cluster, please
+                      set it as "2-way".'
+                    enum:
+                    - 1-way
+                    - 2-way
+                    type: string
+                  tiebreaker:
+                    description: tiebreaker defines the tiebreaker NSD for the stretched
+                      filesystem
+                    properties:
+                      device:
+                        description: device defines the block device name in tiebreaker
+                          node
+                        type: string
+                      nodeDaemonName:
+                        description: nodeDaemonName defines the tiebreaker node daemon
+                          name
+                        type: string
+                    required:
+                    - device
+                    - nodeDaemonName
+                    type: object
                   vdiskSets:
                     description: vdisksets defines the desired state of vdisksets
                       that comprise the vdiskNSD filesystem
@@ -3104,6 +4231,14 @@ spec:
                             than one user declustered array in a recovery group, there
                             is no default and a declustered array name must be specified.
                           type: string
+                        failureGroup:
+                          default: 1
+                          description: This is the failure group number of all vdisks
+                            defined in the vdiskset. The default value is 1 if it
+                            is omitted.
+                          maximum: 100
+                          minimum: 1
+                          type: integer
                         nsdUsage:
                           default: dataAndMetadata
                           description: This is the IBM Spectrum Scale file system
@@ -3169,13 +4304,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -3251,6 +4385,8 @@ spec:
                         properties:
                           diskCount:
                             type: integer
+                          disks:
+                            type: string
                           failureGroup:
                             description: failureGroup is the number of this failure
                               group
@@ -3268,6 +4404,10 @@ spec:
                       type: string
                   type: object
                 type: array
+              uid:
+                type: string
+              version:
+                type: string
             type: object
         type: object
     served: true
@@ -3285,7 +4425,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -3379,13 +4519,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -3460,7 +4599,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -3551,13 +4690,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -3637,58 +4775,20 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-  name: localdisks.scale.spectrum.ibm.com
+  name: jobs.scale.spectrum.ibm.com
 spec:
   group: scale.spectrum.ibm.com
   names:
-    categories:
-    - scale
-    kind: LocalDisk
-    listKind: LocalDiskList
-    plural: localdisks
-    shortNames:
-    - ld
-    singular: localdisk
+    kind: Job
+    listKind: JobList
+    plural: jobs
+    singular: job
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .spec.node
-      name: Node
-      type: string
-    - jsonPath: .spec.device
-      name: Device
-      type: string
-    - jsonPath: .status.conditions[?(@.type=="Ready")].status
-      name: Ready
-      type: string
-    - jsonPath: .status.conditions[?(@.type=="Used")].status
-      name: Used
-      type: string
-    - jsonPath: .status.filesystem
-      name: Filesystem
-      type: string
-    - jsonPath: .status.pool
-      name: Pool
-      priority: 10
-      type: string
-    - jsonPath: .status.failuregroup
-      name: Failuregroup
-      priority: 10
-      type: string
-    - jsonPath: .status.failuregroupMapping
-      name: Failuregroup Mapping
-      priority: 10
-      type: string
-    - jsonPath: .status.size
-      name: Size
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1beta1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: LocalDisc is the Schema for the localdisks API
+        description: Job is the Schema for the jobs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -3703,33 +4803,58 @@ spec:
           metadata:
             type: object
           spec:
-            description: spec defines the desired state of LocalDisk
+            description: JobSpec defines the desired state of Job
             properties:
-              device:
-                description: device specifies the block device name that appears in
-                  /dev for the disk
+              MMCommandJob:
+                properties:
+                  args:
+                    items:
+                      type: string
+                    type: array
+                  file:
+                    properties:
+                      contents:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                    - contents
+                    - name
+                    type: object
+                type: object
+              RestApiJob:
+                properties:
+                  body:
+                    type: string
+                  method:
+                    type: string
+                  path:
+                    type: string
+                required:
+                - method
+                - path
+                type: object
+              filesystem:
                 type: string
-              existingDataSkipVerify:
-                description: existingDataSkipVerify controls whether existing Spectrum
-                  Scale data structure should be overwritten when creating the disk.
-                  A disk can have Spectrum Scale data structures on if it was used
-                  in a filesystem before and if it has not properly cleaned up. If
-                  false, a "DiskHasFilesystemData" event is displayed if the disk
-                  still has Spectrum Scale data on it, and the disk will not be used.
-                  If true, the disk will be formatted, no matter if it still has data
-                  on it.
-                type: boolean
-              node:
-                description: node specifies the admin name of node where the local
-                  disk lives
-                type: string
+              minuteInterval:
+                description: interval in minutes to start a new job
+                type: integer
+              timeout:
+                description: timeout value for the job in minutes
+                type: integer
             required:
-            - device
-            - node
+            - minuteInterval
             type: object
           status:
-            description: status defines the observed state of LocalDisk
+            description: JobStatus defines the observed state of Job
             properties:
+              asyncjobinfo:
+                properties:
+                  jobidentifier:
+                    type: string
+                  podname:
+                    type: string
+                type: object
               conditions:
                 items:
                   description: "Condition contains details for one aspect of the current
@@ -3799,6 +4924,216 @@ spec:
                   - type
                   type: object
                 type: array
+              creationTimestamp:
+                format: date-time
+                type: string
+              jobid:
+                type: integer
+              jobstate:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: localdisks.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: LocalDisk
+    listKind: LocalDiskList
+    plural: localdisks
+    shortNames:
+    - ld
+    - nsd
+    singular: localdisk
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.node
+      name: Node
+      type: string
+    - jsonPath: .status.device
+      name: Device
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Ready")].status
+      name: Ready
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Used")].status
+      name: Used
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Available")].status
+      name: Available
+      type: string
+    - jsonPath: .status.filesystem
+      name: Filesystem
+      type: string
+    - jsonPath: .status.pool
+      name: Pool
+      priority: 10
+      type: string
+    - jsonPath: .status.failuregroup
+      name: Failuregroup
+      priority: 10
+      type: string
+    - jsonPath: .status.failuregroupMapping
+      name: Failuregroup Mapping
+      priority: 10
+      type: string
+    - jsonPath: .status.size
+      name: Size
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: LocalDisc is the Schema for the localdisks API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of LocalDisk
+            properties:
+              device:
+                description: device specifies the device path that is used at creation
+                  time. The device path of a disk may change at later time after node
+                  reboots. The current device path is displayed in the status.
+                type: string
+              existingDataSkipVerify:
+                description: existingDataSkipVerify controls whether existing Spectrum
+                  Scale data structure should be overwritten when creating the disk.
+                  A disk can have Spectrum Scale data structures on if it was used
+                  in a filesystem before and if it has not properly cleaned up. If
+                  false, a "DiskHasFilesystemData" event is displayed if the disk
+                  still has Spectrum Scale data on it, and the disk will not be used.
+                  If true, the disk will be formatted, no matter if it still has data
+                  on it.
+                type: boolean
+              node:
+                description: node specifies the kubernetes node name of node where
+                  the local disk lives
+                type: string
+              thinDiskType:
+                default: "no"
+                description: 'thinDiskType specfies the space reclaim disk type of
+                  IBM Spectrum Scale disks (default: no)'
+                enum:
+                - "no"
+                - nvme
+                - scsi
+                - auto
+                type: string
+            required:
+            - device
+            - node
+            type: object
+          status:
+            description: status defines the observed state of LocalDisk
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              device:
+                description: device is the device path that the localdisk currently
+                  uses on the node. The device path of a disk may change after node
+                  reboots.
+                type: string
               failuregroup:
                 description: failuregroup is the failuregroup number for this localdisk.
                   The replicas of data blocks are written to localdisks with different
@@ -3821,6 +5156,7 @@ spec:
                 description: size is the size of the localdisk
                 type: string
             required:
+            - device
             - failuregroup
             - failuregroupMapping
             - filesystem
@@ -3843,7 +5179,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -3936,13 +5272,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -4017,7 +5352,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -4072,13 +5407,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -4153,7 +5487,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
@@ -4263,13 +5597,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -4327,6 +5660,966 @@ spec:
                   - type
                   type: object
                 type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: restripefsjobs.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    - scalejobs
+    kind: RestripeFSJob
+    listKind: RestripeFSJobList
+    plural: restripefsjobs
+    singular: restripefsjob
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.filesystem
+      name: Filesystem
+      type: string
+    - jsonPath: .status.lastScheduleTime
+      name: Last Schedule Time
+      type: date
+    - jsonPath: .status.lastSuccessfulTime
+      name: Last Successful Time
+      type: date
+    - jsonPath: .status.scheduled.id
+      name: Running
+      type: string
+    - jsonPath: .status.completed.reason
+      name: Completed
+      type: string
+    - jsonPath: .status.consecutiveFailedRuns
+      name: Failed Runs
+      priority: 10
+      type: integer
+    - jsonPath: .status.completed.message
+      name: Completed Message
+      priority: 10
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RestripeFSJob is the Schema for the jobs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RestripeFSJobSpec defines the desired state of RestripeFSJob
+            properties:
+              filesystem:
+                description: filesystem is the name of the filesystem resource to
+                  run restripe job on.
+                maxLength: 253
+                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+              healthEventTriggers:
+                description: healthEventTriggers can contain a list of health events
+                  that trigger running the diskjob
+                items:
+                  description: HealthEvent defines a health event that runs the diskjob
+                  properties:
+                    component:
+                      type: string
+                    eventName:
+                      type: string
+                  required:
+                  - component
+                  - eventName
+                  type: object
+                type: array
+              maxRetryFailed:
+                default: infinity
+                description: maxRetryFailed is the maximum number of retry attempts
+                  on consecutive failures. If set to "0", no retries are performed.
+                  If set to "infinity", the job will retry failed runs until success.
+                  The default is "infinity".
+                type: string
+              mode:
+                description: mode describes how to restripe the filesystem. This reffers
+                  to the description of Spectrum Scale parameters of Spectrum Scale
+                  mmrestripefs CLI. "migrate" refers to "-m" option of mmrestripefs
+                  CLI. "replicate" refers to "-r" option of mmrestripefs CLI. "rebalance"
+                  refers to "-b" option of mmrestripefs CLI. "changeReplicas" refers
+                  to "-R" option of mmrestripefs CLI. Refer to the Spectrum Scale
+                  docs for a detailed description of the mmrestripefs CLI options.
+                enum:
+                - migrate
+                - replicate
+                - rebalance
+                - changeReplicas
+                type: string
+              run:
+                description: 'run can be: "suspend" or "once".  Default is to always
+                  run on schedule. "suspend" pauses scheduling of subsequent jobs,
+                  it does not apply to Running jobs. "once" will run the job successfully
+                  once according to schedule.'
+                enum:
+                - suspend
+                - once
+                type: string
+              schedule:
+                description: schedule is in Cron format, see https://en.wikipedia.org/wiki/Cron.
+                type: string
+            required:
+            - filesystem
+            - mode
+            type: object
+          status:
+            properties:
+              completed:
+                properties:
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                required:
+                - message
+                - reason
+                type: object
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              consecutiveFailedRuns:
+                description: consecutiveFailedRuns is the number of consecutive failed
+                  job runs
+                type: integer
+              lastScheduleTime:
+                description: lastScheduleTime is the last time the job was scheduled.
+                format: date-time
+                type: string
+              lastSuccessfulTime:
+                description: lastSuccessfulTime is the last time the job completed
+                  successfully.
+                format: date-time
+                type: string
+              scheduled:
+                properties:
+                  id:
+                    description: id may be an identifier corresponding to the job.
+                    type: string
+                required:
+                - id
+                type: object
+            required:
+            - consecutiveFailedRuns
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: stretchclusterinitnodes.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    - stretch
+    kind: StretchClusterInitNodes
+    listKind: StretchClusterInitNodesList
+    plural: stretchclusterinitnodes
+    shortNames:
+    - stretchinit
+    singular: stretchclusterinitnodes
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: StretchClusterInitNodes is the Schema for the stretchclusterinitnodes
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: StretchClusterInitNodesSpec defines the desired state of
+              StretchClusterInitNodes
+            properties:
+              name:
+                description: Name is site name, the site name is defined in StretchCluster
+                  CR
+                type: string
+              nodes:
+                description: Nodes are the nodes in this site, these nodes will be
+                  added into the Spectrum Scale cluster to became a stretch cluster
+                items:
+                  properties:
+                    adminName:
+                      description: AdminName is the node admin name in Spectrum Scale
+                        cluster
+                      type: string
+                    daemonName:
+                      description: DaemonName is the node daemon name in Spectrum
+                        Scale cluster
+                      type: string
+                  required:
+                  - daemonName
+                  type: object
+                type: array
+            required:
+            - name
+            - nodes
+            type: object
+          status:
+            description: StretchClusterInitNodesStatus defines the observed state
+              of StretchClusterInitNodes
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: stretchclusters.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    - stretch
+    kind: StretchCluster
+    listKind: StretchClusterList
+    plural: stretchclusters
+    shortNames:
+    - stretchgpfs
+    singular: stretchcluster
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: StretchCluster is the Schema for the stretchclusters API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: StretchClusterSpec defines the desired state of StretchCluster
+            properties:
+              sites:
+                description: Defines the two OCPs in the stretch cluster, including
+                  the Kube API endpoint and token.
+                items:
+                  properties:
+                    kubeApi:
+                      description: Define the kube API endpoint of the site
+                      type: string
+                    kubeConfigSecret:
+                      description: Define the secret name which contains the token
+                        to access the OCP Kube API
+                      type: string
+                    name:
+                      description: Define the name of the site.
+                      maxLength: 60
+                      pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                      type: string
+                  required:
+                  - kubeApi
+                  - kubeConfigSecret
+                  - name
+                  type: object
+                type: array
+              tiebreaker:
+                description: Defines the Tiebreaker node information
+                properties:
+                  admin:
+                    description: Define the tiebreaker admin interface info.
+                    properties:
+                      ip:
+                        description: Define the ip of the interface.
+                        type: string
+                      name:
+                        description: Define the name of the interface.
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  daemon:
+                    description: Define the tiebreaker daemon interface info.
+                    properties:
+                      ip:
+                        description: Define the ip of the interface.
+                        type: string
+                      name:
+                        description: Define the name of the interface.
+                        type: string
+                    required:
+                    - name
+                    type: object
+                required:
+                - daemon
+                type: object
+            required:
+            - sites
+            type: object
+          status:
+            description: StretchClusterStatus defines the observed state of StretchCluster
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: stretchclustertiebreakers.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: StretchClusterTiebreaker
+    listKind: StretchClusterTiebreakerList
+    plural: stretchclustertiebreakers
+    singular: stretchclustertiebreaker
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: StretchClusterTiebreaker is the Schema for the StretchClusterTiebreakers
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: StretchClusterTiebreakerSpec defines the desired state of
+              StretchClusterTiebreaker
+            properties:
+              admin:
+                description: Define the tiebreaker admin interface info.
+                properties:
+                  ip:
+                    description: Define the ip of the interface.
+                    type: string
+                  name:
+                    description: Define the name of the interface.
+                    type: string
+                required:
+                - name
+                type: object
+              daemon:
+                description: Define the tiebreaker daemon interface info.
+                properties:
+                  ip:
+                    description: Define the ip of the interface.
+                    type: string
+                  name:
+                    description: Define the name of the interface.
+                    type: string
+                required:
+                - name
+                type: object
+            required:
+            - daemon
+            type: object
+          status:
+            description: StretchClusterTiebreakerStatus defines the observed state
+              of StretchClusterTiebreaker
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: upgradeapprovals.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    - scalejobs
+    - scaleapprovals
+    kind: UpgradeApproval
+    listKind: UpgradeApprovalList
+    plural: upgradeapprovals
+    shortNames:
+    - upgradejob
+    singular: upgradeapproval
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.type
+      name: Type
+      type: string
+    - jsonPath: .spec.filesystem
+      name: Filesystem
+      type: string
+    - jsonPath: .status.lastScheduleTime
+      name: Last Schedule Time
+      type: date
+    - jsonPath: .status.lastSuccessfulTime
+      name: Last Successful Time
+      type: date
+    - jsonPath: .status.scheduled.id
+      name: Running
+      type: string
+    - jsonPath: .status.completed.reason
+      name: Completed
+      type: string
+    - jsonPath: .status.completed.message
+      name: Completed Message
+      priority: 10
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: UpgradeApproval is the Schema for the jobs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: UpgradeApprovalSpec defines the desired state of UpgradeApproval
+            properties:
+              approved:
+                default: false
+                description: approved is the approval mechanism that tells this job
+                  to enable newest features within the cluster
+                type: boolean
+              filesystem:
+                description: filesystem is the name of the filesystem resource to
+                  run upgrade job on.
+                maxLength: 253
+                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                type: string
+              maxRetryFailed:
+                default: infinity
+                description: maxRetryFailed is the maximum number of retry attempts
+                  on consecutive failures. If set to "0", no retries are performed.
+                  If set to "infinity", the job will retry failed runs until success.
+                  The default is "infinity".
+                type: string
+              run:
+                description: 'run can be: "suspend" or "once".  Default is to always
+                  run on schedule. "suspend" pauses scheduling of subsequent jobs,
+                  it does not apply to Running jobs. "once" will run the job successfully
+                  once according to schedule.'
+                enum:
+                - suspend
+                - once
+                type: string
+              schedule:
+                description: schedule is in Cron format, see https://en.wikipedia.org/wiki/Cron.
+                type: string
+              type:
+                default: cluster
+                description: type is the type of upgrade to be performed. Valid values
+                  are "cluster" or "filesystem"
+                enum:
+                - cluster
+                - filesystem
+                type: string
+            required:
+            - approved
+            type: object
+          status:
+            properties:
+              completed:
+                properties:
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                required:
+                - message
+                - reason
+                type: object
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              consecutiveFailedRuns:
+                description: consecutiveFailedRuns is the number of consecutive failed
+                  job runs
+                type: integer
+              lastScheduleTime:
+                description: lastScheduleTime is the last time the job was scheduled.
+                format: date-time
+                type: string
+              lastSuccessfulTime:
+                description: lastSuccessfulTime is the last time the job completed
+                  successfully.
+                format: date-time
+                type: string
+              scheduled:
+                properties:
+                  id:
+                    description: id may be an identifier corresponding to the job.
+                    type: string
+                required:
+                - id
+                type: object
+            required:
+            - consecutiveFailedRuns
             type: object
         type: object
     served: true
@@ -4498,10 +6791,40 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - PersistentVolume
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - configmap
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
   - configmaps
   verbs:
   - create
   - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - endpoints/restricted
+  verbs:
+  - create
   - get
   - list
   - patch
@@ -4524,6 +6847,7 @@ rules:
   verbs:
   - get
   - list
+  - patch
   - watch
 - apiGroups:
   - ""
@@ -4534,6 +6858,28 @@ rules:
   - list
   - patch
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims/status
+  verbs:
+  - get
 - apiGroups:
   - ""
   resources:
@@ -4557,6 +6903,12 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/eviction
+  verbs:
+  - create
 - apiGroups:
   - ""
   resources:
@@ -4589,8 +6941,28 @@ rules:
   resources:
   - services
   verbs:
+  - create
+  - delete
   - get
   - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
   - watch
 - apiGroups:
   - apps
@@ -4607,6 +6979,30 @@ rules:
   verbs:
   - create
   - patch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - dnses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - infrastructures
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - networks
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - csi.ibm.com
   resources:
@@ -4634,6 +7030,14 @@ rules:
   - patch
   - update
 - apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - oauth.openshift.io
   resources:
   - oauthclients
@@ -4644,6 +7048,13 @@ rules:
   - patch
   - watch
 - apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - patch
+- apiGroups:
   - route.openshift.io
   resources:
   - routes
@@ -4653,6 +7064,32 @@ rules:
   - list
   - patch
   - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*/finalizers'
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - '*/status'
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
@@ -4675,6 +7112,32 @@ rules:
   - scale.spectrum.ibm.com
   resources:
   - callhomes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - cloudcsidisks/status
   verbs:
   - get
   - patch
@@ -4760,6 +7223,58 @@ rules:
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
+  - diskjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - diskjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - diskjobs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - dnss/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
   - encryptionconfigs
   verbs:
   - create
@@ -4807,8 +7322,10 @@ rules:
   - filesystems/status
   verbs:
   - get
+  - list
   - patch
   - update
+  - watch
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
@@ -4967,6 +7484,138 @@ rules:
   - patch
   - update
 - apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - restripefsjobs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusterinitnodes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - stretchclustertiebreaker/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - upgradeapprovals
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - upgradeapprovals/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - csidrivers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - storage.k8s.io
   resources:
   - storageclasses
@@ -5066,7 +7715,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  controller_manager_config.yaml: |
+  controller_manager_config.yaml: |-
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     health:
@@ -5080,16 +7729,18 @@ data:
       resourceName: scale.spectrum.ibm.com
       resourceLock: leases
     images:
-      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:168335dfb46cde659b9ed07e0bf858d32371d049b72b535c88a492880cb7dabb
-      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:84087b10860da922ef1ba481ffe747a5192fd1a96696f5fb8e7188a1006d0bc9
-      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:4635ab99adee4c2645a952805b9a4494390368fbc3a0badd4f4cef552b05147a
-      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:9319f52cd83d0576fb72c0eb31bfc998039366a3766d5afcf431870423cd9bd5
-      gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:797701bf382fb1125f71281382564a1ee82f7ebe1fecb42df465d11c86f06234
-      postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:3162a6ead070474b27289f09eac4c865e75f93847a2d7098f718ee5a721637c4
-      logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:e83a3146aa8d34dccfb99097aa79a3914327942337890aa6f73911996a80ebb8
-      pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:ed565dea825dc16423ebd84a9532fb8498a55b56f75d6a4e9ae060b9c0fdad18
-      sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:c52ca470b2ef8e7f4020413d10ad82a4c7c52f8988a10b62dbaba4a254c03a5b
-      grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:6c66b16b228f32a7d755794fe7abb1792ef4796ca189eaa9447a10869bcf216a
+      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:83d3898e692133c19e67e044da1e2ab8c42b06dd77f2f78b05c250f0f529c506
+      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:f04350786fee09351cdd6decad26e46607aa387a364d60c173c8198252d23a37
+      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:4159ddaa1109026b9e87ef124e9005161a87eb033bda074eaa57347d6c7c5a6a
+      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:932d35d40b1da6a9cadc0879339ead76b21a3acdce55d0e252acf5126ea72b15
+      gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:77420006154d9a3e2534e03f3e6dc02b5877fad638e56ae11cc118ef171e18af
+      postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:a2da8071b8eba341c08577b13b41527eab3968bf1c8d28123b5b07a493a26862
+      logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:9a9149dbba8dc5a961dfec460018c245b49da0f52e9934e1a70dd4d42f9fc5b7
+      pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:74df7c37e8da75078cac97cc6ff7393cc64afe0e900788c38052c685647f4e6f
+      sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:949c8211b7771a871231da09e42c3b11de99a98506d98d9f2b78fd47e8cfd18b
+      grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:a2c6891c317a7e53e22ba501d9f87dc61d2848789b8904b0d1ff1736f48a2259
+      coreDNS: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:d12c7b2286220f69aed5950e5b146747d8ee83b3df1e32319b87b8ba465bc110
+      mustGather: icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:19623bd9ce7db89679e82274ff407cc27a790cf78535688181420bf29bffc1f6
 kind: ConfigMap
 metadata:
   labels:
@@ -5121,7 +7772,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 2.6.0
+    productVersion: 2.7.0
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
     app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -5140,7 +7791,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-csi-operator
         productName: IBM Spectrum Scale CSI Operator
-        productVersion: 2.6.0
+        productVersion: 2.7.0
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
         app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -5167,7 +7818,7 @@ spec:
         - name: SHORTNAME_NODE_MAPPING
           value: "yes"
         - name: CSI_SNAPSHOTTER_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:89e900a160a986a1a7a4eba7f5259e510398fa87ca9b8a729e7dec59e04c7709
+          value: cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:ad16874e2140256a809cada2b4ac3d931d5b73b0bee23ed0f8d60bdd778cfec2
         - name: CSI_ATTACHER_IMAGE
           value: cp.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:8b9c313c05f54fb04f8d430896f5f5904b6cb157df261501b29adc04d2b2dc7b
         - name: CSI_PROVISIONER_IMAGE
@@ -5179,14 +7830,14 @@ spec:
         - name: CSI_RESIZER_IMAGE
           value: cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:9ebbf9f023e7b41ccee3d52afe39a89e3ddacdbb69269d583abfc25847cfd9e4
         - name: CSI_DRIVER_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:1efa61d65ee33c574cd2826f1bc6194631b1905996eddaa2ad51b66073e0c409
+          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:5f39e5059640d9a0422ce7ddd7eae56daedf6386d545ed7bf67d785aad86a7b2
         - name: METRICS_BIND_ADDRESS
           value: "8383"
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:b62ad588fbc338090f405740fd8bceaf59b3267cdb532c60ae965643ccae4d5d
+        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:59ccd0bc246f256255524dc4c0c4e88e06b9550c51cc509618c0af8546f20500
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -5345,6 +7996,53 @@ metadata:
     app.kubernetes.io/name: operator
   name: ibm-spectrum-scale-validating-webhook-configuration
 webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: ibm-spectrum-scale-webhook-service
+      namespace: ibm-spectrum-scale-operator
+      path: /validate-pod-eviction
+  failurePolicy: Fail
+  name: veviction.scale.spectrum.ibm.com
+  namespaceSelector:
+    matchExpressions:
+    - key: app.kubernetes.io/part-of
+      operator: In
+      values:
+      - ibm-spectrum-scale
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    - v1beta1
+    operations:
+    - CREATE
+    resources:
+    - pods/eviction
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: ibm-spectrum-scale-webhook-service
+      namespace: ibm-spectrum-scale-operator
+      path: /validate-scale-spectrum-ibm-com-v1beta1-cloudcsidisk
+  failurePolicy: Fail
+  name: vcloudcsidisk.scale.spectrum.ibm.com
+  rules:
+  - apiGroups:
+    - scale.spectrum.ibm.com
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - cloudcsidisks
+  sideEffects: None
 - admissionReviewVersions:
   - v1
   clientConfig:

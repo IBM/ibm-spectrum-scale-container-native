@@ -16,6 +16,21 @@ spec:
       labels:
         control-plane: controller-manager
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - ppc64le
+                - s390x
       serviceAccountName: operator
       # TODO: IDK why this was set by default in kubebuilder? operator-sdk?
       # securityContext:
@@ -23,6 +38,9 @@ spec:
       containers:
         - command:
             - /manager
+          env:
+            - name: GOVMOMI_HOME
+              value: /tmp
           # don't modify the image here directly. You should override this IMG in Makefile
           image: controller:latest
           name: manager
@@ -42,9 +60,9 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              cpu: 100m
+              cpu: 1500m
               memory: 400Mi
             requests:
-              cpu: 100m
+              cpu: 500m
               memory: 200Mi
       terminationGracePeriodSeconds: 10

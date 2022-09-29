@@ -1,0 +1,16 @@
+namespace: ibm-spectrum-scale-dns
+namePrefix: ibm-spectrum-scale-
+
+# DO NOT ADD (OR REMOVE) ANY LABELS HERE
+#   commonLabels in kustomize has a giant footgun
+#   this will inject labels in label selectors!
+#   that is very incorrect behavior, not to mention selectors are *immutable* on deployments
+#
+#   https://github.com/kubernetes-sigs/kustomize/issues/1009
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: coredns
+
+resources:
+  - rbac
+  - namespace.yaml

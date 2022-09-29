@@ -2,21 +2,30 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-  - bases/scale.spectrum.ibm.com_clusters.yaml
-  - bases/scale.spectrum.ibm.com_daemons.yaml
-  - bases/scale.spectrum.ibm.com_callhomes.yaml
-  - bases/scale.spectrum.ibm.com_remoteclusters.yaml
-  - bases/scale.spectrum.ibm.com_filesystems.yaml
-  - bases/scale.spectrum.ibm.com_guis.yaml
-  - bases/scale.spectrum.ibm.com_encryptionconfigs.yaml
-  - bases/scale.spectrum.ibm.com_pmcollectors.yaml
-  - bases/scale.spectrum.ibm.com_recoverygroups.yaml
-  - bases/scale.spectrum.ibm.com_grafanabridges.yaml
-  - bases/scale.spectrum.ibm.com_localdisks.yaml
-  - bases/scale.spectrum.ibm.com_compressionjobs.yaml
+- bases/scale.spectrum.ibm.com_clusters.yaml
+- bases/scale.spectrum.ibm.com_daemons.yaml
+- bases/scale.spectrum.ibm.com_callhomes.yaml
+- bases/scale.spectrum.ibm.com_remoteclusters.yaml
+- bases/scale.spectrum.ibm.com_filesystems.yaml
+- bases/scale.spectrum.ibm.com_guis.yaml
+- bases/scale.spectrum.ibm.com_encryptionconfigs.yaml
+- bases/scale.spectrum.ibm.com_pmcollectors.yaml
+- bases/scale.spectrum.ibm.com_recoverygroups.yaml
+- bases/scale.spectrum.ibm.com_grafanabridges.yaml
+- bases/scale.spectrum.ibm.com_stretchclusterinitnodes.yaml
+- bases/scale.spectrum.ibm.com_localdisks.yaml
+- bases/scale.spectrum.ibm.com_compressionjobs.yaml
+- bases/scale.spectrum.ibm.com_diskjobs.yaml
+- bases/scale.spectrum.ibm.com_cloudcsidisks.yaml
+- bases/scale.spectrum.ibm.com_jobs.yaml
+- bases/scale.spectrum.ibm.com_upgradeapprovals.yaml
+- bases/scale.spectrum.ibm.com_dnss.yaml
+- bases/scale.spectrum.ibm.com_stretchclusters.yaml
+- bases/scale.spectrum.ibm.com_dnsconfigs.yaml
+- bases/scale.spectrum.ibm.com_restripefsjobs.yaml
+- bases/scale.spectrum.ibm.com_stretchclustertiebreakers.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
-patchesStrategicMerge:
 # [WEBHOOK] To enable webhook, uncomment all the sections with [WEBHOOK] prefix.
 # patches here are for enabling the conversion webhook for each CRD
 #- patches/webhook_in_clusters.yaml
@@ -39,4 +48,6 @@ patchesStrategicMerge:
 
 # the following config is for teaching kustomize how to do kustomization for CRDs.
 configurations:
-  - kustomizeconfig.yaml
+- kustomizeconfig.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization

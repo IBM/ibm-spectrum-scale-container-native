@@ -1,6 +1,2 @@
-# resources contains the requisite Machine Configurations necessary to run IBM Spectrum
-# Scale Container Native storage access:
-#   - Make the kernel packages available; kernel-devel and kernel-headers
-#   - Increase the PID limit
 bases:
-  - ../base
+  - ../../bases
