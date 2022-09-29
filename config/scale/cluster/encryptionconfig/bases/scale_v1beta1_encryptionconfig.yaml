@@ -5,6 +5,12 @@ metadata:
 spec:
   secret: keyserver-credentials
   server: keyserver.example.com
+  backupServers:
+    - keyserver1.example.com
+    - keyserver2.example.com
+    - keyserver3.example.com
+    - keyserver4.example.com
+    - keyserver5.example.com
   port: 9443
   tenant: sampleTenant
   client: sampleClient

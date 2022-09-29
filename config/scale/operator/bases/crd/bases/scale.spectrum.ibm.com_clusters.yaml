@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: clusters.scale.spectrum.ibm.com
 spec:
@@ -53,8 +52,7 @@ spec:
                   clusterNameOverride:
                     description: clusterName overrides the default name, which is
                       that of the Daemon resource itself postpended with any resolved
-                      domain suffix. If the clusterName contains any "." characters
-                      then it will be used as-is.
+                      domain suffix.
                     maxLength: 115
                     pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                     type: string
@@ -71,11 +69,36 @@ spec:
                         type: string
                       afmMaxParallelRecoveries:
                         type: string
+                      backgroundSpaceReclaimThreshold:
+                        type: string
+                      cloudEnv:
+                        default: general
+                        enum:
+                        - general
+                        type: string
                       controlSetxattrImmutableSELinux:
                         type: string
                       enforceFilesetQuotaOnRoot:
                         type: string
                       ignorePrefetchLUNCount:
+                        type: string
+                      ignoreReplicaSpaceOnStat:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
+                        type: string
+                      ignoreReplicationForQuota:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
+                        type: string
+                      ignoreReplicationOnStatfs:
+                        default: "yes"
+                        enum:
+                        - "yes"
+                        - "no"
                         type: string
                       initPrefetchBuffers:
                         type: string
@@ -155,6 +178,18 @@ spec:
                         type: string
                       prefetchTimeout:
                         type: string
+                      readReplicaPolicy:
+                        default: local
+                        enum:
+                        - default
+                        - local
+                        - fastest
+                        type: string
+                      traceGenSubDir:
+                        default: /var/mmfs/tmp/traces
+                        enum:
+                        - /var/mmfs/tmp/traces
+                        type: string
                       tscCmdAllowRemoteConnections:
                         enum:
                         - "yes"
@@ -164,8 +199,8 @@ spec:
                         type: string
                     type: object
                   hostAliases:
-                    description: hostAliases that will be added to hosts file for
-                      daemon pods
+                    description: hostAliases that will be added to the internal DNS
+                      that resolves hosts for core pods
                     items:
                       properties:
                         hostname:
@@ -237,6 +272,8 @@ spec:
                             not be changed unless advised by IBM Support
                           properties:
                             afmMaxParallelRecoveries:
+                              type: string
+                            backgroundSpaceReclaimThreshold:
                               type: string
                             controlSetxattrImmutableSELinux:
                               type: string
@@ -324,8 +361,8 @@ spec:
                               type: string
                           type: object
                         resources:
-                          description: Resources defines the Memory/CPU resources
-                            target for the core pods
+                          description: The expected resources that should be requested
+                            for Spectrum Scale core.
                           properties:
                             cpu:
                               description: CPU is measured in cpu units (i.e 1, 2,
@@ -334,7 +371,10 @@ spec:
                             memory:
                               description: Memory is measured in bytes as plain integer
                                 or with kubernetes supported suffixes (i.e 128974848,
-                                129e6, 129M, 123Mi)
+                                129e6, 129M, 123Mi). The value is a target and will
+                                be requested for Spectrum Scale core pods. Resource
+                                request limits on containers impact pod scheduling
+                                and bin packing.
                               type: string
                           type: object
                       type: object
@@ -447,7 +487,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CDNM87&title=IBM%20License%20Agreement
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CHVRQX&title=IBM%20License%20Agreement
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -524,6 +564,26 @@ spec:
                       type: object
                     type: array
                 type: object
+              site:
+                description: Tells the operator how to configure site zone name resolution.
+                  Site zones must be authoritative.
+                properties:
+                  name:
+                    description: name is the site name.
+                    maxLength: 60
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  zone:
+                    description: zone is the domain name that IBM Spectrum Scale DNS
+                      records for this site will be managed. This will be used to
+                      resolve node names for IBM Spectrum Scale.
+                    maxLength: 253
+                    pattern: ^[a-z0-9]([\-\.a-z0-9]*[a-z0-9])?$
+                    type: string
+                required:
+                - name
+                - zone
+                type: object
             required:
             - license
             type: object
@@ -535,13 +595,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition

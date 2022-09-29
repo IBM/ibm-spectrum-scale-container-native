@@ -1,0 +1,111 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: dnsconfigs.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: DNSConfig
+    listKind: DNSConfigList
+    plural: dnsconfigs
+    singular: dnsconfig
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: DNSConfig is the Schema for the dnsconfigs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DNSConfigSpec defines the desired state of DNSConfig
+            properties:
+              forward:
+                description: forward defines the upstream DNS server for a specific
+                  domain
+                properties:
+                  cidrs:
+                    description: cidrs for the reverse zone for which the forward
+                      is authoritative
+                    items:
+                      type: string
+                    minItems: 1
+                    type: array
+                  upstream:
+                    description: upstream is the DNS server to handle the domain DNS
+                      requests
+                    items:
+                      type: string
+                    maxItems: 15
+                    type: array
+                  zone:
+                    description: zone is the zone to forward to the upstream DNS server
+                    type: string
+                required:
+                - cidrs
+                - upstream
+                - zone
+                type: object
+              hosts:
+                description: hosts defines the list of hostname and IP
+                items:
+                  description: HostAlias holds the mapping between IP and hostnames
+                    that will be injected as an entry in the pod's hosts file.
+                  properties:
+                    hostnames:
+                      description: Hostnames for the above IP address.
+                      items:
+                        type: string
+                      type: array
+                    ip:
+                      description: IP address of the host file entry.
+                      type: string
+                  type: object
+                type: array
+              serviceEndpoints:
+                description: serviceEndpoints defines the endpoints of a service
+                properties:
+                  endpoints:
+                    description: endpoints are the backend IPs of the service
+                    items:
+                      type: string
+                    type: array
+                  name:
+                    description: name is the name of the service
+                    type: string
+                required:
+                - endpoints
+                - name
+                type: object
+            type: object
+          status:
+            description: DNSConfigStatus defines the observed state of DNSConfig
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

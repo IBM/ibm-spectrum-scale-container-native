@@ -1,0 +1,5 @@
+bases:
+  - ../../bases
+
+patchesStrategicMerge:
+  - delete.yaml

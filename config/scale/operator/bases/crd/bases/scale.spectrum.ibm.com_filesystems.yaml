@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: filesystems.scale.spectrum.ibm.com
 spec:
@@ -84,10 +83,18 @@ spec:
                     type: string
                   pools:
                     description: pools is a list of storage configurations that will
-                      make up a filesystem. If no pools are specified, all unused
-                      disks will be used for filesystem creation.
+                      make up a filesystem. At least a pool with name 'system' must
+                      be specified.
                     items:
                       properties:
+                        capacity:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: 'capacity is the user provided value for filesystem
+                            pool size (Ex: 1Ti)'
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
                         disks:
                           description: disks is a list of local disk names to be included
                             from this pool
@@ -99,7 +106,13 @@ spec:
                           description: 'name is the desired name of this pool (default:
                             system)'
                           type: string
+                        storageClass:
+                          description: storageClass is the storage class that will
+                            be verified and used for disk device creation
+                          type: string
                       type: object
+                    maxItems: 8
+                    minItems: 1
                     type: array
                   replication:
                     default: 3-way
@@ -109,6 +122,8 @@ spec:
                     enum:
                     - 3-way
                     type: string
+                required:
+                - pools
                 type: object
               remote:
                 description: If specified, describes the file system to be remote
@@ -130,6 +145,32 @@ spec:
                 description: If specified, describes the file system to be a vdiskNSD
                   filesystem.
                 properties:
+                  replication:
+                    default: 1-way
+                    description: 'replication is the number of replicas to create
+                      for each data/metadata block that is written to the filesystem
+                      (default: 1-way). When setting up a stretch cluster, please
+                      set it as "2-way".'
+                    enum:
+                    - 1-way
+                    - 2-way
+                    type: string
+                  tiebreaker:
+                    description: tiebreaker defines the tiebreaker NSD for the stretched
+                      filesystem
+                    properties:
+                      device:
+                        description: device defines the block device name in tiebreaker
+                          node
+                        type: string
+                      nodeDaemonName:
+                        description: nodeDaemonName defines the tiebreaker node daemon
+                          name
+                        type: string
+                    required:
+                    - device
+                    - nodeDaemonName
+                    type: object
                   vdiskSets:
                     description: vdisksets defines the desired state of vdisksets
                       that comprise the vdiskNSD filesystem
@@ -171,6 +212,14 @@ spec:
                             than one user declustered array in a recovery group, there
                             is no default and a declustered array name must be specified.
                           type: string
+                        failureGroup:
+                          default: 1
+                          description: This is the failure group number of all vdisks
+                            defined in the vdiskset. The default value is 1 if it
+                            is omitted.
+                          maximum: 100
+                          minimum: 1
+                          type: integer
                         nsdUsage:
                           default: dataAndMetadata
                           description: This is the IBM Spectrum Scale file system
@@ -236,13 +285,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -318,6 +366,8 @@ spec:
                         properties:
                           diskCount:
                             type: integer
+                          disks:
+                            type: string
                           failureGroup:
                             description: failureGroup is the number of this failure
                               group
@@ -335,6 +385,10 @@ spec:
                       type: string
                   type: object
                 type: array
+              uid:
+                type: string
+              version:
+                type: string
             type: object
         type: object
     served: true
