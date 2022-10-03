@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: daemons.scale.spectrum.ibm.com
 spec:
@@ -22,11 +21,45 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=="Available")].status
+      name: Available
+      type: string
+    - jsonPath: .status.conditions[?(@.type=="Updated")].status
+      name: Updated
+      type: string
+    - jsonPath: .status.pods.total
+      name: Pods
+      type: string
+    - jsonPath: .status.podsStatus.running
+      name: Running
+      type: string
+    - jsonPath: .status.podsStatus.starting
+      name: Starting
+      priority: 10
+      type: string
+    - jsonPath: .status.podsStatus.terminating
+      name: Terminating
+      priority: 10
+      type: string
+    - jsonPath: .status.podsStatus.waitingForDelete
+      name: Waiting Delete
+      priority: 10
+      type: string
+    - jsonPath: .status.quorumPods.total
+      name: Quorum
+      priority: 10
+      type: string
+    - jsonPath: .status.quorumPods.running
+      name: Quorum Running
+      priority: 10
+      type: string
     - jsonPath: .status.clusterID
       name: Cluster ID
+      priority: 10
       type: string
     - jsonPath: .status.clusterName
       name: Cluster Name
+      priority: 10
       type: string
     - jsonPath: .metadata.creationTimestamp
       name: Age
@@ -54,8 +87,7 @@ spec:
               clusterNameOverride:
                 description: clusterName overrides the default name, which is that
                   of the Daemon resource itself postpended with any resolved domain
-                  suffix. If the clusterName contains any "." characters then it will
-                  be used as-is.
+                  suffix.
                 maxLength: 115
                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                 type: string
@@ -72,11 +104,36 @@ spec:
                     type: string
                   afmMaxParallelRecoveries:
                     type: string
+                  backgroundSpaceReclaimThreshold:
+                    type: string
+                  cloudEnv:
+                    default: general
+                    enum:
+                    - general
+                    type: string
                   controlSetxattrImmutableSELinux:
                     type: string
                   enforceFilesetQuotaOnRoot:
                     type: string
                   ignorePrefetchLUNCount:
+                    type: string
+                  ignoreReplicaSpaceOnStat:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
+                    type: string
+                  ignoreReplicationForQuota:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
+                    type: string
+                  ignoreReplicationOnStatfs:
+                    default: "yes"
+                    enum:
+                    - "yes"
+                    - "no"
                     type: string
                   initPrefetchBuffers:
                     type: string
@@ -156,6 +213,18 @@ spec:
                     type: string
                   prefetchTimeout:
                     type: string
+                  readReplicaPolicy:
+                    default: local
+                    enum:
+                    - default
+                    - local
+                    - fastest
+                    type: string
+                  traceGenSubDir:
+                    default: /var/mmfs/tmp/traces
+                    enum:
+                    - /var/mmfs/tmp/traces
+                    type: string
                   tscCmdAllowRemoteConnections:
                     enum:
                     - "yes"
@@ -173,8 +242,8 @@ spec:
                 - erasure-code
                 type: string
               hostAliases:
-                description: hostAliases that will be added to hosts file for daemon
-                  pods
+                description: hostAliases that will be added to the internal DNS that
+                  resolves hosts for core pods
                 items:
                   properties:
                     hostname:
@@ -189,8 +258,9 @@ spec:
                   type: object
                 type: array
               images:
-                description: DEPRECATED core and init image pair that daemon will
-                  use with respect to edition specified by user
+                description: 'Deprecated: use ClusterManagerConfigSpec.Spec.Images
+                  instead. core and init image pair that daemon will use with respect
+                  to edition specified by user'
                 properties:
                   core:
                     type: string
@@ -251,6 +321,8 @@ spec:
                         unless advised by IBM Support
                       properties:
                         afmMaxParallelRecoveries:
+                          type: string
+                        backgroundSpaceReclaimThreshold:
                           type: string
                         controlSetxattrImmutableSELinux:
                           type: string
@@ -338,8 +410,8 @@ spec:
                           type: string
                       type: object
                     resources:
-                      description: Resources defines the Memory/CPU resources target
-                        for the core pods
+                      description: The expected resources that should be requested
+                        for Spectrum Scale core.
                       properties:
                         cpu:
                           description: CPU is measured in cpu units (i.e 1, 2, 100m,
@@ -348,13 +420,35 @@ spec:
                         memory:
                           description: Memory is measured in bytes as plain integer
                             or with kubernetes supported suffixes (i.e 128974848,
-                            129e6, 129M, 123Mi)
+                            129e6, 129M, 123Mi). The value is a target and will be
+                            requested for Spectrum Scale core pods. Resource request
+                            limits on containers impact pod scheduling and bin packing.
                           type: string
                       type: object
                   type: object
                 type: array
+              site:
+                description: Specifies the site name and zone for daemon name resolution.
+                properties:
+                  name:
+                    description: name is the site name.
+                    maxLength: 60
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  zone:
+                    description: zone is the domain name that IBM Spectrum Scale DNS
+                      records for this site will be managed. This will be used to
+                      resolve node names for IBM Spectrum Scale.
+                    maxLength: 253
+                    pattern: ^[a-z0-9]([\-\.a-z0-9]*[a-z0-9])?$
+                    type: string
+                required:
+                - name
+                - zone
+                type: object
             required:
             - edition
+            - site
             type: object
           status:
             description: status defines the observed state of Daemon
@@ -370,13 +464,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{     // Represents the observations of a
-                    foo's current state.     // Known .status.conditions.type are:
-                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
-                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
-                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
-                    \n     // other fields }"
+                    type FooStatus struct{ // Represents the observations of a foo's
+                    current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -432,6 +525,142 @@ spec:
                   - reason
                   - status
                   - type
+                  type: object
+                type: array
+              failureGroup:
+                description: FailureGroup whose pods are upgraded next
+                type: string
+              pods:
+                properties:
+                  desired:
+                    description: Number of desired core pods
+                    type: string
+                  total:
+                    description: Number of existing core pods
+                    type: string
+                required:
+                - desired
+                - total
+                type: object
+              podsStatus:
+                properties:
+                  running:
+                    description: Number of running core pods
+                    type: string
+                  starting:
+                    description: Number of starting core pods
+                    type: string
+                  terminating:
+                    description: Number of terminating core pods
+                    type: string
+                  unknown:
+                    description: Number of core pods with unknown status. Pods scheduled
+                      on unreachable nodes are listed here.
+                    type: string
+                  waitingForDelete:
+                    description: Number of core pods that will be deleted
+                    type: string
+                required:
+                - running
+                - starting
+                - terminating
+                - unknown
+                - waitingForDelete
+                type: object
+              quorumPods:
+                properties:
+                  running:
+                    description: Number of running quorum pods
+                    type: string
+                  total:
+                    description: Total number of quorum pods
+                    type: string
+                required:
+                - running
+                - total
+                type: object
+              roles:
+                items:
+                  properties:
+                    name:
+                      description: Name of the role
+                      type: string
+                    nodeCount:
+                      description: Number of nodes that that are assigned to this
+                        role. Nodes are assigned to a role by label, i.e. "scale.spectrum.ibm.com/role=client"
+                      type: string
+                    nodes:
+                      description: List of nodes that are assigned to the role
+                      type: string
+                    podCount:
+                      description: Number of role pods
+                      type: string
+                    pods:
+                      description: List of role pods
+                      type: string
+                    runningCount:
+                      description: Number of running role pods
+                      type: string
+                  required:
+                  - name
+                  - nodeCount
+                  - nodes
+                  - podCount
+                  - pods
+                  - runningCount
+                  type: object
+                type: array
+              statusDetails:
+                properties:
+                  nodesRebooting:
+                    description: List of core pod nodes that are currently rebooting
+                    type: string
+                  nodesUnreachable:
+                    description: List of core pod nodes that are unreachable
+                    type: string
+                  nodesWaitingForReboot:
+                    description: List of core pod nodes that will be rebooted
+                    type: string
+                  podsStarting:
+                    description: List of starting core pods
+                    type: string
+                  podsTerminating:
+                    description: List of terminating core pods
+                    type: string
+                  podsUnknown:
+                    description: List of core pods with unknown status. Pods scheduled
+                      on unreachable nodes are listed here.
+                    type: string
+                  podsWaitingForDelete:
+                    description: List of core pods that will be deleted soon
+                    type: string
+                  quorumPods:
+                    description: List of pods that act as quorum node for Spectrum
+                      Scale
+                    type: string
+                required:
+                - nodesRebooting
+                - nodesUnreachable
+                - nodesWaitingForReboot
+                - podsStarting
+                - podsTerminating
+                - podsUnknown
+                - podsWaitingForDelete
+                - quorumPods
+                type: object
+              versions:
+                items:
+                  properties:
+                    count:
+                      description: Number of pods that that have this version
+                      type: string
+                    version:
+                      description: Value of the pod's product version (expected format
+                        is x.x.x.x or "unavailable" if pod is unavailable)
+                      type: string
+                  required:
+                  - count
+                  - version
                   type: object
                 type: array
             type: object

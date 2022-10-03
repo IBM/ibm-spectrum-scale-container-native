@@ -1,0 +1,22 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 00-worker-ibm-spectrum-scale-kernel-devel
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+  extensions:
+  - kernel-devel
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 02-worker-ibm-spectrum-scale-s390x-vmalloc
+spec:
+  kernelArguments:
+  - vmalloc=4096G

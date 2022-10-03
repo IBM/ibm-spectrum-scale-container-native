@@ -2,4 +2,5 @@
 # BUT kubectl -k and oc kustomize use an older version that need bases
 bases:
   - config/scale/operator/default
+  - config/scale/coredns/default
   - config/csi

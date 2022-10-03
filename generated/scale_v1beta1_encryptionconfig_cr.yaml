@@ -7,6 +7,12 @@ metadata:
   name: encryption-config-sample
   namespace: ibm-spectrum-scale
 spec:
+  backupServers:
+  - keyserver1.example.com
+  - keyserver2.example.com
+  - keyserver3.example.com
+  - keyserver4.example.com
+  - keyserver5.example.com
   cacert: sample-ca-cert
   client: sampleClient
   port: 9443
