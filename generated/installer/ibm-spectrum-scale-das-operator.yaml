@@ -192,7 +192,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-CFIE-CGHV3J
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-CFIE-CJJN8G
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -360,6 +360,7 @@ rules:
   - create
   - delete
   - get
+  - list
 - apiGroups:
   - ""
   resources:
@@ -368,6 +369,7 @@ rules:
   - create
   - delete
   - get
+  - list
 - apiGroups:
   - ""
   resources:
@@ -560,7 +562,7 @@ rules:
 - apiGroups:
   - metallb.io
   resources:
-  - addresspools
+  - ipaddresspools
   verbs:
   - create
   - delete
@@ -569,6 +571,13 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - metallb.io
+  resources:
+  - l2advertisements
+  verbs:
+  - create
+  - delete
 - apiGroups:
   - metallb.io
   resources:
@@ -625,6 +634,8 @@ rules:
   - create
   - delete
   - get
+  - patch
+  - update
 - apiGroups:
   - operators.coreos.com
   resources:
@@ -648,6 +659,8 @@ rules:
   - create
   - delete
   - get
+  - patch
+  - update
 - apiGroups:
   - operators.coreos.com
   resources:
@@ -656,6 +669,8 @@ rules:
   - create
   - delete
   - get
+  - update
+  - patch
 - apiGroups:
   - packages.operators.coreos.com
   resources:
@@ -888,7 +903,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 5.1.4.0
+    productVersion: 5.1.5
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-das
     app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -910,7 +925,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-das-operator
         productName: IBM Spectrum Scale DAS Operator
-        productVersion: 5.1.4.0
+        productVersion: 5.1.5
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-das
         app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -944,11 +959,16 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: DAS_ENDPOINT_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:e7e56b8800207a1b38858b4b4d678a0585991f4c44e73213833f2aae203bc78d
+          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:086271dcf2e9e93bf186edca1115418e38f0f0cf3fe07c62fd1ad44f5e2e4642
         - name: NOOBAAMON_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:c52ca470b2ef8e7f4020413d10ad82a4c7c52f8988a10b62dbaba4a254c03a5b
-        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:87d37e394b9f7bb31a3e1b7e0c8ea611873a793735feb80d58e4646fda5a49d5
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:949c8211b7771a871231da09e42c3b11de99a98506d98d9f2b78fd47e8cfd18b
+        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:fd74a6dae4713a86dcbcba1490c15bb78e9693d02725b1232b19daa1e091a34f
         imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          runAsUser: 10001
+          runAsNonRoot: true
         name: manager
         resources:
           limits:
