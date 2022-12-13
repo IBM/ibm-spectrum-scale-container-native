@@ -270,7 +270,10 @@ rules:
   - poddisruptionbudgets
   verbs:
   - create
+  - get
+  - list
   - patch
+  - watch
 - apiGroups:
   - route.openshift.io
   resources:

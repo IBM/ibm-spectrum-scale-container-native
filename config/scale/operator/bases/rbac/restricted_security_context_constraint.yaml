@@ -1,0 +1,44 @@
+---
+kind: SecurityContextConstraints
+metadata:
+  name: restricted
+  annotations:
+    kubernetes.io/description:
+      restricted denies access to all host features and requires
+      pods to be run with a UID, and SELinux context that are allocated to the namespace. This is intended to be used exclusively by IBM Spectrum Scale.
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: false
+allowPrivilegedContainer: false
+allowedCapabilities: null
+apiVersion: security.openshift.io/v1
+defaultAddCapabilities: null
+fsGroup:
+  type: MustRunAs
+groups: []
+users: []
+readOnlyRootFilesystem: false
+# in 4.11 restricted-v2 defaults move to DROP: ALL, we should transistion to that as well.
+requiredDropCapabilities:
+  - KILL
+  - MKNOD
+  - SETUID
+  - SETGID
+runAsUser:
+  type: MustRunAsRange
+seLinuxContext:
+  type: MustRunAs
+seccompProfiles:
+  - runtime/default
+supplementalGroups:
+  type: RunAsAny
+volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - persistentVolumeClaim
+  - projected
+  - secret

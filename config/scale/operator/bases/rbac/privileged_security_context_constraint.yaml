@@ -1,4 +1,11 @@
 ---
+kind: SecurityContextConstraints
+metadata:
+  name: privileged
+  annotations:
+    kubernetes.io/description:
+      privileged allows access to all privileged and host features and the ability to run as any user, any group, any fsGroup, and with any SELinux context.
+      This is permissive and should not be used by any components except for IBM Spectrum Scale core pods.
 allowHostDirVolumePlugin: true
 allowHostIPC: true
 allowHostNetwork: true
@@ -14,9 +21,6 @@ apiVersion: security.openshift.io/v1
 defaultAddCapabilities: null
 fsGroup:
   type: RunAsAny
-kind: SecurityContextConstraints
-metadata:
-  name: privileged
 priority: null
 readOnlyRootFilesystem: false
 requiredDropCapabilities: null

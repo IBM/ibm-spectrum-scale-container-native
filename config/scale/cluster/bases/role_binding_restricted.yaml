@@ -1,11 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: privileged
+  name: restricted
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ibm-spectrum-scale-privileged
+  name: ibm-spectrum-scale-restricted
 subjects:
   - kind: ServiceAccount
     name: pmcollector

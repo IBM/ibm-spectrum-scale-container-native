@@ -1,8 +1,0 @@
-# bases is deprecated in favor of resources in kustmoize version 2.1
-# BUT kubectl -k and oc kustomize use an older version that need bases
-bases:
-  - ../default
-  - ../../../csi
-
-patchesStrategicMerge:
-  - delete_operator.yaml
