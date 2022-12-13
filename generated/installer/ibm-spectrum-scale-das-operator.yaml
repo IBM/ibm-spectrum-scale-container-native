@@ -192,7 +192,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-CFIE-CJJN8G
+                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?li_formnum=L-DEGG-7R84K4 
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -299,6 +299,46 @@ rules:
   verbs:
   - create
   - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: das-cli-user
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - "noobaa.io"
+  resources:
+  - noobaas
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - "noobaa.io"
+  resources:
+  - "namespacestores"
+  verbs:
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - "persistentvolumeclaims"
+  - "persistentvolumes"
+  verbs:
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - "namespaces"
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -489,6 +529,8 @@ rules:
   verbs:
   - get
   - list
+  - create
+  - update
 - apiGroups:
   - ""
   resources:
@@ -815,6 +857,15 @@ rules:
   verbs:
   - get
   - list
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - get
+  - list
+  - create
+  - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -884,6 +935,21 @@ subjects:
   name: ibm-spectrum-scale-das-operator
   namespace: ibm-spectrum-scale-das
 ---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ibm-spectrum-scale-das-cli-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: das-cli-user
+subjects:
+- kind: ServiceAccount
+  name: das-cli-user
+  namespace: ibm-spectrum-scale-das
+---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -903,7 +969,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 5.1.5
+    productVersion: 5.1.6
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-das
     app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -925,7 +991,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-das-operator
         productName: IBM Spectrum Scale DAS Operator
-        productVersion: 5.1.5
+        productVersion: 5.1.6
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-das
         app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -959,10 +1025,12 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: DAS_ENDPOINT_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:086271dcf2e9e93bf186edca1115418e38f0f0cf3fe07c62fd1ad44f5e2e4642
+          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:f4a0c51b03eec001e1a472735cf3b3984513fcaf7b71dbd462c30f29892d0834 
         - name: NOOBAAMON_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:949c8211b7771a871231da09e42c3b11de99a98506d98d9f2b78fd47e8cfd18b
-        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:fd74a6dae4713a86dcbcba1490c15bb78e9693d02725b1232b19daa1e091a34f
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:cbf07926122956d71f98a76c9c43b3322504f46cc2399c75c355c667d7035849 
+        - name: PMSENSOR_IMAGE
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:a7457a30c43707d59e8c6b091c22212eca549b5e01ea5229b54d44bf5e162d52 
+        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:4c2bef408c035b9fd45016092dc7a66d8beab8878463ae1dfff42b488390f3cb 
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: false
@@ -978,6 +1046,6 @@ spec:
             cpu: 100m
             memory: 50Mi
       imagePullSecrets:
-      - name: ibm-entitlement-key
+      - name: ibm-entitlement-key 
       serviceAccountName: ibm-spectrum-scale-das-operator
       terminationGracePeriodSeconds: 10

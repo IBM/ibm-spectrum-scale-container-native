@@ -21,6 +21,7 @@ metadata:
   namespace: ibm-spectrum-scale
 ---
 apiVersion: v1
+automountServiceAccountToken: false
 imagePullSecrets:
 - name: ibm-spectrum-scale-registrykey
 - name: ibm-entitlement-key
@@ -33,6 +34,7 @@ metadata:
   namespace: ibm-spectrum-scale
 ---
 apiVersion: v1
+automountServiceAccountToken: false
 imagePullSecrets:
 - name: ibm-spectrum-scale-registrykey
 - name: ibm-entitlement-key
@@ -45,6 +47,7 @@ metadata:
   namespace: ibm-spectrum-scale
 ---
 apiVersion: v1
+automountServiceAccountToken: false
 imagePullSecrets:
 - name: ibm-spectrum-scale-registrykey
 - name: ibm-entitlement-key
@@ -88,12 +91,12 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: cluster
-  name: ibm-spectrum-scale-privileged
+  name: ibm-spectrum-scale-restricted
   namespace: ibm-spectrum-scale
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ibm-spectrum-scale-privileged
+  name: ibm-spectrum-scale-restricted
 subjects:
 - kind: ServiceAccount
   name: ibm-spectrum-scale-pmcollector
@@ -211,7 +214,7 @@ spec:
   # User must accept the Spectrum Scale license to deploy a CNSA cluster.
   # By specifying "accept: true" below, user agrees to the terms and conditions set
   # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
-  # at https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-CHVRQX&title=IBM%20License%20Agreement
+  # at https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-YYMF-TT8UUJ&title=IBM%20License%20Agreement
   #
   # Enter either data-access or data-management to the license.license field. Customers entitled to
   # the Data Management Edition can use either data-management or data-access. Customers entitled to

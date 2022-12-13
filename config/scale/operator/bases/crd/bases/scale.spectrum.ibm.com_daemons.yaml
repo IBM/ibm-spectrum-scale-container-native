@@ -530,6 +530,11 @@ spec:
               failureGroup:
                 description: FailureGroup whose pods are upgraded next
                 type: string
+              minimumReleaseLevel:
+                description: The currently enabled level of functionality of the cluster.
+                  It is expressed as an IBM Spectrum Scale version number, such as
+                  5.0.2.0.
+                type: string
               pods:
                 properties:
                   desired:
