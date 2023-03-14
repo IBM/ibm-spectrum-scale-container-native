@@ -2,6 +2,7 @@ namespace: ibm-spectrum-scale
 namePrefix: ibm-spectrum-scale-
 
 resources:
+  - namespace.yaml
   - service_account_core.yaml
   - service_account_gui.yaml
   - service_account_pmcollector.yaml

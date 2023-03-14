@@ -39,6 +39,23 @@ spec:
           spec:
             description: spec defines the desired state of RecoveryGroup
             properties:
+              existingDataSkipVerify:
+                description: existingDataSkipVerify controls whether existing Spectrum
+                  Scale data structure should be overwritten when creating the disk.
+                  A disk can have Spectrum Scale data structures on if it was used
+                  in a filesystem before and if it has not properly cleaned up. If
+                  false, and the disk still has Spectrum Scale data on it, and an
+                  error will occur. If true, the disk will be formatted, no matter
+                  if it still has data on it. This field is unsupported in production
+                  use.
+                type: boolean
+              ignoreDisks:
+                description: ignoreDisks is a list of local disk names to be excluded
+                  from the recovery group This field is unsupported in production
+                  use.
+                items:
+                  type: string
+                type: array
               window:
                 default: 30
                 description: 'window is the amount of time in minutes to defer rebuild
@@ -55,8 +72,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"

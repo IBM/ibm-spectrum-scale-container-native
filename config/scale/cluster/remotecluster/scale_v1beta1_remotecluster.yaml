@@ -1,0 +1,23 @@
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: RemoteCluster
+metadata:
+  name: remotecluster-sample
+spec:
+  # contactNodes are optional and provides a list of nodes from the storage cluster
+  # to be used as the remote cluster contact nodes.  The names should be the daemon
+  # node names.  If not specified, the operator will use any 3 nodes detected
+  # from the storage cluster.
+  contactNodes:
+    - storagecluster1node1
+    - storagecluster1node2
+  gui:
+    cacert: cacert-storage-cluster-1
+    # This is the secret that contains the CSIAdmin user
+    # credentials in the ibm-spectrum-scale-csi namespace.
+    csiSecretName: csi-remote-mount-storage-cluster-1
+    host: guihost.example.com
+    insecureSkipVerify: false
+    # This is the secret that contains the ContainerOperator user
+    # credentials in the ibm-spectrum-scale namespace
+    secretName: cnsa-remote-mount-storage-cluster-1

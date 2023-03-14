@@ -1,0 +1,24 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitor
+rules:
+  - verbs:
+      - get
+    apiGroups:
+      - scale.spectrum.ibm.com
+    resources:
+      - clusters
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: maintenance
+rules:
+  - verbs:
+      - create
+    apiGroups:
+      - scale.spectrum.ibm.com
+    resources:
+      - clusters

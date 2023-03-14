@@ -1,0 +1,62 @@
+---
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Cluster
+metadata:
+  name: ibm-spectrum-scale
+spec:
+  # -------------------------------------------------------------------------------
+  # User must accept the Spectrum Scale license to deploy a CNSA cluster.
+  # By specifying "accept: true" below, user agrees to the terms and conditions set
+  # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
+  # at https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-CFIE-C8WMT3&title=IBM%20License%20Agreement
+  #
+  # Enter either data-access or data-management to the license.license field. Customers entitled to
+  # the Data Management Edition can use either data-management or data-access. Customers entitled to
+  # the Data Access Edition can only use data-access.
+  # -------------------------------------------------------------------------------
+  license:
+    accept: false
+    license: data-access
+  daemon:
+    # -------------------------------------------------------------------------------
+    # nodeSelector is a User Configurable field.
+    # -------------------------------------------------------------------------------
+    # In conjunction with the nodeSelector configuration, the operator also
+    # applies node affinity according to supported architectures and OS.
+    # More info on node selectors:
+    #       https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+    nodeSelector:
+      scale.spectrum.ibm.com/daemon-selector: ""
+    # -------------------------------------------------------------------------------
+    # hostAliases is optional
+    # -------------------------------------------------------------------------------
+    # hostAliases is used in an environment where DNS cannot resolve the remote (storage) cluster
+    # note: changing this field after first deployment will require manual pod deletions.
+    # hostAliases:
+    #   - hostname: example.com
+    #     ip: 10.0.0.1
+    clusterProfile:
+      enforceFilesetQuotaOnRoot: "yes"
+      ignorePrefetchLUNCount: "yes"
+      initPrefetchBuffers: "128"
+      prefetchTimeout: "30"
+      prefetchPct: "25"
+      controlSetxattrImmutableSELinux: "yes"
+      maxblocksize: 16M
+    # -------------------------------------------------------------------------------
+    # roles is optional
+    # -------------------------------------------------------------------------------
+    # roles is used to set the cluster configuration parameters
+    #   applied to all nodes
+    #   - during initial cluster creation
+    #   - and when changing these parameters at later time
+    roles:
+    - name: client
+      resources:
+        cpu: "2"
+        memory: 4Gi
+  # -------------------------------------------------------------------------------
+  # grafana bridge is optional
+  # -------------------------------------------------------------------------------
+  # Uncomment the grafanaBridge field to enable
+  # grafanaBridge: {}

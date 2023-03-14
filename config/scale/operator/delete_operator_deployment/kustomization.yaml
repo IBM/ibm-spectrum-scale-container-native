@@ -1,0 +1,9 @@
+# bases is deprecated in favor of resources in kustomize version 2.1
+# BUT kubectl -k and oc kustomize use an older version that need bases
+bases:
+  - ../default
+  - ../../../csi
+  - ../../coredns/default
+
+patchesStrategicMerge:
+  - delete_operator.yaml

@@ -141,6 +141,36 @@ spec:
                 - cluster
                 - fs
                 type: object
+              seLinuxOptions:
+                description: "The SELinux context to be applied to the filesystem
+                  mount. \n If unspecified, the default context will prevent kubelet
+                  from relabeling volumes by mounting the filesystem with a shared
+                  container context. \n The shared container context may not be suitable
+                  for users intending to access container volumes outside of containerized
+                  environments. A context can be explicitly set to customize the mount
+                  context to something accessible by both containerized and non-containerized
+                  workloads. \n A user can disable setting of the SELinux context
+                  for the filesystem mount by specifying an empty {} seLinuxOptions
+                  field. \n Disabling the SELinux context mount will return back to
+                  the default volume relabeling behavior done by kubelet."
+                properties:
+                  level:
+                    description: Level is SELinux level label that applies to the
+                      container.
+                    type: string
+                  role:
+                    description: Role is a SELinux role label that applies to the
+                      container.
+                    type: string
+                  type:
+                    description: Type is a SELinux type label that applies to the
+                      container.
+                    type: string
+                  user:
+                    description: User is a SELinux user label that applies to the
+                      container.
+                    type: string
+                type: object
               vdiskNSD:
                 description: If specified, describes the file system to be a vdiskNSD
                   filesystem.
@@ -285,8 +315,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
@@ -385,6 +415,27 @@ spec:
                       type: string
                   type: object
                 type: array
+              seLinuxOptions:
+                description: seLinuxOptions indicates the currently configured mount
+                  context of the filesystem.
+                properties:
+                  level:
+                    description: Level is SELinux level label that applies to the
+                      container.
+                    type: string
+                  role:
+                    description: Role is a SELinux role label that applies to the
+                      container.
+                    type: string
+                  type:
+                    description: Type is a SELinux type label that applies to the
+                      container.
+                    type: string
+                  user:
+                    description: User is a SELinux user label that applies to the
+                      container.
+                    type: string
+                type: object
               uid:
                 type: string
               version:

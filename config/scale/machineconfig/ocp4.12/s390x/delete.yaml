@@ -1,0 +1,5 @@
+$patch: delete
+apiVersion: machineconfiguration.openshift.io/v1
+kind: ContainerRuntimeConfig
+metadata:
+  name: 01-worker-ibm-spectrum-scale-increase-pid-limit

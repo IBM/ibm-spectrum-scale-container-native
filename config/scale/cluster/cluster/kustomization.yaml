@@ -5,7 +5,6 @@ commonLabels:
   app.kubernetes.io/name: cluster
 
 resources:
-  - namespace.yaml
-  - scale_v1beta1_cluster.yaml
+  - bases
 
 # +kubebuilder:scaffold:manifestskustomizesamples
