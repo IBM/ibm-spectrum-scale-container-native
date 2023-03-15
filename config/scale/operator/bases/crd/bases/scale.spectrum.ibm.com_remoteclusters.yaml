@@ -110,8 +110,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
@@ -173,6 +173,21 @@ spec:
                   - type
                   type: object
                 type: array
+              localKeySHADigest:
+                description: localKeySHADigest is the digest of the public access
+                  key that must be used by the remote cluster in order to communicate
+                  with the local cluster in a remote filesystem mount relationship.
+                  The new key is displayed if there are two keys.
+                type: string
+              remoteKeySHADigest:
+                description: remoteKeySHADigest is the digest of the public access
+                  key that is used by local cluster in order to communicate with the
+                  remote cluster in a remote filesystem mount relationship. The new
+                  key is displayed if there are two keys.
+                type: string
+            required:
+            - localKeySHADigest
+            - remoteKeySHADigest
             type: object
         type: object
     served: true

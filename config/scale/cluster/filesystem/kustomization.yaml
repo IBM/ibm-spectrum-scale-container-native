@@ -5,6 +5,5 @@ commonLabels:
   app.kubernetes.io/name: cluster
 
 resources:
-  - scale_v1beta1_filesystem_remote.yaml
-  - scale_v1beta1_remotecluster.yaml
+  - remote
 # +kubebuilder:scaffold:manifestskustomizesamples

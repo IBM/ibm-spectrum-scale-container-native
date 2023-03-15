@@ -54,7 +54,7 @@ spec:
                       that of the Daemon resource itself postpended with any resolved
                       domain suffix.
                     maxLength: 115
-                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    pattern: ^(?:(?:[a-z0-9](?:[\-a-z0-9]*[a-z0-9])?)\.?)+$
                     type: string
                   clusterProfile:
                     description: IBM Spectrum Scale configuration parameters for the
@@ -77,6 +77,8 @@ spec:
                         - general
                         type: string
                       controlSetxattrImmutableSELinux:
+                        type: string
+                      encryptionKeyCacheExpiration:
                         type: string
                       enforceFilesetQuotaOnRoot:
                         type: string
@@ -185,6 +187,8 @@ spec:
                         - local
                         - fastest
                         type: string
+                      seqDiscardThreshold:
+                        type: string
                       traceGenSubDir:
                         default: /var/mmfs/tmp/traces
                         enum:
@@ -217,11 +221,14 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: nodeSelector will be applied to daemon pods
+                    description: nodeSelector will be applied to daemon core pods.  This
+                      field is logically ANDed with any nodeSelectorExpressions also
+                      configured.
                     type: object
                   nodeSelectorExpressions:
                     description: nodeSelectorExpressions that will apply to daemon
-                      pods
+                      core pods.  This field is logically ANDed with any nodeSelector
+                      also configured.
                     items:
                       description: A node selector requirement is a selector that
                         contains values, a key, and an operator that relates the key
@@ -357,6 +364,8 @@ spec:
                               type: string
                             prefetchTimeout:
                               type: string
+                            seqDiscardThreshold:
+                              type: string
                             tscCmdPortRange:
                               type: string
                           type: object
@@ -377,6 +386,47 @@ spec:
                                 and bin packing.
                               type: string
                           type: object
+                      type: object
+                    type: array
+                  tolerations:
+                    description: tolerations that are applied to daemon core pods.
+                    items:
+                      description: The pod this Toleration is attached to tolerates
+                        any taint that matches the triple <key,value,effect> using
+                        the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: Effect indicates the taint effect to match.
+                            Empty means match all taint effects. When specified, allowed
+                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: Key is the taint key that the toleration applies
+                            to. Empty means match all taint keys. If the key is empty,
+                            operator must be Exists; this combination means to match
+                            all values and all keys.
+                          type: string
+                        operator:
+                          description: Operator represents a key's relationship to
+                            the value. Valid operators are Exists and Equal. Defaults
+                            to Equal. Exists is equivalent to wildcard for value,
+                            so that a pod can tolerate all taints of a particular
+                            category.
+                          type: string
+                        tolerationSeconds:
+                          description: TolerationSeconds represents the period of
+                            time the toleration (which must be of effect NoExecute,
+                            otherwise this field is ignored) tolerates the taint.
+                            By default, it is not set, which means tolerate the taint
+                            forever (do not evict). Zero and negative values will
+                            be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: Value is the taint value the toleration matches
+                            to. If the operator is Exists, the value should be empty,
+                            otherwise just a regular string.
+                          type: string
                       type: object
                     type: array
                 type: object
@@ -487,7 +537,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www14.software.ibm.com/cgi-bin/weblap/lap.pl?l=en&popup=y&li_formnum=L-YYMF-TT8UUJ&title=IBM%20License%20Agreement
+                      "false" to not accept. https://www.ibm.com/support/customer/csol/terms/?id=L-KJBE-6AY9M2
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -595,8 +645,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"

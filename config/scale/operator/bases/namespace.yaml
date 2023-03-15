@@ -3,4 +3,13 @@ kind: Namespace
 metadata:
   labels:
     control-plane: controller-manager
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+    # OCP attempts to map SCC to pod security labels, but
+    # cannot handle direct pod creations. We need a privileged
+    # SCC to create core pods, so the enforcement level would
+    # get mutated by OCP to `privileged` because of our operator's
+    # role binding if we don't explicitly turn it off.
+    security.openshift.io/scc.podSecurityLabelSync: "false"
   name: operator

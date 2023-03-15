@@ -1,0 +1,10 @@
+namespace: ibm-spectrum-scale
+
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: cluster
+
+resources:
+  - scale_v1beta1_cluster.yaml
+
+# +kubebuilder:scaffold:manifestskustomizesamples
