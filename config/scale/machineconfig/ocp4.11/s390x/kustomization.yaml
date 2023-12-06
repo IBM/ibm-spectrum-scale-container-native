@@ -1,5 +1,0 @@
-bases:
-  - ../../s390x
-
-patchesStrategicMerge:
-  - delete.yaml

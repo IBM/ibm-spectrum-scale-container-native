@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: operator
+
+namespace: ibm-spectrum-scale-operator
+namePrefix: ibm-spectrum-scale-
+
+resources:
+- ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- files:
+  - controller_manager_config.yaml
+  name: manager-config
+
+images:
+- digest: sha256:ffa9c4f7f43d8ac142c271780f005e32d0d40db77044fce6a153ddfe37974d6b
+  name: controller
+  newName: icr.io/cpopen/ibm-spectrum-scale-operator
+
+components:
+- ../../components/rbac/deploy
+- ../../components/rbac/regionaldr
+- ../../components/rbac/gui
+- ../../components/webhook/deploy
+- ../../components/manager/deploy

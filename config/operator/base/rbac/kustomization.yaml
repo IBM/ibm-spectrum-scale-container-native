@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - leader_election_role.yaml
+  - restricted_role.yaml
+  - restricted_security_context_constraint.yaml
+  - role.yaml
+  - privileged_security_context_constraint.yaml # privileged SCC currently only exists for regionaldr ganesha pod
+  - privileged_role.yaml
+
+configurations:
+  - kustomizeconfig.yaml

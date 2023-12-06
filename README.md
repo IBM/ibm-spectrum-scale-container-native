@@ -1,14 +1,14 @@
-# IBM Spectrum Scale container native
+# IBM Storage Scale container native
 
-IBM Spectrum Scale in containers allows the deployment of the cluster file system in a Red Hat® OpenShift® cluster. Using a remote mount attached file system, the IBM Spectrum Scale solution provides a persistent data store to be accessed by the applications via the [IBM Spectrum Scale Container Storage Interface (CSI) driver](https://www.ibm.com/docs/en/spectrum-scale-csi) using Persistent Volumes (PVs).
+IBM Storage Scale in containers allows the deployment of the cluster file system in a Red Hat® OpenShift® cluster. Using a remote mount attached file system, the IBM Storage Scale solution provides a persistent data store to be accessed by the applications via the [IBM Storage Scale Container Storage Interface (CSI) driver](https://www.ibm.com/docs/en/spectrum-scale-csi) using Persistent Volumes (PVs).
 
-This project contains a golang-based operator to run and manage the deployment of an IBM Spectrum Scale container native cluster. Entitlement is required to access Spectrum Scale images required to created a container native Spectrum Scale cluster.
+This project contains a golang-based operator to run and manage the deployment of an IBM Storage Scale container native cluster. Entitlement is required to access Spectrum Scale images required to created a container native Spectrum Scale cluster.
 
-If you are looking to deploy released versions of the IBM Spectrum Scale container native, please refer to the [Official IBM Documentation](https://www.ibm.com/docs/en/scalecontainernative).
+If you are looking to deploy released versions of the IBM Storage Scale container native, please refer to the [Official IBM Documentation - IBM Storage Scale Container Native](https://www.ibm.com/docs/en/scalecontainernative).
 
 ## Support
 
-IBM Spectrum Scale container native is part of the IBM Spectrum Scale offering. Please follow the IBM support procedure for any issues with the deployment or creation of a container native Spectrum Scale cluster.
+IBM Storage Scale container native is part of the IBM Storage Scale offering. Please follow the IBM support procedure for any issues with the deployment or creation of a container native Spectrum Scale cluster.
 
 ## Report Bugs
 

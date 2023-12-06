@@ -1,6 +1,0 @@
-resources:
-  - namespace.yaml
-  - crd
-  - rbac
-  - webhook
-  # - certmanager

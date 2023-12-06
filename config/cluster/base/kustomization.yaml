@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - service_account_core.yaml
+  - service_account_gui.yaml
+  - service_account_pmcollector.yaml
+  - service_account_default.yaml
+  - service_account_regionaldr.yaml
+  - role_binding_privileged.yaml
+  - role_binding_restricted.yaml
+  - role_binding_sysmon.yaml
+  - role_binding_regionaldr.yaml
+  - role_sysmon.yaml
+  - role_regionaldr.yaml

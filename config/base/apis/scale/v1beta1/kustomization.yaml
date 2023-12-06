@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- crd/scale.spectrum.ibm.com_callhomes.yaml
+- crd/scale.spectrum.ibm.com_cloudcsidisks.yaml
+- crd/scale.spectrum.ibm.com_clusters.yaml
+- crd/scale.spectrum.ibm.com_daemons.yaml
+- crd/scale.spectrum.ibm.com_encryptionconfigs.yaml
+- crd/scale.spectrum.ibm.com_filesystems.yaml
+- crd/scale.spectrum.ibm.com_grafanabridges.yaml
+- crd/scale.spectrum.ibm.com_guis.yaml
+- crd/scale.spectrum.ibm.com_localdisks.yaml
+- crd/scale.spectrum.ibm.com_pmcollectors.yaml
+- crd/scale.spectrum.ibm.com_recoverygroups.yaml
+- crd/scale.spectrum.ibm.com_remoteclusters.yaml
+- crd/scale.spectrum.ibm.com_regionaldrs.yaml
+  # +kubebuilder:scaffold:crdkustomizeresource
+
+# Uncomment to enable conversion webhook
+#patches:
+#  - patches/webhook_in_daemons.yaml
+# +kubebuilder:scaffold:crdkustomizewebhookpatch
+
+# Uncomment to enable certmanager injection for conversion webhook
+#- patches/cainjection_in_daemons.yaml
+# +kubebuilder:scaffold:crdkustomizecainjectionpatch
+
+configurations:
+- kustomizeconfig.yaml

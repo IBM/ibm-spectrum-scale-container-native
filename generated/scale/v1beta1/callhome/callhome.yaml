@@ -19,11 +19,13 @@ spec:
   # This can consist of any alphanumeric characters and these non-alphanumeric characters: '-', '_', '.'.
   customerID: ""
   license:
-    # By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information and your support information anywhere they do business worldwide. For more information, please refer to the Program license agreement and documentation.
-    # If you agree, please respond with "true" for acceptance, else with "false" to decline.
-    # If callhome is already enabled, it will be disabled if you change this to "false".
+    # By accepting this request, you agree to allow IBM and its subsidiaries to store and use your contact information
+    # and your support information anywhere they do business worldwide. For more information, please refer to the Program
+    # license agreement and documentation. If you agree, please respond with "true" for acceptance, else with "false" to
+    # decline. If callhome is already enabled, it will be disabled if you change this to "false".
     accept: true | false
-  # Marks the cluster as a "test" or a "production" system. In case this parameter is not explicitly set, the value is set to "production" by default.
+  # Marks the cluster as a "test" or a "production" system. In case this parameter is not explicitly set, the value is
+  # set to "production" by default.
   type: test | production
   # Leave the proxy block commented if a proxy should not be used for uploads
   # proxy:

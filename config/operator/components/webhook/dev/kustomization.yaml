@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+configMapGenerator:
+  - name: dev-cabundle
+    files:
+      - ca.pem
+    options:
+      disableNameSuffixHash: true
+
+patchesStrategicMerge:
+  - webhookconfig_service_patch.yaml
+
+replacements:
+  - source:
+      version: v1
+      kind: ConfigMap
+      name: dev-cabundle
+      fieldPath: data.ca\.pem
+    targets:
+      - select:
+          kind: MutatingWebhookConfiguration
+        fieldPaths:
+          - webhooks.[name=mcluster.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=mfilesystem.scale.spectrum.ibm.com].clientConfig.caBundle
+
+      - select:
+          kind: ValidatingWebhookConfiguration
+        fieldPaths:
+          - webhooks.[name=vcluster.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vfilesystem.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vlocaldisk.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vcloudcsidisk.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=veviction.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vclusterinterconnect.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vasyncreplication.scale.spectrum.ibm.com].clientConfig.caBundle
+          - webhooks.[name=vapprovalrequest.scale.spectrum.ibm.com].clientConfig.caBundle

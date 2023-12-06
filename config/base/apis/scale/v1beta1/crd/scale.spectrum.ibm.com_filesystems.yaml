@@ -1,0 +1,448 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: filesystems.scale.spectrum.ibm.com
+spec:
+  group: scale.spectrum.ibm.com
+  names:
+    categories:
+    - scale
+    kind: Filesystem
+    listKind: FilesystemList
+    plural: filesystems
+    shortNames:
+    - fs
+    singular: filesystem
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=="Success")].status
+      name: Established
+      type: string
+    - jsonPath: .spec.remote.cluster
+      name: Remote Cluster
+      priority: 10
+      type: string
+    - jsonPath: .status.maintenanceMode
+      name: Maintenance Mode
+      priority: 10
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Filesystem is the Schema for the filesystems API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: spec defines the desired state of Filesystem
+            properties:
+              local:
+                description: If specified, describes the file system to be a local
+                  filesystem.
+                properties:
+                  blockSize:
+                    default: 4M
+                    description: 'blockSize is the desired block size (default: 4M)'
+                    enum:
+                    - 64k
+                    - 128k
+                    - 256k
+                    - 512k
+                    - 1m
+                    - 2m
+                    - 4m
+                    - 8m
+                    - 16m
+                    - 64k
+                    - 128k
+                    - 256K
+                    - 512K
+                    - 1M
+                    - 2M
+                    - 4M
+                    - 8M
+                    - 16M
+                    type: string
+                  pools:
+                    description: pools is a list of storage configurations that will
+                      make up a filesystem. At least a pool with name 'system' must
+                      be specified.
+                    items:
+                      properties:
+                        capacity:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: 'capacity is the user provided value for filesystem
+                            pool size (Ex: 1Ti)'
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        disks:
+                          description: disks is a list of local disk names to be included
+                            from this pool
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          default: system
+                          description: 'name is the desired name of this pool (default:
+                            system)'
+                          type: string
+                        storageClass:
+                          description: storageClass is the storage class that will
+                            be verified and used for disk device creation
+                          type: string
+                      type: object
+                    maxItems: 8
+                    minItems: 1
+                    type: array
+                  replication:
+                    default: 3-way
+                    description: replication is the number of replicas to create for
+                      each data/metadata block that is written to the filesystem (only
+                      3-way is supported)
+                    enum:
+                    - 3-way
+                    type: string
+                required:
+                - pools
+                type: object
+              remote:
+                description: If specified, describes the file system to be remote
+                  mounted filesystem.
+                properties:
+                  cluster:
+                    description: It is the name of the 'remotecluster' custom resource.
+                    maxLength: 128
+                    type: string
+                  fs:
+                    description: It is the name of the filesystem on the remote cluster
+                      to mount.
+                    type: string
+                required:
+                - cluster
+                - fs
+                type: object
+              seLinuxOptions:
+                description: "The SELinux context to be applied to the filesystem
+                  mount. \n If unspecified, the default context will prevent kubelet
+                  from relabeling volumes by mounting the filesystem with a shared
+                  container context. \n The shared container context may not be suitable
+                  for users intending to access container volumes outside of containerized
+                  environments. A context can be explicitly set to customize the mount
+                  context to something accessible by both containerized and non-containerized
+                  workloads. \n A user can disable setting of the SELinux context
+                  for the filesystem mount by specifying an empty {} seLinuxOptions
+                  field. \n Disabling the SELinux context mount will return back to
+                  the default volume relabeling behavior done by kubelet."
+                properties:
+                  level:
+                    description: Level is SELinux level label that applies to the
+                      container.
+                    type: string
+                  role:
+                    description: Role is a SELinux role label that applies to the
+                      container.
+                    type: string
+                  type:
+                    description: Type is a SELinux type label that applies to the
+                      container.
+                    type: string
+                  user:
+                    description: User is a SELinux user label that applies to the
+                      container.
+                    type: string
+                type: object
+              vdiskNSD:
+                description: If specified, describes the file system to be a vdiskNSD
+                  filesystem.
+                properties:
+                  replication:
+                    default: 1-way
+                    description: 'replication is the number of replicas to create
+                      for each data/metadata block that is written to the filesystem
+                      (default: 1-way). When setting up a stretch cluster, please
+                      set it as "2-way".'
+                    enum:
+                    - 1-way
+                    - 2-way
+                    type: string
+                  tiebreaker:
+                    description: tiebreaker defines the tiebreaker NSD for the stretched
+                      filesystem
+                    properties:
+                      device:
+                        description: device defines the block device name in tiebreaker
+                          node
+                        type: string
+                      nodeDaemonName:
+                        description: nodeDaemonName defines the tiebreaker node daemon
+                          name
+                        type: string
+                    required:
+                    - device
+                    - nodeDaemonName
+                    type: object
+                  vdiskSets:
+                    description: vdisksets defines the desired state of vdisksets
+                      that comprise the vdiskNSD filesystem
+                    items:
+                      properties:
+                        blockSize:
+                          description: This is the file system block size (vdisk track
+                            size) for members of the vdisk set. It is constrained
+                            by the selected RAID code. Valid values for 3WayReplication
+                            and 4WayReplication are 256k, 512k, 1m, or 2m. Valid values
+                            for 4+2P and 4+3P are 512k, 1m, 2m, 4m, or 8m. Valid values
+                            for 8+2P and 8+3P are 512k, 1m, 2m, 4m, 8m, or 16m.
+                          enum:
+                          - 256k
+                          - 512k
+                          - 1m
+                          - 2m
+                          - 4m
+                          - 8m
+                          - 16m
+                          - 256K
+                          - 512K
+                          - 1M
+                          - 2M
+                          - 4M
+                          - 8M
+                          - 16M
+                          type: string
+                        declusteredArray:
+                          default: DA1
+                          description: All recovery groups for which this vdisk set
+                            is defined must have a declustered array with this name
+                            where this vdisk set's members are created. The expectation
+                            is that a vdisk set extends across structurally identical
+                            recovery groups where the named declustered array has
+                            the same characteristics in each recovery group. If there
+                            is only one user declustered array in each recovery group,
+                            it is named DA1 and this is the default. If there is more
+                            than one user declustered array in a recovery group, there
+                            is no default and a declustered array name must be specified.
+                          type: string
+                        failureGroup:
+                          default: 1
+                          description: This is the failure group number of all vdisks
+                            defined in the vdiskset. The default value is 1 if it
+                            is omitted.
+                          maximum: 100
+                          minimum: 1
+                          type: integer
+                        nsdUsage:
+                          default: dataAndMetadata
+                          description: This is the IBM Spectrum Scale file system
+                            data usage for the NSD. Valid values are dataAndMetadata,
+                            metadataOnly, and dataOnly. The default is dataAndMetadata.
+                          enum:
+                          - dataAndMetadata
+                          - metadataOnly
+                          - dataOnly
+                          type: string
+                        raidCode:
+                          description: 'This is the vdisk RAID code for members of
+                            the vdisk set. Valid values are: 3WayReplication, 4WayReplication,
+                            4+2P, 4+3P, 8+2P, or 8+3P'
+                          enum:
+                          - 3WayReplication
+                          - 4WayReplication
+                          - 4+2P
+                          - 4+3P
+                          - 8+2P
+                          - 8+3P
+                          type: string
+                        recoveryGroups:
+                          description: One or more recovery groups, each of which
+                            contributes one member vdisk NSD to the vdisk set.
+                          items:
+                            type: string
+                          type: array
+                        setSize:
+                          description: The vdisk set size is the desired aggregate
+                            size of the vdisk set members in one recovery group. The
+                            set size can be specified as a percentage (whole numbers
+                            from 1% to 100% using the % suffix) or as a number of
+                            bytes (a number, optionally followed by one of the base
+                            2 suffixes K, M, G, or T). If the vdisk set size is given
+                            as a percentage, it specifies the raw size to use from
+                            the declustered array including RAID code redundancy.
+                            If the vdisk set size is given as a number of bytes, it
+                            specifies the desired usable size of the vdisk set excluding
+                            RAID code redundancy. The vdisk set size is used to calculate
+                            the usable size of a single vdisk NSD member of the vdisk
+                            set in one recovery group. It is this calculated usable
+                            size that becomes part of the vdisk set definition, so
+                            if the size of a declustered array should ever change,
+                            the size of the individual member vdisk NSDs remains constant.
+                          pattern: ^([1-9]|[1-9][0-9]|100)%$||^([0-9]*)(K|M|G|T)$||^([0-9]){1,8}$
+                          type: string
+                        storagePool:
+                          description: If the NSD usage is dataAndMetadata or metadataOnly,
+                            the storage pool value must be system and does not need
+                            to be specified. If the NSD usage is dataOnly, the storage
+                            pool must be specified and the value may not be system.
+                          type: string
+                      type: object
+                    type: array
+                type: object
+            type: object
+          status:
+            description: status defines the observed state of Filesystem
+            properties:
+              conditions:
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                  properties:
+                    lastTransitionTime:
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              maintenanceMode:
+                description: maintenanceMode indicates if the filesystem maintenance
+                  mode is enabled.
+                enum:
+                - enabled
+                - disabled
+                - unknown
+                - not supported
+                type: string
+              pools:
+                description: pools displays status of the filesystem pools
+                items:
+                  properties:
+                    failureGroups:
+                      items:
+                        properties:
+                          diskCount:
+                            type: integer
+                          disks:
+                            type: string
+                          failureGroup:
+                            description: failureGroup is the number of this failure
+                              group
+                            type: string
+                          failureGroupMapping:
+                            type: string
+                          totalDiskSize:
+                            type: string
+                        type: object
+                      type: array
+                    name:
+                      default: system
+                      description: 'name is the desired name of this pool (default:
+                        system)'
+                      type: string
+                  type: object
+                type: array
+              seLinuxOptions:
+                description: seLinuxOptions indicates the currently configured mount
+                  context of the filesystem.
+                properties:
+                  level:
+                    description: Level is SELinux level label that applies to the
+                      container.
+                    type: string
+                  role:
+                    description: Role is a SELinux role label that applies to the
+                      container.
+                    type: string
+                  type:
+                    description: Type is a SELinux type label that applies to the
+                      container.
+                    type: string
+                  user:
+                    description: User is a SELinux user label that applies to the
+                      container.
+                    type: string
+                type: object
+              uid:
+                type: string
+              version:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

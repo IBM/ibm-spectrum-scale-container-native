@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/instance: ibm-spectrum-scale
+  app.kubernetes.io/name: operator
+
+namespace: ibm-spectrum-scale-operator
+namePrefix: ibm-spectrum-scale-
+
+resources:
+  - ../../base
+
+components:
+  - ../../components/rbac/deploy
+  - ../../components/rbac/regionaldr
+  - ../../components/rbac/gui
+  - ../../components/webhook/deploy

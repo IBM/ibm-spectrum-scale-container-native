@@ -1,0 +1,73 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: mutating-webhook-configuration
+webhooks:
+  - name: mcluster.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/mutate-scale-spectrum-ibm-com-v1beta1-cluster
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: mfilesystem.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/mutate-scale-spectrum-ibm-com-v1beta1-filesystem
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validating-webhook-configuration
+webhooks:
+  - name: vcluster.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1beta1-cluster
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: vfilesystem.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1beta1-filesystem
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: vlocaldisk.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1beta1-localdisk
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: vcloudcsidisk.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1beta1-cloudcsidisk
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: veviction.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-pod-eviction
+      caBundle: REPLACE_CABUNDLE
+    # this is okay to Fail in dev environments because it shouldn't affect applying cluster
+    failurePolicy: Fail
+  - name: vclusterinterconnect.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1alpha1-clusterinterconnect
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: vasyncreplication.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1alpha1-asyncreplication
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore
+  - name: vapprovalrequest.scale.spectrum.ibm.com
+    clientConfig:
+      service: null
+      url: https://localhost:59443/validate-scale-spectrum-ibm-com-v1alpha1-approvalrequest
+      caBundle: REPLACE_CABUNDLE
+    failurePolicy: Ignore

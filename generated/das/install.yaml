@@ -5,6 +5,7 @@ metadata:
     app.kubernetes.io/instance: ibm-spectrum-scale-das
     app.kubernetes.io/name: operator
     control-plane: controller-manager
+    scale.spectrum.ibm.com/networkpolicy: allow
   name: ibm-spectrum-scale-das
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -192,7 +193,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www.ibm.com/support/customer/csol/terms/?id=L-BRLL-FYBAJF
+                      "false" to not accept. https://www.ibm.com/support/customer/csol/terms/?id=L-SXXK-ARTNWG
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -332,6 +333,28 @@ rules:
   - "namespaces"
   verbs:
   - get
+- apiGroups:
+  - ""
+  resources:
+  - "events"
+  verbs:
+  - create
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - get
+  - list
+  - create
+  - delete
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -368,6 +391,12 @@ rules:
   - delete
   - get
   - update
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
 - apiGroups:
   - ""
   resources:
@@ -792,7 +821,7 @@ rules:
 - apiGroups:
   - security.openshift.io
   resourceNames:
-  - privileged
+  - restricted-v2
   resources:
   - securitycontextconstraints
   verbs:
@@ -814,7 +843,15 @@ rules:
   verbs:
   - get
   - list
+  - create
   - delete
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -918,7 +955,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 5.1.7
+    productVersion: 5.1.9.1
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-das
     app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -940,7 +977,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-das-operator
         productName: IBM Spectrum Scale DAS Operator
-        productVersion: 5.1.7
+        productVersion: 5.1.9.1
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-das
         app.kubernetes.io/managed-by: ibm-spectrum-scale-das-operator
@@ -949,6 +986,10 @@ spec:
         product: ibm-spectrum-scale-das
         release: ibm-spectrum-scale-das-operator
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
       automountServiceAccountToken: true
       containers:
       - args:
@@ -958,6 +999,13 @@ spec:
         - --v=10
         image: gcr.io/kubebuilder/kube-rbac-proxy@sha256:d4883d7c622683b3319b5e6b3a7edfbf2594c18060131a8bf64504805f875522
         name: kube-rbac-proxy
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
         ports:
         - containerPort: 8443
           name: https
@@ -974,18 +1022,20 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: DAS_ENDPOINT_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:ea814626c9c8ab10bfbed1ae91f430d50266fe76a277422d565c492c39e896b4 
+          value: cp.icr.io/cp/spectrum/scale/das/s3/ibm-spectrum-scale-das-endpoint@sha256:5ec18d36e114d1f3938fc740a7c70a5978fe371be9bd847364ae34843c9d62e4
         - name: NOOBAAMON_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:70766c93b2bf352ea42b153913e8eacb156a298e750ddb8d8274d3eecc913c5a 
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:781f86296525f7519d212f8b1887d1a680157b5ebf55f3a989d76579778abb77
         - name: PMSENSOR_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:bb5c504b02c6ef0bfb57b9587e2104678ec05605f50d4e95cd886a54c3564fa2 
-        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:86dc1b822a96878b25a70056acfd70b2464ec255ebf7185eae04bfd5db300552 
+          value: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:69ae2d99018bd3ce064125677fbd8d00c3829fee64597a83b5da20844f966157
+        image: icr.io/cpopen/ibm-spectrum-scale-das-operator@sha256:9c82e815a75f4ceacd0c3f300c1221993bf6fb5438fc2db1209a4105361bba6b
         imagePullPolicy: IfNotPresent
         securityContext:
-          privileged: false
           allowPrivilegeEscalation: false
-          runAsUser: 10001
-          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
         name: manager
         resources:
           limits:
@@ -995,7 +1045,7 @@ spec:
             cpu: 100m
             memory: 50Mi
       imagePullSecrets:
-      - name: ibm-entitlement-key 
+      - name: ibm-entitlement-key
       serviceAccountName: ibm-spectrum-scale-das-operator
       terminationGracePeriodSeconds: 10
 ---
@@ -1013,4 +1063,4 @@ data:
     = 2\ncollectors = {\n   host = \"ibm-spectrum-scale-pmcollector-0.ibm-spectrum-scale-pmcollector\"\n
     \  port = \"4739\"\n}, {\n   host = \"ibm-spectrum-scale-pmcollector-1.ibm-spectrum-scale-pmcollector\"\n
     \  port = \"4739\"\n}\ndaemonize = F\ndelay_initial_poll = T\nhostname = \"\"\nlogfile= \"stdout\"\nloglevel 
-    = \"info\"\npiddir = \"/var/run\"\nrelease = \"5.1.7-0\"\nsensors = {\n\tname = \"DasS3\"\n\tperiod = 60\n\ttype= \"Generic\"\n}"
+    = \"info\"\npiddir = \"/var/run\"\nrelease = \"5.1.9-1\"\nsensors = {\n\tname = \"DasS3\"\n\tperiod = 60\n\ttype= \"Generic\"\n}"

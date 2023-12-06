@@ -1,0 +1,24 @@
+apiVersion: scale.spectrum.ibm.com/v1alpha1
+kind: ClusterManagerConfig
+health:
+  healthProbeBindAddress: :8081
+metrics:
+  bindAddress: 127.0.0.1:8080
+webhook:
+  port: 9443
+images:
+  coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:d6c8ac07e6d3ad869dbe191cd317a7fa973dc968c5e0eaae4b88943af3c66152
+  coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:476239363bf644f141612d7a718848d4a5e1e67d1ef1d1a0228deb1330f25d01
+  coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:39f62297f1d79f7e0e7fe83ab934db926db3189d0550bdc0a65f3d853752f135
+  coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:f85a1e4153aa9ef91c895a3e5f73b76903e760a26c75a3ecf077b71e6d381906
+  gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:e0f2a5959057d8d6b16802f9a60bfc51de04167f27d92d85eeeabf7c53c86e4e
+  postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:b2f06ce12103bedbc0a49ae4ffff062d90824e0f45462de712f66952679f7670
+  logs: cp.icr.io/cp/spectrum/scale/ubi-minimal@sha256:c8c7a06ce1c5fa23c1cbd7a0fd891eacd099bc232aa9985ddb183cfe98d1deaf
+  pmcollector: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:bde39274681ae0f3924c77283c120d158174a404f88e0e5913a18d1e0b269d35
+  sysmon: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:781f86296525f7519d212f8b1887d1a680157b5ebf55f3a989d76579778abb77
+  grafanaBridge: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:7b6d73301bc8b013208d0085e9d21031bea7e6376d5f2cf9834307e298379564
+  coreDNS: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:1ba4d51e896607c6f968f8df8e04ccfe7a71babd778838c9de040beda6bf1ff7
+  mustGather: icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:39769327dc2a2f276612d79f4b865681d6dd366b78c0760446e7957def6a64f1
+  ganesha: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-ganesha@sha256:ce463af0bb935aa737146f6d0a6b34b7ab96b0d682f79d661b6f5c446ed95b45
+  stunnel: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-stunnel@sha256:dd3001342f30219849f5ddfdaba5db64cc6280178c7e1ce62f2f13fdc9982754
+  pmsensors: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:69ae2d99018bd3ce064125677fbd8d00c3829fee64597a83b5da20844f966157

@@ -1,9 +1,0 @@
-namespace: ibm-spectrum-scale
-
-commonLabels:
-  app.kubernetes.io/instance: ibm-spectrum-scale
-  app.kubernetes.io/name: cluster
-
-resources:
-  - remote
-# +kubebuilder:scaffold:manifestskustomizesamples
