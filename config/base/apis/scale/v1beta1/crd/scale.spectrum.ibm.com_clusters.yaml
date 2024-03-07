@@ -269,6 +269,21 @@ spec:
                       default parameters.
                     items:
                       properties:
+                        limits:
+                          description: The Memory/CPU resource limits that will be
+                            set for Scale core pods.
+                          properties:
+                            cpu:
+                              description: CPU is measured in cpu units (i.e 1, 2,
+                                100m, 2500m)
+                              type: string
+                            memory:
+                              description: Memory is measured in bytes as plain integer
+                                or with kubernetes supported suffixes (i.e 128974848,
+                                129e6, 129M, 123Mi). The value is the maximum amount
+                                of memory the Scale core pod is allowed to consume.
+                              type: string
+                          type: object
                         name:
                           description: Name of the role. Only afm, storage or client
                             are allowed.
@@ -374,8 +389,8 @@ spec:
                               type: string
                           type: object
                         resources:
-                          description: The expected resources that should be requested
-                            for Spectrum Scale core.
+                          description: The Memory/CPU resource requests that will
+                            be set for Scale core pods.
                           properties:
                             cpu:
                               description: CPU is measured in cpu units (i.e 1, 2,
@@ -385,9 +400,9 @@ spec:
                               description: Memory is measured in bytes as plain integer
                                 or with kubernetes supported suffixes (i.e 128974848,
                                 129e6, 129M, 123Mi). The value is a target and will
-                                be requested for Spectrum Scale core pods. Resource
-                                request limits on containers impact pod scheduling
-                                and bin packing.
+                                be requested for Scale core pods. Resource request
+                                limits on containers impact pod scheduling and bin
+                                packing.
                               type: string
                           type: object
                       type: object
