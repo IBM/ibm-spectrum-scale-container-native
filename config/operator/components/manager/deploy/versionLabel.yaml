@@ -5,7 +5,7 @@ metadata:
 labels:
   # DO NOT USE THE MINUS/DASH CHARACTER (-) AS PART OF THE VERSION NUMBER.
   # i.e v5.1.9.1-1 is NOT VALID, USE v5.1.9.1.1 INSTEAD.
-  app.kubernetes.io/version: v5.1.9.7
+  app.kubernetes.io/version: v5.1.9.8
 fieldSpecs:
   - kind: Deployment
     path: metadata/labels

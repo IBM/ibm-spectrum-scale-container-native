@@ -2,5 +2,5 @@
 namespace: ibm-spectrum-scale-csi
 
 resources:
-- github.com/IBM/ibm-spectrum-scale-csi.git//operator/config/overlays/cnsa?ref=v2.10.5
+- github.com/IBM/ibm-spectrum-scale-csi.git//operator/config/overlays/cnsa?ref=v2.10.6
 - namespace.yaml
