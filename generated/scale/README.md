@@ -7,9 +7,9 @@ The images that are listed in the following table are the container images that 
 
 | Pod | Container | Repository | Image |
 |-----|-----------|------------|---------------------|
-| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:1580665f94e133f591e27cb5a3237652b7d0c5a31848457d2a2fad4b356aa530 |
-| ibm-spectrum-scale-csi-operator | operator | icr.io/cpopen  | ibm-spectrum-scale-csi-operator@sha256:c292fa07a03f5accac554a5f366b7241c31dbb85fc4617c0fe2428cf103fce56 |
-| must-gather-XXXXX | must-gather | icr.io/cpopen | ibm-spectrum-scale-must-gather@sha256:8d6561114d9d4161eaab4529b7664ab32b032654763662dd79054540766da0f7 |
+| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:ceb5c5cf5fd94cc8a677154c31cb8b814c53a8fcd4dfcec0ba2951f73bf9a542 |
+| ibm-spectrum-scale-csi-operator | operator | icr.io/cpopen  | ibm-spectrum-scale-csi-operator@sha256:a371ac2539ddf2e4708ba22f539381880e500758de20e8db3823b1f32c5a3794 |
+| must-gather-XXXXX | must-gather | icr.io/cpopen | ibm-spectrum-scale-must-gather@sha256:614cc54f7ed246aef270ef5532aaa32bb64b7c6024e85b562d7ea8675f750192 |
 {: caption="Images (non-entitled)" caption-side="bottom"}
 
 ## IBM Storage Scale images that are acquired from entitled IBM Container Repository
@@ -18,26 +18,26 @@ The images that are listed in the following table are the container images that 
 
 | Pod | Container | Repository | Image |
 |-----|-----------|------------|---------------------|
-| workerX/masterX* | mmbuildgpl | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:ee984f59941faa674af7450f39d52df3409d3dedb5b930fa0e33b310c9dd6de1 |
-| workerX/masterX* | config | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:ee984f59941faa674af7450f39d52df3409d3dedb5b930fa0e33b310c9dd6de1 |
-| workerX/masterX* | gpfs (if using Data Access Edition) | cp.icr.io/cp/spectrum/scale/data-access | ibm-spectrum-scale-daemon@sha256:82ff198432997b628213f8c828b4843019f4a163e608eee8773e9e85686144bd |
-| workerX/masterX* | gpfs (if using Data Management Edition) | cp.icr.io/cp/spectrum/scale/data-management | ibm-spectrum-scale-daemon@sha256:1f7a9a48f15162749e2a399b83f704beb73bb9fffd93275b0b0651ddca6dd83b |
-| workerX/masterX* | logs | cp.icr.io/cp/spectrum/scale | ubi-minimal@sha256:2636170dc55a0931d013014a72ae26c0c2521d4b61a28354b3e2e5369fa335a3  |
-| ibm-spectrum-scale-gui-X | liberty | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-gui@sha256:a5b65cb784e84acc80f7318ca30a03d270b7931e500fb0bcece87c6adcf4cd56 |
-| ibm-spectrum-scale-gui-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:cc6d431ea461b58faceb759e8d23cd66554a1dd4c057d6ca9c56aaaecd8d8757 |
-| ibm-spectrum-scale-gui-X | postgres | cp.icr.io/cp/spectrum/scale | postgres@sha256:bbd7346fab25b7e0b25f214829d6ebfb78ef0465059492e46dee740ce8fcd844 |
-| ibm-spectrum-scale-gui-X | logs | cp.icr.io/cp/spectrum/scale | ubi-minimal@sha256:2636170dc55a0931d013014a72ae26c0c2521d4b61a28354b3e2e5369fa335a3 |
-| ibm-spectrum-scale-pmcollector-X | pmcollector | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-pmcollector@sha256:1dd8b31e3a44f10597206945ee4ee580ea5e325f7e9e69972daef24c10f399ae |
-| ibm-spectrum-scale-pmcollector-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:cc6d431ea461b58faceb759e8d23cd66554a1dd4c057d6ca9c56aaaecd8d8757 |
+| workerX/masterX* | mmbuildgpl | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:fde69d67fddd2e4e0b7d7d85387a221359daf332d135c9b9f239fb31b9b82fe0 |
+| workerX/masterX* | config | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:fde69d67fddd2e4e0b7d7d85387a221359daf332d135c9b9f239fb31b9b82fe0 |
+| workerX/masterX* | gpfs (if using Data Access Edition) | cp.icr.io/cp/spectrum/scale/data-access | ibm-spectrum-scale-daemon@sha256:814bda6320cfe94eafefa331e4e30f4e07fc16fc0183067bfffada5d731a32e3 |
+| workerX/masterX* | gpfs (if using Data Management Edition) | cp.icr.io/cp/spectrum/scale/data-management | ibm-spectrum-scale-daemon@sha256:72868067f337d18f4f61797693e403db177f8e28c7be682ed5c514636fef0f3a |
+| workerX/masterX* | logs | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143  |
+| ibm-spectrum-scale-gui-X | liberty | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-gui@sha256:11ffb0e5bccf6d679c86e02ed7d1df155800c6502adb72378e08c007ddd66443 |
+| ibm-spectrum-scale-gui-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:898dc2ad37073f3793562a4d4af90e0a399c92f612de1de6bff15b753f587f32 |
+| ibm-spectrum-scale-gui-X | postgres | cp.icr.io/cp/spectrum/scale | postgres@sha256:0bcc5bbbb2aa9c9b4c6505845918c7eb55d783cf5c1f434fac33012579fb149d |
+| ibm-spectrum-scale-gui-X | logs | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143 |
+| ibm-spectrum-scale-pmcollector-X | pmcollector | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-pmcollector@sha256:3278937eafb9d1eeb75f9dbae5b12e449fd180f4502acf3989771565f6aac794 |
+| ibm-spectrum-scale-pmcollector-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:898dc2ad37073f3793562a4d4af90e0a399c92f612de1de6bff15b753f587f32 |
 | ibm-spectrum-scale-csi-snapshotter | csi-snapshotter | cp.icr.io/cp/spectrum/scale/csi | csi-snapshotter@sha256:b3e90b33781670ac050c22c9e88b9e876493dca248966b9da6f7a90cc412ab86  |
 | ibm-spectrum-scale-csi-attacher | ibm-spectrum-scale-csi-attacher | cp.icr.io/cp/spectrum/scale/csi | csi-attacher@sha256:b4d611100ece2f9bc980d1cb19c2285b8868da261e3b1ee8f45448ab5512ab94 |
 | ibm-spectrum-scale-csi-provisioner | csi-provisioner | cp.icr.io/cp/spectrum/scale/csi | csi-provisioner@sha256:7b9cdb5830d01bda96111b4f138dbddcc01eed2f95aa980a404c45a042d60a10 |
 | ibm-spectrum-scale-csi-driver-XXXXX | liveness-probe | cp.icr.io/cp/spectrum/scale/csi | livenessprobe@sha256:33692aed26aaf105b4d6e66280cceca9e0463f500c81b5d8c955428a75438f32 |
 | ibm-spectrum-scale-csi-driver-XXXXX | driver-registrar | cp.icr.io/cp/spectrum/scale/csi | csi-node-driver-registrar@sha256:e01facb9fb9cffaf52d0053bdb979fbd8c505c8e411939a6e026dd061a6b4fbe |
 | ibm-spectrum-scale-csi-resizer-X | ibm-spectrum-scale-csi-resizer | cp.icr.io/cp/spectrum/scale/csi | csi-resizer@sha256:be6a7de1d43dba90710b61bd3d0d8f568654a6adadaeea9188cf4cd3554cbb87 |
-| ibm-spectrum-scale-csi-driver-XXXXX | ibm-spectrum-scale-csi | cp.icr.io/cp/spectrum/scale/csi | ibm-spectrum-scale-csi-driver@sha256:6cf6a3818f48c2bcb5460c4902c5d44ad73c415a5f2980a374062a4bb18840ea |
-| ibm-spectrum-scale-grafana-bridge-X | grafanabridge | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-grafana-bridge@sha256:a8f5e13168e4c9d15a3026cdec5dde98a75ddf2a17c6bea4fc67b32e825e2632 |
-| coredns-XXXXX | coredns | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-coredns@sha256:88cbfe40fd302a6467cb7e852b298f6c8d8659782ab313706d491d3ddf172a6e |
+| ibm-spectrum-scale-csi-driver-XXXXX | ibm-spectrum-scale-csi | cp.icr.io/cp/spectrum/scale/csi | ibm-spectrum-scale-csi-driver@sha256:ffecac38546bf0b36e0c87fd6e4c06c58bc85c6f7c2140651149a284d29a5d6f |
+| ibm-spectrum-scale-grafana-bridge-X | grafanabridge | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-grafana-bridge@sha256:956a98023ae3a877410c922c006080ecc7f825eca273fa5dd2bdb94873d1f725 |
+| coredns-XXXXX | coredns | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-coredns@sha256:6a317b23fee629c0b07eb95d34ab7593bb38d41bffc5d1cd4cb2870539c66cd4 |
 {: caption="Images (entitled)" caption-side="bottom"}
 
 *Pod names that contain the mmbuildgpl, config, and gpfs containers may vary. The pod name is based on the shortname of the node that it was scheduled to.
@@ -52,27 +52,27 @@ When setting up your environment to be air-gapped, use `skopeo` to copy the foll
 
 ```bash
 # IBM Storage Scale container native images
-icr.io/cpopen/ibm-spectrum-scale-operator@sha256:1580665f94e133f591e27cb5a3237652b7d0c5a31848457d2a2fad4b356aa530
-cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:82ff198432997b628213f8c828b4843019f4a163e608eee8773e9e85686144bd
-cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:1f7a9a48f15162749e2a399b83f704beb73bb9fffd93275b0b0651ddca6dd83b
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:ee984f59941faa674af7450f39d52df3409d3dedb5b930fa0e33b310c9dd6de1
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:88cbfe40fd302a6467cb7e852b298f6c8d8659782ab313706d491d3ddf172a6e
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:a8f5e13168e4c9d15a3026cdec5dde98a75ddf2a17c6bea4fc67b32e825e2632
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:a5b65cb784e84acc80f7318ca30a03d270b7931e500fb0bcece87c6adcf4cd56
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-logs@sha256:88e1ab0b4b93e5730bdc5657d0fdbc593d814392321005378d7a87b013cdc86a
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:cc6d431ea461b58faceb759e8d23cd66554a1dd4c057d6ca9c56aaaecd8d8757
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:1dd8b31e3a44f10597206945ee4ee580ea5e325f7e9e69972daef24c10f399ae
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:dc57f960aa63b3bc24c94a065b0747548d0895cd081ec86dcb2714b69ee8a265
-cp.icr.io/cp/spectrum/scale/postgres@sha256:bbd7346fab25b7e0b25f214829d6ebfb78ef0465059492e46dee740ce8fcd844
-icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:8d6561114d9d4161eaab4529b7664ab32b032654763662dd79054540766da0f7
+icr.io/cpopen/ibm-spectrum-scale-operator@sha256:ceb5c5cf5fd94cc8a677154c31cb8b814c53a8fcd4dfcec0ba2951f73bf9a542
+cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:814bda6320cfe94eafefa331e4e30f4e07fc16fc0183067bfffada5d731a32e3
+cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:72868067f337d18f4f61797693e403db177f8e28c7be682ed5c514636fef0f3a
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:fde69d67fddd2e4e0b7d7d85387a221359daf332d135c9b9f239fb31b9b82fe0
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:6a317b23fee629c0b07eb95d34ab7593bb38d41bffc5d1cd4cb2870539c66cd4
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:956a98023ae3a877410c922c006080ecc7f825eca273fa5dd2bdb94873d1f725
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:11ffb0e5bccf6d679c86e02ed7d1df155800c6502adb72378e08c007ddd66443
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:898dc2ad37073f3793562a4d4af90e0a399c92f612de1de6bff15b753f587f32
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:3278937eafb9d1eeb75f9dbae5b12e449fd180f4502acf3989771565f6aac794
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmsensors@sha256:8cbcc426c8ed0237b988e20b5f8ea235dae617bef2fcaaac1d34fdb5fc2d6020
+cp.icr.io/cp/spectrum/scale/postgres@sha256:0bcc5bbbb2aa9c9b4c6505845918c7eb55d783cf5c1f434fac33012579fb149d
+icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:614cc54f7ed246aef270ef5532aaa32bb64b7c6024e85b562d7ea8675f750192
 # IBM Container Storage Interface (CSI) images
-icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:c292fa07a03f5accac554a5f366b7241c31dbb85fc4617c0fe2428cf103fce56
+icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:a371ac2539ddf2e4708ba22f539381880e500758de20e8db3823b1f32c5a3794
 cp.icr.io/cp/spectrum/scale/csi/csi-attacher@sha256:b4d611100ece2f9bc980d1cb19c2285b8868da261e3b1ee8f45448ab5512ab94
 cp.icr.io/cp/spectrum/scale/csi/csi-node-driver-registrar@sha256:e01facb9fb9cffaf52d0053bdb979fbd8c505c8e411939a6e026dd061a6b4fbe
 cp.icr.io/cp/spectrum/scale/csi/csi-provisioner@sha256:7b9cdb5830d01bda96111b4f138dbddcc01eed2f95aa980a404c45a042d60a10
 cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:be6a7de1d43dba90710b61bd3d0d8f568654a6adadaeea9188cf4cd3554cbb87
 cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:b3e90b33781670ac050c22c9e88b9e876493dca248966b9da6f7a90cc412ab86
-cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:6cf6a3818f48c2bcb5460c4902c5d44ad73c415a5f2980a374062a4bb18840ea
+cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:ffecac38546bf0b36e0c87fd6e4c06c58bc85c6f7c2140651149a284d29a5d6f
 cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:33692aed26aaf105b4d6e66280cceca9e0463f500c81b5d8c955428a75438f32
 ```
 

@@ -57,7 +57,7 @@ spec:
   # User must accept the Spectrum Scale license to deploy a CNSA cluster.
   # By specifying "accept: true" below, user agrees to the terms and conditions set
   # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
-  # at https://www.ibm.com/support/customer/csol/terms/?id=L-GJSH-J6XPAN
+  # at https://www.ibm.com/support/customer/csol/terms/?id=L-BZQH-GGKMBR
   #
   # Enter either data-access or data-management to the license.license field. Customers entitled to
   # the Data Management Edition can use either data-management or data-access. Customers entitled to
