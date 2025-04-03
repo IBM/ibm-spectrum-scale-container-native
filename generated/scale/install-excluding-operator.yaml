@@ -43,7 +43,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v5.1.9.8
+    app.kubernetes.io/version: v5.1.9.9
     control-plane: controller-manager
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/enforce: restricted
@@ -1654,7 +1654,7 @@ spec:
                 properties:
                   accept:
                     description: Read the license and specify "true" to accept or
-                      "false" to not accept. https://www.ibm.com/support/customer/csol/terms/?id=L-WUUK-7SWZ53
+                      "false" to not accept. https://www.ibm.com/support/customer/csol/terms/?id=L-PKAR-64DKYG
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON
                       AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE
                       AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING
@@ -9536,7 +9536,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    productVersion: 2.10.6
+    productVersion: 2.10.7
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
     app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -9555,7 +9555,7 @@ spec:
       annotations:
         productID: ibm-spectrum-scale-csi-operator
         productName: IBM Spectrum Scale CSI Operator
-        productVersion: 2.10.6
+        productVersion: 2.10.7
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale-csi-operator
         app.kubernetes.io/managed-by: ibm-spectrum-scale-csi-operator
@@ -9594,14 +9594,14 @@ spec:
         - name: CSI_RESIZER_IMAGE
           value: cp.icr.io/cp/spectrum/scale/csi/csi-resizer@sha256:2e2b44393539d744a55b9370b346e8ebd95a77573064f3f9a8caf18c22f4d0d0
         - name: CSI_DRIVER_IMAGE
-          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:92c6c50ebe8c8845b202680a5b40f94e52a34433c2e12e0f5747032982e711e7
+          value: cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:51af18efe71c1078d7257d199c2566ab7b71367bc302cfdadecbaad8dfec8023
         - name: METRICS_BIND_ADDRESS
           value: "8383"
         - name: WATCH_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:4cffa1292565ed746fb5e9e2741df17552a63b855295f24330ceeb9bd7c03517
+        image: icr.io/cpopen/ibm-spectrum-scale-csi-operator@sha256:fd0bd1a72471d51af65a8eb968ec36706f3761aff678454d42c2bdf1ac04f853
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
