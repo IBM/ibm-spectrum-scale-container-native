@@ -10681,7 +10681,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:ceb5c5cf5fd94cc8a677154c31cb8b814c53a8fcd4dfcec0ba2951f73bf9a542
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:ac95e1ad28de9533679f548d6c93c86b4bce63c6fda45ea15913782dd2cd1801
         livenessProbe:
           httpGet:
             path: /healthz

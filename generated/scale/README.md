@@ -7,7 +7,7 @@ The images that are listed in the following table are the container images that 
 
 | Pod | Container | Repository | Image |
 |-----|-----------|------------|---------------------|
-| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:ceb5c5cf5fd94cc8a677154c31cb8b814c53a8fcd4dfcec0ba2951f73bf9a542 |
+| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:ac95e1ad28de9533679f548d6c93c86b4bce63c6fda45ea15913782dd2cd1801 |
 | ibm-spectrum-scale-csi-operator | operator | icr.io/cpopen  | ibm-spectrum-scale-csi-operator@sha256:a371ac2539ddf2e4708ba22f539381880e500758de20e8db3823b1f32c5a3794 |
 | must-gather-XXXXX | must-gather | icr.io/cpopen | ibm-spectrum-scale-must-gather@sha256:614cc54f7ed246aef270ef5532aaa32bb64b7c6024e85b562d7ea8675f750192 |
 {: caption="Images (non-entitled)" caption-side="bottom"}
@@ -52,7 +52,7 @@ When setting up your environment to be air-gapped, use `skopeo` to copy the foll
 
 ```bash
 # IBM Storage Scale container native images
-icr.io/cpopen/ibm-spectrum-scale-operator@sha256:ceb5c5cf5fd94cc8a677154c31cb8b814c53a8fcd4dfcec0ba2951f73bf9a542
+icr.io/cpopen/ibm-spectrum-scale-operator@sha256:ac95e1ad28de9533679f548d6c93c86b4bce63c6fda45ea15913782dd2cd1801
 cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:814bda6320cfe94eafefa331e4e30f4e07fc16fc0183067bfffada5d731a32e3
 cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:72868067f337d18f4f61797693e403db177f8e28c7be682ed5c514636fef0f3a
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:fde69d67fddd2e4e0b7d7d85387a221359daf332d135c9b9f239fb31b9b82fe0
@@ -75,4 +75,3 @@ cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:b3e90b33781670ac050c22c9e
 cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:ffecac38546bf0b36e0c87fd6e4c06c58bc85c6f7c2140651149a284d29a5d6f
 cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:33692aed26aaf105b4d6e66280cceca9e0463f500c81b5d8c955428a75438f32
 ```
-
