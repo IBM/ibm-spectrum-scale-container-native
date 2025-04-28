@@ -10,7 +10,6 @@ The images that are listed in the following table are the container images that 
 | ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:e3fa797d4cc30a35050c78203fc38ed73637c1b0a61cbd4c18c29c69ba5fa649 |
 | ibm-spectrum-scale-csi-operator | operator | icr.io/cpopen  | ibm-spectrum-scale-csi-operator@sha256:99ba046ccc9f90777366ebc0dbee55309460d312f68da0f371c176513b5e9592 |
 | must-gather-XXXXX | must-gather | icr.io/cpopen | ibm-spectrum-scale-must-gather@sha256:fd1c27c6cf5d34782c5fe718486fab38ba9c8227b4d81961b5e39b692fbd6aa7 |
-{: caption="Images (non-entitled)" caption-side="bottom"}
 
 ## IBM Storage Scale images that are acquired from entitled IBM Container Repository
 
@@ -38,7 +37,6 @@ The images that are listed in the following table are the container images that 
 | ibm-spectrum-scale-csi-driver-XXXXX | ibm-spectrum-scale-csi | cp.icr.io/cp/spectrum/scale/csi | ibm-spectrum-scale-csi-driver@sha256:db04d298c4171fa3c95a87ff7d474949807205b600530eead06043c49c650e83 |
 | ibm-spectrum-scale-grafana-bridge-X | grafanabridge | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-grafana-bridge@sha256:65a14666cc3dc2ad7516b715f175ddfc18a6f2b5b6c1a3966560b03d6fd02f99 |
 | coredns-XXXXX | coredns | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-coredns@sha256:88cbfe40fd302a6467cb7e852b298f6c8d8659782ab313706d491d3ddf172a6e |
-{: caption="Images (entitled)" caption-side="bottom"}
 
 *Pod names that contain the mmbuildgpl, config, and gpfs containers may vary. The pod name is based on the shortname of the node that it was scheduled to.
 
@@ -75,4 +73,3 @@ cp.icr.io/cp/spectrum/scale/csi/csi-snapshotter@sha256:2e04046334baf9be425bb0fa1
 cp.icr.io/cp/spectrum/scale/csi/ibm-spectrum-scale-csi-driver@sha256:db04d298c4171fa3c95a87ff7d474949807205b600530eead06043c49c650e83
 cp.icr.io/cp/spectrum/scale/csi/livenessprobe@sha256:5baeb4a6d7d517434292758928bb33efc6397368cbb48c8a4cf29496abf4e987
 ```
-
