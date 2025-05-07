@@ -62,7 +62,3 @@ spec:
   license:
     accept: false
     license: data-access
-  # -------------------------------------------------------------------------------
-  # networkPolicy enabled by default
-  # -------------------------------------------------------------------------------
-  networkPolicy: {}

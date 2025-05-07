@@ -29,8 +29,12 @@ spec:
       # network interface name for the InfiniBand device. For example: "mlx5_2", "ibs5f0", etc.
       # -------------------------------------------------------------------------------
       # verbsPorts: mlx5_2
+      # For mixed config scenario, uncomment this next line and delete the line above
+      # verbsPorts: "mlx5_3/1 mlx5_2/1"
       # verbsRdma: enable
       # verbsRdmaSend: "yes"
+      # Only enable `verbsRdmaCm` when deploying RoCE - RDMA over Converged Ethernet
+      # verbsRdmaCm: disabled
     # -------------------------------------------------------------------------------
     # nodeSelector is a User Configurable field.
     # -------------------------------------------------------------------------------
@@ -52,7 +56,6 @@ spec:
       resources:
         cpu: "4"
         memory: 32Gi
-        memory: 8Gi
   # -------------------------------------------------------------------------------
   # grafana bridge is optional
   # -------------------------------------------------------------------------------

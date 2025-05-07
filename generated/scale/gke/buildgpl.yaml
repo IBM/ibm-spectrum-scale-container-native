@@ -1,0 +1,70 @@
+apiVersion: v1
+data:
+  buildgpl: |
+    #!/bin/bash
+
+    if ! grep -q loadpin /proc/cmdline
+    then
+        echo "Loadpin active. Patching kernel boot parameters with loadpin.enforce=0 and reboot node."
+        mkdir -p /var/mnt/EFISYS
+        mount /host/dev/disk/by-label/EFI-SYSTEM /var/mnt/EFISYS
+        sed -i -e 's/module.sig_enforce=0/module.sig_enforce=0 loadpin.enforce=0/g' /var/mnt/EFISYS/efi/boot/grub.cfg
+        umount /var/mnt/EFISYS
+        rmdir /var/mnt/EFISYS
+        chroot /host reboot
+    fi
+
+    BUILD_DIR=/build
+    mkdir -p "$BUILD_DIR"
+
+    cd $BUILD_DIR
+
+    #download google cloud toolkit
+    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+    tar -xf google-cloud-cli-linux-x86_64.tar.gz
+    export PATH=google-cloud-sdk/bin:$PATH
+
+    BASE=gs://cos-tools
+    TOOLCHAIN=toolchain.tar.xz.gcs
+    HEADERS=kernel-headers.tgz
+    # assuming /host mounts root of host fs
+    VERSION_ID=$(grep VERSION_ID /host/etc/os-release | cut -d "=" -f 2)
+    BUILD_ID=$(grep BUILD_ID /host/etc/os-release | cut -d "=" -f 2)
+    echo "COS version $VERSION_ID build $BUILD_ID"
+    URL=$BASE/$BUILD_ID/$TOOLCHAIN
+
+    #download kernel headers
+    gsutil cp "$BASE/$BUILD_ID/kernel-headers.tgz" kernel-headers.tgz
+
+    #download toolchain
+    gsutil cp "$BASE/$BUILD_ID/$TOOLCHAIN" bucketinfo
+    TC_bucket=$(cat bucketinfo | grep ^bucket: | cut -d ' ' -f 2)
+    TC_path=$(cat bucketinfo | grep ^path: | cut -d ' ' -f 2)
+    gsutil cp "gs://$TC_bucket/$TC_path" toolchain.tar.xz
+
+
+    tar -xz -C "$BUILD_DIR" -f kernel-headers.tgz
+    tar -xJ -C "$BUILD_DIR" -f toolchain.tar.xz
+
+    kversion=$(uname -r)
+
+    ln -s -T $BUILD_DIR/usr/src/linux-headers-$kversion /usr/src/kernels/$kversion
+    cp -rf /host/lib/modules/$kversion /lib/modules/$kversion
+
+    echo "KERNEL_CC=$BUILD_DIR/usr/bin/x86_64-cros-linux-gnu-clang" >> /usr/lpp/mmfs/src/config/site.mk
+
+    cd /usr/lpp/mmfs/src/
+    config/configure linuxdistribution=KERNEL_ORG_LINUX
+
+    # mmbuildgpl
+    make World
+    make InstallImages
+  hostPathDirectories: |
+    /
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: buildgpl
+  namespace: ibm-spectrum-scale

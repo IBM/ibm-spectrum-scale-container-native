@@ -24,15 +24,6 @@ spec:
       prefetchPct: "25"
       prefetchTimeout: "30"
     # -------------------------------------------------------------------------------
-    # nodeSelector is a User Configurable field.
-    # -------------------------------------------------------------------------------
-    # In conjunction with the nodeSelector configuration, the operator also
-    # applies node affinity according to supported architectures and OS.
-    # More info on node selectors:
-    #       https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
-    nodeSelector:
-      scale.spectrum.ibm.com/daemon-selector: ""
-    # -------------------------------------------------------------------------------
     # roles is required
     # -------------------------------------------------------------------------------
     # roles is used to set the cluster configuration parameters
@@ -62,7 +53,3 @@ spec:
   license:
     accept: false
     license: data-access
-  # -------------------------------------------------------------------------------
-  # networkPolicy enabled by default
-  # -------------------------------------------------------------------------------
-  networkPolicy: {}

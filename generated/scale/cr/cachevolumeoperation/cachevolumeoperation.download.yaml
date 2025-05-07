@@ -1,0 +1,12 @@
+apiVersion: scale.spectrum.ibm.com/v1alpha1
+kind: CacheVolumeOperation
+metadata:
+  name: cvo-sample
+  namespace: ns1
+spec:
+  action: Download
+  cacheVolume: pvc-a1d91618-1c9d-4773-92a5-1492f6b0736e
+  contentFilter:
+  - data01
+  - data02
+  contentType: DataAndMetadata

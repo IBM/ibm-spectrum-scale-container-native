@@ -1,0 +1,94 @@
+apiVersion: v1
+data:
+  buildgpl: |
+    #!/bin/bash
+
+    # Base image didn't contains these directory
+    # Needed for make gpfs on ubuntu system
+
+    # get the kernel version
+    kversion=$(uname -r)
+    krelease=$(uname -r | cut -d'-' -f1,2)
+    currentkernel=$(uname -r | cut -d'-' -f1)
+    targetkernel="6.8.0"
+
+    # check kernel release
+    if [ "$(printf '%s\n' "$currentkernel" "$targetkernel" | sort -V | head -n1)" = "$currentkernel" ] \
+      && [ "$currentkernel" != "$targetkernel" ]; then
+      # for ubuntu 22.04
+      # we may able to use this support if change to redhat 10 based image
+      kversion=$(uname -r)
+      ln -s -T /host/usr/src/linux-headers-$kversion /usr/src/kernels/$kversion
+      cp -rf /host/lib/modules/$kversion /lib/modules/$kversion
+
+      # build config/mk.env
+      cd /usr/lpp/mmfs/src/
+      config/configure linuxdistribution=UBUNTU_LINUX
+
+      # mmbuildgpl
+      make World
+      make InstallImages
+    else
+      # for ubuntu 24.04
+      mkdir -p /usr/src/kernels
+      rsync -a "/host/usr/src/linux-headers-$krelease" "/usr/src/kernels/"
+      rsync -a "/host/usr/src/linux-headers-$kversion" "/usr/src/kernels/"
+
+      # create chroot dir
+      chroot_dir="/opt/chroot"
+      mkdir -p "$chroot_dir"
+
+      # rsync /host/usr and etc to chroot
+      rsync_dirs=("/host/usr" "/host/etc" "/bin")
+      for dir in "${rsync_dirs[@]}"; do
+        rsync -a $dir "$chroot_dir"
+      done
+      rsync -a "/usr/src/kernels" "$chroot_dir/usr/src"
+      rsync -a "/usr/lpp" "$chroot_dir/usr"
+
+      # create symlinks for lib and lib64 inside of chroot
+      cd "$chroot_dir"
+      ln -sfn usr/lib "$chroot_dir/lib"
+      ln -sfn usr/lib64 "$chroot_dir/lib64"
+
+      # mounting virtual filesystem
+      mount_dirs=("/dev" "/proc" "/sys")
+      for mnt in "${mount_dirs[@]}"; do
+        mkdir -p "$chroot_dir$mnt"
+        mount --bind "/host$mnt" "$chroot_dir$mnt"
+      done
+
+      # entering chroot
+      chroot "$chroot_dir" /bin/bash -c "
+        cd /usr/lpp/mmfs/src
+        echo "KERNEL_CC=/usr/bin/x86_64-linux-gnu-gcc-13" > /usr/lpp/mmfs/src/config/site.mk
+        config/configure linuxdistribution=UBUNTU_LINUX
+        make World
+        make InstallImages "
+
+      # clean up and unmount
+      for mnt in "${mount_dirs[@]}"; do
+        umount "$chroot_dir$mnt"
+      done
+
+      # get the modules from chroot
+      kversion=$(uname -r)
+      rm -rf /lib/modules/$kversion
+      rsync -av /opt/chroot/usr/lib/modules/$kversion /lib/modules
+      cp -rf /opt/chroot/usr/lpp/mmfs/bin/lxtrace-$kversion /usr/lpp/mmfs/bin/
+
+      # load the module
+      depmod -A
+      modprobe tracedev
+      modprobe mmfslinux
+      modprobe mmfs26
+    fi
+  hostPathDirectories: |
+    /
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: buildgpl
+  namespace: ibm-spectrum-scale

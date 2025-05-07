@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: scale-kthreads-dump
+  namespace: ibm-spectrum-scale
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: ibm-spectrum-scale
+      app.kubernetes.io/name: scale-kthreads-dump
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: ibm-spectrum-scale
+        app.kubernetes.io/name: scale-kthreads-dump
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - ppc64le
+                - s390x
+              - key: scale.spectrum.ibm.com/daemon-selector
+                operator: Exists
+      containers:
+      - command:
+        - /bin/bash
+        env:
+        - name: NODENAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        image: null
+        name: must-gather
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: false
+        tty: true
+      hostPID: true
+      priorityClassName: system-node-critical
+      tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        operator: Exists
+      - effect: NoSchedule
+        key: node.kubernetes.io/disk-pressure
+        operator: Exists
+      - effect: NoSchedule
+        key: node.kubernetes.io/memory-pressure
+        operator: Exists
+      - effect: NoSchedule
+        key: node.kubernetes.io/pid-pressure
+        operator: Exists

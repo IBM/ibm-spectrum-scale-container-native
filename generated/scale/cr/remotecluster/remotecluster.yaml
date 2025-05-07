@@ -18,6 +18,7 @@ spec:
     cacert: cacert-storage-cluster-1
     # This is the secret that contains the CSIAdmin user
     # credentials in the ibm-spectrum-scale-csi namespace.
+    # Remove the csiSecretName entry if the storage cluster is version 5.2.3 or newer.
     csiSecretName: csi-remote-mount-storage-cluster-1
     # hosts are the the GUI endpoints from the storage cluster. Multiple
     # hosts (up to 3) can be specified to ensure high availability of GUI.

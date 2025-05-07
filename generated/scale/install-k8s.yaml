@@ -50,6 +50,58 @@ metadata:
     security.openshift.io/scc.podSecurityLabelSync: "false"
   name: ibm-spectrum-scale-operator
 ---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: ibm-spectrum-scale-pods
+  namespace: ibm-spectrum-scale-csi
+spec:
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values:
+      - system-node-critical
+      - system-cluster-critical
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: coredns
+  name: ibm-spectrum-scale-pods
+  namespace: ibm-spectrum-scale-dns
+spec:
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values:
+      - system-node-critical
+      - system-cluster-critical
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-pods
+  namespace: ibm-spectrum-scale
+spec:
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values:
+      - system-node-critical
+      - system-cluster-critical
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -10458,23 +10510,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-  name: ibm-spectrum-scale-privileged
-rules:
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - ibm-spectrum-scale-privileged
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/instance: ibm-spectrum-scale
-    app.kubernetes.io/name: operator
   name: ibm-spectrum-scale-regional-dr
 rules:
 - apiGroups:
@@ -10487,23 +10522,6 @@ rules:
   - get
   - list
   - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/instance: ibm-spectrum-scale
-    app.kubernetes.io/name: operator
-  name: ibm-spectrum-scale-restricted
-rules:
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - ibm-spectrum-scale-restricted
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -10521,23 +10539,6 @@ subjects:
 - kind: ServiceAccount
   name: ibm-spectrum-scale-operator
   namespace: ibm-spectrum-scale-operator
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/instance: ibm-spectrum-scale
-    app.kubernetes.io/name: cluster
-  name: ibm-spectrum-scale-privileged
-  namespace: ibm-spectrum-scale
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ibm-spectrum-scale-privileged
-subjects:
-- kind: ServiceAccount
-  name: ibm-spectrum-scale-regional-dr
-  namespace: ibm-spectrum-scale
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -10634,22 +10635,6 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-  name: ibm-spectrum-scale-privileged
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ibm-spectrum-scale-privileged
-subjects:
-- kind: ServiceAccount
-  name: ibm-spectrum-scale-operator
-  namespace: ibm-spectrum-scale-operator
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/instance: ibm-spectrum-scale
-    app.kubernetes.io/name: operator
   name: ibm-spectrum-scale-regional-dr
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -10681,6 +10666,10 @@ data:
       ganesha: cp.icr.io/cp/gpfs/ibm-spectrum-scale-ganesha@sha256:054e9e382241ec3bc2a6cab30f1a045b74674492b25afd1110896b4060d1ab6f
       stunnel: cp.icr.io/cp/gpfs/ibm-spectrum-scale-stunnel@sha256:a2c94c1357fe27ef5070d8ea7ba39e9524243d925ffaf3af6300238b565de44b
       pmsensors: cp.icr.io/cp/gpfs/ibm-spectrum-scale-pmsensors@sha256:c9270e17334eba8fd77733282bb78866fa7266e87d86bcb19146a116d4e83483
+    corePodConfig:
+      createCorePodDisruptionBudget: true
+      moveQuorumIfPodEvictedBy:
+      - GoogleContainerEngine
 kind: ConfigMap
 metadata:
   labels:
@@ -10692,8 +10681,6 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    service.beta.openshift.io/serving-cert-secret-name: ibm-spectrum-scale-webhook-service-cert
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
@@ -10959,146 +10946,160 @@ spec:
           optional: true
         name: cabundle
 ---
-allowHostDirVolumePlugin: true
-allowHostIPC: false
-allowHostNetwork: true
-allowHostPID: false
-allowHostPorts: false
-allowPrivilegeEscalation: true
-allowPrivilegedContainer: true
-allowedCapabilities: []
-apiVersion: security.openshift.io/v1
-defaultAddCapabilities: []
-fsGroup:
-  type: MustRunAs
-groups: []
-kind: SecurityContextConstraints
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  annotations:
-    kubernetes.io/description: allows hostpath and host network to be accessible
-  name: spectrum-scale-csiaccess
-  namespace: ibm-spectrum-scale-csi
-priority: null
-readOnlyRootFilesystem: false
-requiredDropCapabilities:
-- KILL
-- MKNOD
-- SETUID
-- SETGID
-runAsUser:
-  type: RunAsAny
-seLinuxContext:
-  type: RunAsAny
-supplementalGroups:
-  type: RunAsAny
-users:
-- system:serviceaccount:ibm-spectrum-scale-csi:ibm-spectrum-scale-csi-attacher
-- system:serviceaccount:ibm-spectrum-scale-csi:ibm-spectrum-scale-csi-provisioner
-- system:serviceaccount:ibm-spectrum-scale-csi:ibm-spectrum-scale-csi-node
-- system:serviceaccount:ibm-spectrum-scale-csi:ibm-spectrum-scale-csi-snapshotter
-- system:serviceaccount:ibm-spectrum-scale-csi:ibm-spectrum-scale-csi-resizer
-volumes:
-- configMap
-- downwardAPI
-- emptyDir
-- hostPath
-- persistentVolumeClaim
-- projected
-- secret
----
-allowHostDirVolumePlugin: true
-allowHostIPC: true
-allowHostNetwork: true
-allowHostPID: true
-allowHostPorts: true
-allowPrivilegeEscalation: true
-allowPrivilegedContainer: true
-allowedCapabilities:
-- '*'
-allowedUnsafeSysctls:
-- '*'
-apiVersion: security.openshift.io/v1
-defaultAddCapabilities: null
-fsGroup:
-  type: RunAsAny
-kind: SecurityContextConstraints
-metadata:
-  annotations:
-    kubernetes.io/description: privileged allows access to all privileged and host
-      features and the ability to run as any user, any group, any fsGroup, and with
-      any SELinux context. This is permissive and should not be used by any components
-      except for IBM Spectrum Scale core pods.
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-  name: ibm-spectrum-scale-privileged
+  name: ibm-spectrum-scale-ca
   namespace: ibm-spectrum-scale-operator
-priority: null
-readOnlyRootFilesystem: false
-requiredDropCapabilities: null
-runAsUser:
-  type: RunAsAny
-seLinuxContext:
-  type: RunAsAny
-seccompProfiles:
-- '*'
-supplementalGroups:
-  type: RunAsAny
-volumes:
-- '*'
+spec:
+  commonName: scale-ca
+  isCA: true
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: ibm-spectrum-scale-issuer
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  secretName: root-ca-secret
 ---
-allowHostDirVolumePlugin: false
-allowHostIPC: false
-allowHostNetwork: false
-allowHostPID: false
-allowHostPorts: false
-allowPrivilegeEscalation: false
-allowPrivilegedContainer: false
-allowedCapabilities: null
-apiVersion: security.openshift.io/v1
-defaultAddCapabilities: null
-fsGroup:
-  type: MustRunAs
-groups: []
-kind: SecurityContextConstraints
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  annotations:
-    kubernetes.io/description: restricted denies access to all host features and requires
-      pods to be run with a UID, and SELinux context that are allocated to the namespace.
-      This is intended to be used exclusively by IBM Spectrum Scale.
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-  name: ibm-spectrum-scale-restricted
+  name: ibm-spectrum-scale-webhook-certificate
   namespace: ibm-spectrum-scale-operator
-readOnlyRootFilesystem: false
-requiredDropCapabilities:
-- KILL
-- MKNOD
-- SETUID
-- SETGID
-runAsUser:
-  type: MustRunAsRange
-seLinuxContext:
-  type: MustRunAs
-seccompProfiles:
-- runtime/default
-supplementalGroups:
-  type: RunAsAny
-users: []
-volumes:
-- configMap
-- downwardAPI
-- emptyDir
-- persistentVolumeClaim
-- projected
-- secret
+spec:
+  dnsNames:
+  - ibm-spectrum-scale-webhook-service.ibm-spectrum-scale-operator.svc
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: ibm-spectrum-scale-webhook-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-admin-service-certificate
+  namespace: ibm-spectrum-scale
+spec:
+  dnsNames:
+  - admin.ibm-spectrum-scale.svc
+  - '*.admin.ibm-spectrum-scale.svc'
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: admin-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-grafana-bridge-service-certificate
+  namespace: ibm-spectrum-scale
+spec:
+  dnsNames:
+  - ibm-spectrum-scale-grafana-bridge.svc
+  - '*.ibm-spectrum-scale-grafana-bridge.svc'
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: ibm-spectrum-scale-grafana-bridge-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-gui-service-certificate
+  namespace: ibm-spectrum-scale
+spec:
+  dnsNames:
+  - ibm-spectrum-scale-gui.ibm-spectrum-scale.svc
+  - '*.ibm-spectrum-scale-gui.ibm-spectrum-scale.svc'
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: ibm-spectrum-scale-gui-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-perf-query-service-certificate
+  namespace: ibm-spectrum-scale
+spec:
+  dnsNames:
+  - ibm-spectrum-scale-perf-query.ibm-spectrum-scale.svc
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: ibm-spectrum-scale-perf-query-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-sysmon-headless-service-certificate
+  namespace: ibm-spectrum-scale
+spec:
+  dnsNames:
+  - ibm-spectrum-scale-sysmon-headless.ibm-spectrum-scale.svc
+  - '*.ibm-spectrum-scale-sysmon-headless.ibm-spectrum-scale.svc'
+  issuerRef:
+    name: ibm-spectrum-scale-ca-issuer
+  secretName: ibm-spectrum-scale-sysmon-headless-service-cert
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: ibm-spectrum-scale-issuer
+  namespace: ibm-spectrum-scale-operator
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: operator
+  name: ibm-spectrum-scale-ca-issuer
+  namespace: ibm-spectrum-scale-operator
+spec:
+  ca:
+    secretName: root-ca-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: ibm-spectrum-scale-ca-issuer
+  namespace: ibm-spectrum-scale
+spec:
+  ca:
+    secretName: root-ca-secret
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   annotations:
-    service.beta.openshift.io/inject-cabundle: "true"
+    cert-manager.io/inject-ca-from: ibm-spectrum-scale-operator/ibm-spectrum-scale-webhook-certificate
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
@@ -11149,7 +11150,7 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   annotations:
-    service.beta.openshift.io/inject-cabundle: "true"
+    cert-manager.io/inject-ca-from: ibm-spectrum-scale-operator/ibm-spectrum-scale-webhook-certificate
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
@@ -11162,7 +11163,7 @@ webhooks:
       name: ibm-spectrum-scale-webhook-service
       namespace: ibm-spectrum-scale-operator
       path: /validate-pod-eviction
-  failurePolicy: Fail
+  failurePolicy: Ignore
   name: veviction.scale.spectrum.ibm.com
   namespaceSelector:
     matchExpressions:
