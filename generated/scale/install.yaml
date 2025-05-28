@@ -10459,10 +10459,10 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:6e2bfb235a2c89317496124a6f37ad26516530bdc03600b591bd9c846ec92f72
-      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:72868067f337d18f4f61797693e403db177f8e28c7be682ed5c514636fef0f3a
-      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:814bda6320cfe94eafefa331e4e30f4e07fc16fc0183067bfffada5d731a32e3
-      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:fde69d67fddd2e4e0b7d7d85387a221359daf332d135c9b9f239fb31b9b82fe0
+      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:9ebc8f286f92de2ded78bc4516d7d8206d021952bfbe0e9de6a93cd7b00003a4
+      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:b0cfd79a71e281e58e24764aaea29fcce74e2ab7c9326304b6aec27eeeeeecd4
+      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:c41a1f06f00229ec2f264d7a957508957cb8d1967fba6c73d99842cd403a5a35
+      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:4dbb8d09e213fc8507b0a9fa765ddda59748da777d76ac7db095bb207d6439f2
       gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:11ffb0e5bccf6d679c86e02ed7d1df155800c6502adb72378e08c007ddd66443
       postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:0bcc5bbbb2aa9c9b4c6505845918c7eb55d783cf5c1f434fac33012579fb149d
       logs: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143
