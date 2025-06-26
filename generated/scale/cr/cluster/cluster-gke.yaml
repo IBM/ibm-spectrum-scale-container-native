@@ -35,6 +35,18 @@ spec:
       resources:
         cpu: "2"
         memory: 4Gi
+    # -------------------------------------------------------------------------------
+    # upgrade is required for quorum pods that allows to update one quorum pod at any time.
+    # -------------------------------------------------------------------------------
+    update:
+      # change maxUnavailable to the sum of GKE maxSurge and maxUnavailable
+      maxUnavailable: 5
+      pools:
+      - maxUnavailable: 1
+        name: quorum
+        nodeSelector:
+          matchLabels:
+            scale.spectrum.ibm.com/designation: quorum
   # -------------------------------------------------------------------------------
   # grafana bridge is optional
   # -------------------------------------------------------------------------------
@@ -44,7 +56,7 @@ spec:
   # User must accept the Spectrum Scale license to deploy a CNSA cluster.
   # By specifying "accept: true" below, user agrees to the terms and conditions set
   # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
-  # at https://www.ibm.com/support/customer/csol/terms/?id=L-WWVS-K7K7DR
+  # at https://www.ibm.com/support/customer/csol/terms/?id=L-TUSS-597F38
   #
   # Enter either data-access or data-management to the license.license field. Customers entitled to
   # the Data Management Edition can use either data-management or data-access. Customers entitled to
