@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  buildgpl: |-
+    #!/bin/sh
+    kerv=$(uname -r)
+    rsync -av /host/var/lib/firmware/lxtrace-* /usr/lpp/mmfs/bin/
+    if ! lsmod | grep -q "^mmfslinux"; then
+      echo "Error: Kernel module is not loaded yet"
+      exit 1
+    fi
+    mkdir -p /lib/modules/$kerv/extra
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/mmfslinux.ko
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/tracedev.ko
+    exit 0
+  hostPathDirectories: /
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: buildgpl
+  namespace: ibm-spectrum-scale
