@@ -22,7 +22,7 @@ The images that are listed in the following table are the container images that 
 | workerX/masterX* | gpfs (if using Data Access Edition) | cp.icr.io/cp/spectrum/scale/data-access | ibm-spectrum-scale-daemon@sha256:c41a1f06f00229ec2f264d7a957508957cb8d1967fba6c73d99842cd403a5a35 |
 | workerX/masterX* | gpfs (if using Data Management Edition) | cp.icr.io/cp/spectrum/scale/data-management | ibm-spectrum-scale-daemon@sha256:b0cfd79a71e281e58e24764aaea29fcce74e2ab7c9326304b6aec27eeeeeecd4 |
 | workerX/masterX* | logs | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143  |
-| ibm-spectrum-scale-gui-X | liberty | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-gui@sha256:11ffb0e5bccf6d679c86e02ed7d1df155800c6502adb72378e08c007ddd66443 |
+| ibm-spectrum-scale-gui-X | liberty | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-gui@sha256:5cdb59a99a915c59d0802f0939ad7632d9c16f917014f52e36dac11362e7a176 |
 | ibm-spectrum-scale-gui-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:898dc2ad37073f3793562a4d4af90e0a399c92f612de1de6bff15b753f587f32 |
 | ibm-spectrum-scale-gui-X | postgres | cp.icr.io/cp/spectrum/scale | postgres@sha256:0bcc5bbbb2aa9c9b4c6505845918c7eb55d783cf5c1f434fac33012579fb149d |
 | ibm-spectrum-scale-gui-X | logs | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143 |
@@ -56,7 +56,7 @@ cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:b0c
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:4dbb8d09e213fc8507b0a9fa765ddda59748da777d76ac7db095bb207d6439f2
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:6a317b23fee629c0b07eb95d34ab7593bb38d41bffc5d1cd4cb2870539c66cd4
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:956a98023ae3a877410c922c006080ecc7f825eca273fa5dd2bdb94873d1f725
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:11ffb0e5bccf6d679c86e02ed7d1df155800c6502adb72378e08c007ddd66443
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:5cdb59a99a915c59d0802f0939ad7632d9c16f917014f52e36dac11362e7a176
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-logs@sha256:9828aa1de297e1e37f24bbdd1870149d50ebc2ac78089c6be12bb6934e080143
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-monitor@sha256:898dc2ad37073f3793562a4d4af90e0a399c92f612de1de6bff15b753f587f32
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-pmcollector@sha256:3278937eafb9d1eeb75f9dbae5b12e449fd180f4502acf3989771565f6aac794
