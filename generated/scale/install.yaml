@@ -9996,10 +9996,10 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:dd7d1b3b4e691008c007981df55896d4f2a79f3e189e83de463f81e855efd4e3
-      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:3ed9321e4f3da7bbf75f99e8b4fd7b57139f793509b47a33cfeb51c66f20518f
-      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:54871bd8d09fd62d62dee7ffcae655297a0d73641849e962a4f5adac618e5b5e
-      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:ac0a1702d79c12b49e6cbcdabbc293d1cfe7c4dce60087f92d12e1c4d827f1cc
+      coreECE: cp.icr.io/cp/spectrum/scale/erasure-code/ibm-spectrum-scale-daemon@sha256:4d600aa10ade3a99bc988c3db0c06f7b8971baff8d750def3c761d52483ccc53
+      coreDME: cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:499ba9b9048181781a0eaa261a2ed3dedf1b9004b75cac479b773f5c92b9245e
+      coreDAE: cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:b33abd6e47533e1c67e609b1baa477da8b10cbc8ced53409be348105fa4dac97
+      coreInit: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:cc7647fedd658a773cd0cdd1b4ecb38fc7c05c642501029beb9687f78b7b1e94
       gui: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:3692748b236758ada23f80a67fba5fbbf165acc995ce2da523de51a59a300675
       postgres: cp.icr.io/cp/spectrum/scale/postgres@sha256:bbd7346fab25b7e0b25f214829d6ebfb78ef0465059492e46dee740ce8fcd844
       logs: cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-logs@sha256:22c973b4ac5f6ff00a2cadc474c695513ad8246614ab0d145ae5612a6fd769f4
@@ -10218,7 +10218,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:e3fa797d4cc30a35050c78203fc38ed73637c1b0a61cbd4c18c29c69ba5fa649
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:f520f8e8b265a7cc7ae8d8252336538485d45e84076f0d129c33398f6587af20
         livenessProbe:
           httpGet:
             path: /healthz
