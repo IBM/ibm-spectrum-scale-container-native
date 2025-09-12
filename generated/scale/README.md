@@ -17,10 +17,10 @@ The images that are listed in the following table are the container images that 
 
 | Pod | Container | Repository | Image |
 |-----|-----------|------------|---------------------|
-| workerX/masterX* | mmbuildgpl | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:cc7647fedd658a773cd0cdd1b4ecb38fc7c05c642501029beb9687f78b7b1e94 |
-| workerX/masterX* | config | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:cc7647fedd658a773cd0cdd1b4ecb38fc7c05c642501029beb9687f78b7b1e94 |
-| workerX/masterX* | gpfs (if using Data Access Edition) | cp.icr.io/cp/spectrum/scale/data-access | ibm-spectrum-scale-daemon@sha256:b33abd6e47533e1c67e609b1baa477da8b10cbc8ced53409be348105fa4dac97 |
-| workerX/masterX* | gpfs (if using Data Management Edition) | cp.icr.io/cp/spectrum/scale/data-management | ibm-spectrum-scale-daemon@sha256:499ba9b9048181781a0eaa261a2ed3dedf1b9004b75cac479b773f5c92b9245e |
+| workerX/masterX* | mmbuildgpl | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:dc34a8c58b42eb3aa2dec5c2d8ac3135d541b6fea8d53254efa84cb176004e66 |
+| workerX/masterX* | config | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-core-init@sha256:dc34a8c58b42eb3aa2dec5c2d8ac3135d541b6fea8d53254efa84cb176004e66 |
+| workerX/masterX* | gpfs (if using Data Access Edition) | cp.icr.io/cp/spectrum/scale/data-access | ibm-spectrum-scale-daemon@sha256:e611e11b3fd37f4259b3b1b2c8ed1618b21bbdd3790f188defec4c137abd262d |
+| workerX/masterX* | gpfs (if using Data Management Edition) | cp.icr.io/cp/spectrum/scale/data-management | ibm-spectrum-scale-daemon@sha256:079a01a96848ede091181f63a9adcdbf0278019fbaedbe6a91bc7d31fc2f2356 |
 | workerX/masterX* | logs | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-logs@sha256:22c973b4ac5f6ff00a2cadc474c695513ad8246614ab0d145ae5612a6fd769f4  |
 | ibm-spectrum-scale-gui-X | liberty | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-gui@sha256:3692748b236758ada23f80a67fba5fbbf165acc995ce2da523de51a59a300675 |
 | ibm-spectrum-scale-gui-X | sysmon | cp.icr.io/cp/spectrum/scale | ibm-spectrum-scale-monitor@sha256:7ebe93f44ad6d08a6db9919b775819d2fd2780f3f426ed745736b9247da03ce9 |
@@ -51,9 +51,9 @@ When setting up your environment to be air-gapped, use `skopeo` to copy the foll
 ```bash
 # IBM Storage Scale container native images
 icr.io/cpopen/ibm-spectrum-scale-operator@sha256:f520f8e8b265a7cc7ae8d8252336538485d45e84076f0d129c33398f6587af20
-cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:b33abd6e47533e1c67e609b1baa477da8b10cbc8ced53409be348105fa4dac97
-cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:499ba9b9048181781a0eaa261a2ed3dedf1b9004b75cac479b773f5c92b9245e
-cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:cc7647fedd658a773cd0cdd1b4ecb38fc7c05c642501029beb9687f78b7b1e94
+cp.icr.io/cp/spectrum/scale/data-access/ibm-spectrum-scale-daemon@sha256:e611e11b3fd37f4259b3b1b2c8ed1618b21bbdd3790f188defec4c137abd262d
+cp.icr.io/cp/spectrum/scale/data-management/ibm-spectrum-scale-daemon@sha256:079a01a96848ede091181f63a9adcdbf0278019fbaedbe6a91bc7d31fc2f2356
+cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-core-init@sha256:dc34a8c58b42eb3aa2dec5c2d8ac3135d541b6fea8d53254efa84cb176004e66
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-coredns@sha256:88cbfe40fd302a6467cb7e852b298f6c8d8659782ab313706d491d3ddf172a6e
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-grafana-bridge@sha256:65a14666cc3dc2ad7516b715f175ddfc18a6f2b5b6c1a3966560b03d6fd02f99
 cp.icr.io/cp/spectrum/scale/ibm-spectrum-scale-gui@sha256:3692748b236758ada23f80a67fba5fbbf165acc995ce2da523de51a59a300675
