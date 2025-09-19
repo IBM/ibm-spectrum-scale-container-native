@@ -10666,10 +10666,10 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreECE: cp.icr.io/cp/gpfs/erasure-code/ibm-spectrum-scale-daemon@sha256:1448b2a23bafd66be9472f87941e20fcf66b3bd77b6262c6de6a3fbc07bd8254
-      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:da523c5e1f2be1cdf146ea862213d13518e3ec234bfb540747ca4cd350b9a14d
-      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:687aacce039588a255517ecb6de1fac2f1bb2e2cade4dfffe66ff13511a243f5
-      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:20561ae9eff71db98945b46b291b51634e980a86001951a86c9fec24fc0c139a
+      coreECE: cp.icr.io/cp/gpfs/erasure-code/ibm-spectrum-scale-daemon@sha256:69c89b47de9e6c6efd30e7bdf435b04493c43485daca0da6a593897fb20ba747
+      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:7c1bde7f7b195cf16f418a8ca4935c9b8cb615deb7abd5ce6261369dc66efba8
+      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:76e25fadfd36279b440adac5a96f30060762a1239ad9990da907931200a6788a
+      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:63fb2d337983f935652adb0e6582bc1adf68c1af52b5ff071430ae200d2a8759
       gui: cp.icr.io/cp/gpfs/ibm-spectrum-scale-gui@sha256:e28be0799e62625504c0a7514e22f0946c943b39acebee63970f002112c87867
       postgres: cp.icr.io/cp/gpfs/postgres@sha256:0bcc5bbbb2aa9c9b4c6505845918c7eb55d783cf5c1f434fac33012579fb149d
       logs: cp.icr.io/cp/gpfs/ibm-spectrum-scale-logs@sha256:43ff86e15a214223fbe8d9ebfdbb4b3a4affd76dc37febeae665cf0c8e69e2d8
