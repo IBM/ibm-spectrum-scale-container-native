@@ -20,7 +20,7 @@ configMapGenerator:
   name: manager-config
 
 images:
-- digest: sha256:35325c13f3f7ec64fe9e38bcd2fde6ec63a479f0552f9758a38482fa44d0023d
+- digest: sha256:3979c40e5d70905aa10ec321c69dfbe7b1cedaf884483b7321bf916c386b6e0b
   name: controller
   newName: icr.io/cpopen/ibm-spectrum-scale-operator
 
