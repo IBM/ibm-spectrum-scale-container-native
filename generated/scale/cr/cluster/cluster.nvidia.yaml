@@ -20,6 +20,7 @@ spec:
       enforceFilesetQuotaOnRoot: "yes"
       ignorePrefetchLUNCount: "yes"
       initPrefetchBuffers: "128"
+      maxTcpConnsPerNodeConn: "4"
       maxblocksize: 16M
       prefetchPct: "25"
       prefetchTimeout: "30"
@@ -30,7 +31,7 @@ spec:
       # -------------------------------------------------------------------------------
       # verbsPorts: mlx5_2
       # For mixed config scenario, uncomment this next line and delete the line above
-      # verbsPorts: "mlx5_3/1 mlx5_2/1"
+      # verbsPorts: mlx5_3/1 mlx5_2/1
       # verbsRdma: enable
       # verbsRdmaSend: "yes"
       # Only enable `verbsRdmaCm` when deploying RoCE - RDMA over Converged Ethernet

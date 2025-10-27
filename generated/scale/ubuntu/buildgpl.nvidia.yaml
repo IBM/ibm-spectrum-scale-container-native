@@ -2,6 +2,40 @@ apiVersion: v1
 data:
   buildgpl: |
     #!/bin/bash
+    #
+    # When using NVIDIA Network Operator to deploy MOFED drivers in a Kubernetes environment,
+    # any restart of the MOFED pods will potentially cause the drivers to rebuild. When the build completes
+    # the MOFED pod will unload the old and load the new driver.
+    #
+    # The IBM Storage Scale container native core pods need to wait until the driver build is complete
+    # before started the daemon so that none of the RDMA libraries are invoked, causing issues with the
+    # unload of the kernel mod.
+    #
+    # This script will wait for the driver to indicate ready before starting the core pod
+    #
+    ELAPSED=0
+    SLEEP_INTERVAL=10
+    MAX_WAIT=600
+    TARGET_DIR=/run/mellanox/drivers
+    TARGET_FILE="${TARGET_DIR}/.driver-ready"
+
+    echo "Detected MOFED drivers are in use, waiting $MAX_WAIT seconds for driver to complete building . . ."
+    while [ "$ELAPSED" -lt "$MAX_WAIT" ]; do
+        if [ -f "$TARGET_FILE" ]; then
+            echo "File found!"
+            ls -ltr "$TARGET_FILE"
+            break
+        fi
+        sleep "$SLEEP_INTERVAL"
+        ELAPSED=$((ELAPSED + SLEEP_INTERVAL))
+        echo ". . . waited ${ELAPSED} seconds . . ."
+    done
+
+    # Adjust ELAPSED if kernel modules are taking longer to build than expected
+    if [ "$ELAPSED" -ge "$MAX_WAIT" ]; then
+        echo "After $ELAPSED seconds, unable to detect if MOFED driver is ready. Exiting."
+        exit 1
+    fi
 
     # Base image didn't contains these directory
     # Needed for make gpfs on ubuntu system
@@ -105,6 +139,7 @@ data:
         fi
     fi
   hostPathDirectories: |
+    /run/mellanox/drivers
     /
 kind: ConfigMap
 metadata:

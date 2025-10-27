@@ -29,6 +29,7 @@ spec:
                 - amd64
                 - ppc64le
                 - s390x
+                - arm64
               - key: scale.spectrum.ibm.com/daemon-selector
                 operator: Exists
       containers:

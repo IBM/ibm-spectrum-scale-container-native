@@ -1,6 +1,7 @@
 apiVersion: v1
 data:
   buildgpl: |
+    #!/bin/sh
     mmbuildgpl
   hostPathDirectories: |
     /usr/src/kernels
