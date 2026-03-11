@@ -7,7 +7,7 @@ The images that are listed in the following table are the container images that 
 
 | Pod | Container | Repository | Image |
 |-----|-----------|------------|---------------------|
-| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:9e2636bd596ef332e25ebdb781fb1337deacc25dac85aa18e3d344e8392b1b20
+| ibm-spectrum-scale-controller-manager-XXXXXXXXX-XXXXX | manager | icr.io/cpopen | ibm-spectrum-scale-operator@sha256:dc68e479b4f42a1b0f3150f77df24587b91b655b29a30f147ea1decf4aa1de59
 | must-gather-XXXXX | must-gather | icr.io/cpopen | ibm-spectrum-scale-must-gather@sha256:a9c18c3f77a8ae89647b238b6504422fabc5bdc0aa59f45a7e179e2472086ec4 |
 
 
@@ -50,7 +50,7 @@ When setting up your environment to be air-gapped, use `skopeo` to copy the foll
 
 ```bash
 # IBM Storage Scale container native images
-icr.io/cpopen/ibm-spectrum-scale-operator@sha256:9e2636bd596ef332e25ebdb781fb1337deacc25dac85aa18e3d344e8392b1b20
+icr.io/cpopen/ibm-spectrum-scale-operator@sha256:dc68e479b4f42a1b0f3150f77df24587b91b655b29a30f147ea1decf4aa1de59
 cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:543816a95e6f6e6e76640671228dcc713a42acbcc122bf7f23077e210e5c130a
 cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:03a63d1b500b6c50e6f5aab1aae97e0d3e5658e1ef9c8f909431e1091b44d132
 cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:402aedc2d6b487bd7bd6d8494fa4e08953c5921a25a7893de6c3c29a66f04179
