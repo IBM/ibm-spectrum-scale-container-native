@@ -18,7 +18,7 @@ data:
         echo "Prepare config and env for install ubuntu packages"
         # set up DNS
         rm -rf $CHROOT_PATH/etc/resolv.conf
-        cp -rf /host/run/systemd/resolve/resolv.conf $CHROOT_PATH/etc/resolv.conf
+        cp -f /host/run/systemd/resolve/resolv.conf $CHROOT_PATH/etc/resolv.conf
         # Ensure critical directories exist
         mkdir -p $CHROOT_PATH/var/lib/apt/lists/partial
         mkdir -p $CHROOT_PATH/var/cache/apt/archives/partial
@@ -82,10 +82,10 @@ data:
                 loops=$((loops + 1))
             done
             gpfsmodextra="$modulesdir/lib/modules/$kversion/extra"
-            if [[ -f "$gpfsmodextra/mmfs26.ko" &&  -f "$gpfsmodextra/mmfslinux.ko" && -f "$gpfsmodextra/tracedev.ko" ]]; then
+            if [[ -f "$gpfsmodextra/mmfs26.ko" &&  -f "$gpfsmodextra/mmfslinux.ko" && -f "$gpfsmodextra/tracedev.ko" && -f "$modulesdir/lxtrace-$kversion" ]]; then
                 echo "GPFS modules mmfs26.ko, mmfslinux.ko and tracedev.ko found in volumeMount, copying to /lib/modules"
                 rsync -av $modulesdir/lib/modules/$kversion /lib/modules > /dev/null
-                cp -rf $modulesdir/lxtrace-$kversion /usr/lpp/mmfs/bin/
+                cp -f $modulesdir/lxtrace-$kversion /usr/lpp/mmfs/bin/
                 exit
             fi
         fi
@@ -191,13 +191,13 @@ data:
         kversion=$(uname -r)
         rm -rf /lib/modules/$kversion
         rsync -av /opt/chroot/usr/lib/modules/$kversion /lib/modules >/dev/null
-        cp -rf /opt/chroot/usr/lpp/mmfs/bin/lxtrace-$kversion /usr/lpp/mmfs/bin/ || error_exit "Failed to copy lxtrace binary"
+        cp -f /opt/chroot/usr/lpp/mmfs/bin/lxtrace-$kversion /usr/lpp/mmfs/bin/ || error_exit "Failed to copy lxtrace binary"
     fi
     if [[ -d "/var/mmfs/gpfsmodules" ]]; then
         echo "Copy built modules to PVC volume mount"
         mkdir -p $modulesdir/lib/modules
         rsync -av /lib/modules/$kversion "$modulesdir/lib/modules/" >/dev/null
-        cp -rf /usr/lpp/mmfs/bin/lxtrace-$kversion "$modulesdir/lxtrace-$kversion"
+        cp -f /usr/lpp/mmfs/bin/lxtrace-$kversion "$modulesdir/lxtrace-$kversion"
         rm -f "$modulesdir/building"
     fi
     echo "GPFS modules are built successfully"

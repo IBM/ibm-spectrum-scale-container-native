@@ -7325,8 +7325,7 @@ spec:
               skipVerify:
                 description: |-
                   skipVerify controls whether a device is verified before it is used as a Storage Scale disk. The verification checks if the device is already in use.
-                  For example, the verification fails if the device has partitions. The verification prevents that a device with data (like the operating system disk) is specified by mistake.
-                  If false, a "DeviceVerifyFailed" or a "DeviceInUse" event is displayed if the device verification fails. Set skipVerify to true only if you know what you do.
+                  Set skipVerify to true only if you know what you do.
                 type: boolean
               thinDiskType:
                 default: "no"
@@ -10324,7 +10323,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:9e2636bd596ef332e25ebdb781fb1337deacc25dac85aa18e3d344e8392b1b20
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:dc68e479b4f42a1b0f3150f77df24587b91b655b29a30f147ea1decf4aa1de59
         livenessProbe:
           httpGet:
             path: /healthz
