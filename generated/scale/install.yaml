@@ -10213,9 +10213,9 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:03a63d1b500b6c50e6f5aab1aae97e0d3e5658e1ef9c8f909431e1091b44d132
-      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:543816a95e6f6e6e76640671228dcc713a42acbcc122bf7f23077e210e5c130a
-      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:402aedc2d6b487bd7bd6d8494fa4e08953c5921a25a7893de6c3c29a66f04179
+      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:f90f650430c9e9ba54c0cd5f8f11bcbf9b36ad57332008bbf830bc693cdee899
+      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:6b792e731ec3569a265d0c1c1fc7baf6d65aa3eb42c8a7961b6d1c1777ce2511
+      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:fceee2279b321015fd352bd85f216902cabe3717166f0306d773f3bafad101fd
       gui: cp.icr.io/cp/gpfs/ibm-spectrum-scale-gui@sha256:05a1bb16e7ca717b279935e9678a92eaec97b530878f307418e95171d9934d2b
       postgres: cp.icr.io/cp/gpfs/postgres@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94
       logs: cp.icr.io/cp/gpfs/ibm-spectrum-scale-logs@sha256:c0d8156a277041e4c8eb7206c428a8c8a1728b5117dd3c91d8bfe6672349b42b
@@ -10264,7 +10264,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v6.0.0.2.2
+    app.kubernetes.io/version: v6.0.0.2.3
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale-operator
@@ -10280,7 +10280,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v6.0.0.2.2
+        app.kubernetes.io/version: v6.0.0.2.3
         control-plane: controller-manager
     spec:
       affinity:
@@ -10323,7 +10323,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:3da81cfa43881a20d3eede93a41f710c905b91e735f899cc01cb8c9ce570380c
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:dd0d3480960d31d5d86cec187b2cbceabc513f2969e8733a7bb4ddcdcff51a0e
         livenessProbe:
           httpGet:
             path: /healthz
