@@ -10264,7 +10264,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v6.0.0.2.3
+    app.kubernetes.io/version: v6.0.0.2.4
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale-operator
@@ -10280,7 +10280,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v6.0.0.2.3
+        app.kubernetes.io/version: v6.0.0.2.4
         control-plane: controller-manager
     spec:
       affinity:
@@ -10323,7 +10323,7 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.memory
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:dd0d3480960d31d5d86cec187b2cbceabc513f2969e8733a7bb4ddcdcff51a0e
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:138ecf352bb886d6e2d8c81c6d94bad4b4b16ad36be472f5d858f060c845907a
         livenessProbe:
           httpGet:
             path: /healthz
