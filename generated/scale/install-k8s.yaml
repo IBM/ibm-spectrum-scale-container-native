@@ -10215,9 +10215,9 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:f90f650430c9e9ba54c0cd5f8f11bcbf9b36ad57332008bbf830bc693cdee899
-      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:6b792e731ec3569a265d0c1c1fc7baf6d65aa3eb42c8a7961b6d1c1777ce2511
-      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:fceee2279b321015fd352bd85f216902cabe3717166f0306d773f3bafad101fd
+      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:feac3019cd5384ac327b7cf775177e146da024ecac2315d4312c8bb12bc3e417
+      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:a7227c9d217f13d9bcc68f1979d0680f5fadb6cbe3d4b50e521f0a9c92712190
+      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:a362af4bdbbf8a1f867df22646439cbd791ef1038310c4a81ed81128f0cef70d
       gui: cp.icr.io/cp/gpfs/ibm-spectrum-scale-gui@sha256:05a1bb16e7ca717b279935e9678a92eaec97b530878f307418e95171d9934d2b
       postgres: cp.icr.io/cp/gpfs/postgres@sha256:ef257d85f76e48da1c64832459b59fcaba1a4dac97bf5d7450c77753542eee94
       logs: cp.icr.io/cp/gpfs/ibm-spectrum-scale-logs@sha256:c0d8156a277041e4c8eb7206c428a8c8a1728b5117dd3c91d8bfe6672349b42b
@@ -10268,7 +10268,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v6.0.0.2.4
+    app.kubernetes.io/version: v6.0.0.2.5
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale-operator
@@ -10284,7 +10284,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v6.0.0.2.4
+        app.kubernetes.io/version: v6.0.0.2.5
         control-plane: controller-manager
     spec:
       affinity:
