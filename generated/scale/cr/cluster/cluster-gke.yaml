@@ -25,29 +25,21 @@ spec:
       prefetchPct: "25"
       prefetchTimeout: "30"
     # -------------------------------------------------------------------------------
-    # roles is required
-    # -------------------------------------------------------------------------------
-    # roles is used to set the cluster configuration parameters
-    #   applied to all nodes
-    #   - during initial cluster creation
-    #   - and when changing these parameters at later time
-    roles:
-    - name: client
-      resources:
-        cpu: "2"
-        memory: 4Gi
-    # -------------------------------------------------------------------------------
     # upgrade is required for quorum pods that allows to update one quorum pod at any time.
     # -------------------------------------------------------------------------------
+    quorum:
+      supportMaxUnavailable: false
+    # -------------------------------------------------------------------------------
+    # resources specifies the memory and cpu requests and limits of the core pods.
+    # If not specified, limits default to a double of the request value.
+    # -------------------------------------------------------------------------------
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
     update:
       # change maxUnavailable to the sum of GKE maxSurge and maxUnavailable
       maxUnavailable: 5
-      pools:
-      - maxUnavailable: 1
-        name: quorum
-        nodeSelector:
-          matchLabels:
-            scale.spectrum.ibm.com/designation: quorum
   # -------------------------------------------------------------------------------
   # grafana bridge is optional
   # -------------------------------------------------------------------------------
@@ -57,7 +49,7 @@ spec:
   # User must accept the Spectrum Scale license to deploy a CNSA cluster.
   # By specifying "accept: true" below, user agrees to the terms and conditions set
   # forth by the IBM Spectrum Scale Container Native Data Access/Data Management license located
-  # at https://www.ibm.com/support/customer/csol/terms/?id=L-VSLK-BKKG3D
+  # at https://www.ibm.com/support/customer/csol/terms/?id=L-EPTX-2LWEDN
   #
   # Enter either data-access or data-management to the license.license field. Customers entitled to
   # the Data Management Edition can use either data-management or data-access. Customers entitled to

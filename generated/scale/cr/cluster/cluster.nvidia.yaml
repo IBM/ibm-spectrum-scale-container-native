@@ -46,12 +46,13 @@ spec:
     nodeSelector:
       scale.spectrum.ibm.com/daemon-selector: ""
     # -------------------------------------------------------------------------------
-    # roles is required
+    # resources specifies the memory and cpu requests and limits of the core pods.
+    # If not specified, limits default to a double of the request value.
     # -------------------------------------------------------------------------------
-    # roles is used to set the cluster configuration parameters
-    #   applied to all nodes
-    #   - during initial cluster creation
-    #   - and when changing these parameters at later time
+    resources:
+      requests:
+        cpu: "2"
+        memory: 4Gi
     roles:
     - name: client
       resources:

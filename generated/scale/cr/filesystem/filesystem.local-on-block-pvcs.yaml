@@ -1,0 +1,23 @@
+apiVersion: scale.spectrum.ibm.com/v1beta1
+kind: Filesystem
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: scale-on-ceph
+  namespace: ibm-spectrum-scale
+spec:
+  local:
+    blockSize: 4M
+    pools:
+    - deviceVolumes:
+        capacity: 20Gi
+        storageClass: ocs-storagecluster-ceph-rbd
+      name: system
+    replication: 1-way
+    type: shared
+  seLinuxOptions:
+    level: s0
+    role: object_r
+    type: container_file_t
+    user: system_u

@@ -1,0 +1,41 @@
+apiVersion: v1
+data:
+  buildgpl: |
+    #!/bin/sh
+    #
+    # When Kernel module management (KMM) operator is used to build
+    # Kernel modules, we don't build modules inside mmbuildgpl
+    # init container. Instead mmbuildgpl init container will execute
+    # this script. This script waits for KMM to build and load modules
+    # on the node.
+    #
+    kerv=$(uname -r)
+    MAX_WAIT=60
+    INTERVAL=5
+    elapsed=0
+
+    while ! lsmod | grep -q "^mmfslinux"; do
+        if [ $elapsed -ge $MAX_WAIT ]; then
+            echo "Error: Kernel modules are not loaded yet"
+            exit 1
+        fi
+        echo "Waiting for kernel modules to be loaded by kernel module management operator"
+        sleep $INTERVAL
+        elapsed=$((elapsed + INTERVAL))
+    done
+
+    rsync -av /var/lib/firmware/lxtrace-* /usr/lpp/mmfs/bin/
+    mkdir -p /lib/modules/$kerv/extra
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/mmfslinux.ko
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/tracedev.ko
+    echo "Kernel modules are loaded."
+    exit 0
+  hostPathDirectories: |
+    /var/lib/firmware
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: buildgpl
+  namespace: ibm-spectrum-scale

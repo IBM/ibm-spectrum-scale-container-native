@@ -1,0 +1,76 @@
+apiVersion: v1
+data:
+  buildgpl: |
+    #!/bin/sh
+    #
+    # When using NVIDIA Network Operator to deploy MOFED drivers in a Kubernetes environment,
+    # any restart of the MOFED pods will potentially cause the drivers to rebuild. When the build completes
+    # the MOFED pod will unload the old and load the new driver.
+    #
+    # The IBM Storage Scale container native core pods need to wait until the driver build is complete
+    # before started the daemon so that none of the RDMA libraries are invoked, causing issues with the
+    # unload of the kernel mod.
+    #
+    # This script will wait for the driver to indicate ready before starting the core pod
+    #
+    ELAPSED=0
+    SLEEP_INTERVAL=10
+    MAX_WAIT=600
+    TARGET_DIR=/run/mellanox/drivers
+    TARGET_FILE="${TARGET_DIR}/.driver-ready"
+
+    echo "Detected MOFED drivers are in use, waiting $MAX_WAIT seconds for driver to complete building . . ."
+    while [ "$ELAPSED" -lt "$MAX_WAIT" ]; do
+        if [ -f "$TARGET_FILE" ]; then
+            echo "File found!"
+            ls -ltr "$TARGET_FILE"
+            break
+        fi
+        sleep "$SLEEP_INTERVAL"
+        ELAPSED=$((ELAPSED + SLEEP_INTERVAL))
+        echo ". . . waited ${ELAPSED} seconds . . ."
+    done
+
+    # Adjust ELAPSED if kernel modules are taking longer to build than expected
+    if [ "$ELAPSED" -ge "$MAX_WAIT" ]; then
+        echo "After $ELAPSED seconds, unable to detect if MOFED driver is ready. Exiting."
+        exit 1
+    fi
+    #
+    # When Kernel module management (KMM) operator is used to build
+    # Kernel modules, we don't build modules inside mmbuildgpl
+    # init container. Instead mmbuildgpl init container will execute
+    # this script. This script waits for KMM to build and load modules
+    # on the node.
+    #
+    kerv=$(uname -r)
+    MAX_WAIT=60
+    INTERVAL=5
+    elapsed=0
+
+    while ! lsmod | grep -q "^mmfslinux"; do
+        if [ $elapsed -ge $MAX_WAIT ]; then
+            echo "Error: Kernel modules are not loaded yet"
+            exit 1
+        fi
+        echo "Waiting for kernel modules to be loaded by kernel module management operator"
+        sleep $INTERVAL
+        elapsed=$((elapsed + INTERVAL))
+    done
+
+    rsync -av /var/lib/firmware/lxtrace-* /usr/lpp/mmfs/bin/
+    mkdir -p /lib/modules/$kerv/extra
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/mmfslinux.ko
+    echo "# This is a workaround to pass file validation on IBM container" > /lib/modules/$kerv/extra/tracedev.ko
+    echo "Kernel modules are loaded."
+    exit 0
+  hostPathDirectories: |
+    /run/mellanox/drivers
+    /var/lib/firmware
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: ibm-spectrum-scale
+    app.kubernetes.io/name: cluster
+  name: buildgpl
+  namespace: ibm-spectrum-scale
