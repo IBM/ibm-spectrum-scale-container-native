@@ -1274,6 +1274,12 @@ spec:
                       - ip
                       type: object
                     type: array
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: labels allows to configure extra labels to be added
+                      to the core pods.
+                    type: object
                   nodeProfiles:
                     description: |-
                       nodeProfiles specifies IBM Storage Scale configuration parameters for a
@@ -1517,7 +1523,7 @@ spec:
                           default is 30 minutes. It is recommended to avoid specifying a value
                           below 20. Set the value to 0 to disable automatic quorum move from
                           nodes where Storage Scale is down.
-                          This parameter is igoned on a 3 node cluster.
+                          This parameter is ignored on a 3 node cluster.
                         minimum: 0
                         type: integer
                       nodeSelector:
@@ -2267,7 +2273,7 @@ spec:
                   accept:
                     description: |-
                       Read the license and specify "true" to accept or "false" to not accept.
-                      https://www.ibm.com/support/customer/csol/terms/?id=L-EPTX-2LWEDN
+                      https://www.ibm.com/support/customer/csol/terms/?id=L-UVCF-2QAHQY
                       BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON AN "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE AGREES TO THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING THESE TERMS ON BEHALF OF LICENSEE, YOU REPRESENT AND WARRANT THAT YOU HAVE FULL AUTHORITY TO BIND LICENSEE TO THESE TERMS. IF YOU DO NOT AGREE TO THESE TERMS,
                       * DO NOT DOWNLOAD, INSTALL, COPY, ACCESS, CLICK ON AN "ACCEPT" BUTTON, OR USE THE PROGRAM; AND
                       * PROMPTLY RETURN THE UNUSED MEDIA AND DOCUMENTATION TO THE PARTY FROM WHOM IT WAS OBTAINED FOR A REFUND OF THE AMOUNT PAID. IF THE PROGRAM WAS DOWNLOADED, DESTROY ALL COPIES OF THE PROGRAM.
@@ -4485,6 +4491,12 @@ spec:
                   coreInit:
                     type: string
                 type: object
+              labels:
+                additionalProperties:
+                  type: string
+                description: labels allows to configure extra labels to be added to
+                  the core pods.
+                type: object
               nodeProfiles:
                 description: |-
                   nodeProfiles specifies IBM Storage Scale configuration parameters for a
@@ -4725,7 +4737,7 @@ spec:
                       default is 30 minutes. It is recommended to avoid specifying a value
                       below 20. Set the value to 0 to disable automatic quorum move from
                       nodes where Storage Scale is down.
-                      This parameter is igoned on a 3 node cluster.
+                      This parameter is ignored on a 3 node cluster.
                     minimum: 0
                     type: integer
                   nodeSelector:
@@ -6381,22 +6393,12 @@ spec:
                   - type
                   type: object
                 type: array
-              lastExportHash:
-                description: |-
-                  LastExportHash is the hash of the last exported filesystem configuration.
-                  The controller uses this to detect configuration drift and avoid unnecessary re-exports when no changes have occurred.
-                type: string
               lastExportTime:
                 description: |-
                   LastExportTime is the timestamp of the last successful filesystem export.
                   This helps indicate how fresh the exported configuration data is.
                 format: date-time
                 type: string
-              observedGeneration:
-                description: ObservedGeneration is the most recent generation of the
-                  FilesystemRecoveryData that has been successfully reconciled.
-                format: int64
-                type: integer
             type: object
         type: object
     served: true
@@ -6571,6 +6573,7 @@ spec:
                     - 1-way
                     - 2-way
                     - 3-way
+                    - external
                     type: string
                   type:
                     description: |-
@@ -6707,24 +6710,22 @@ spec:
                 - unknown
                 - not supported
                 type: string
-              mountInfo:
-                description: MountInfo provides information about the mount state
-                  of a filesystem on the nodes of a cluster
+              mounting:
+                description: Mounting provides information about the mount state of
+                  a filesystem on the nodes of a cluster
                 properties:
                   mountedNodeCount:
-                    description: MountedNodeCount is the number of nodes on which
-                      the filesystem is mounted
+                    description: MountedNodeCount is the number of nodes where the
+                      filesystem is mounted
                     type: integer
                   unmountedNodeCount:
-                    description: UnmountedNodeCount is the number of nodes on which
-                      the filesystem is not mounted
+                    description: UnmountedNodeCount is the number of nodes where the
+                      filesystem is not mounted
                     type: integer
                   unmountedNodes:
-                    description: UnmountedNodes is a list of node names on which the
-                      filesystem is not mounted
-                    items:
-                      type: string
-                    type: array
+                    description: UnmountedNodes is a list of nodes where the filesystem
+                      is not mounted
+                    type: string
                 type: object
               pools:
                 description: pools displays status of the filesystem pools
@@ -8807,6 +8808,14 @@ rules:
   - delete
   - get
 - apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - apps
   resources:
   - daemonsets
@@ -9026,6 +9035,41 @@ rules:
   - list
   - watch
 - apiGroups:
+  - replication.storage.openshift.io
+  resources:
+  - volumegroupreplicationclasses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - replication.storage.openshift.io
+  resources:
+  - volumegroupreplicationclasses/status
+  verbs:
+  - get
+- apiGroups:
+  - replication.storage.openshift.io
+  resources:
+  - volumegroupreplications
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - replication.storage.openshift.io
+  resources:
+  - volumegroupreplications/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - route.openshift.io
   resources:
   - routes
@@ -9122,6 +9166,13 @@ rules:
 - apiGroups:
   - scale.spectrum.ibm.com
   resources:
+  - filesystemrecoverydata
+  verbs:
+  - '*'
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - filesystemrecoverydata/status
   - filesystems/status
   verbs:
   - get
@@ -9275,24 +9326,24 @@ data:
     apiVersion: scale.spectrum.ibm.com/v1alpha1
     kind: ClusterManagerConfig
     images:
-      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:3651a79cfd42e67416995af3442b667beef09c9c1417e406b7be20cb63497ddf
-      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:9f310dc6111fdc2b32f3a8c0d1670e407716706cf92e60910ddf3816009632ab
-      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:1775f4d2c51ae9bef6d0d129c79efcfefb4d6d4008445d57b852d4c4397b2fe2
-      gui: cp.icr.io/cp/gpfs/ibm-spectrum-scale-gui@sha256:fd85ae58cfdf4ef48b300f542967a0b2e626ff4015af86a5f31e648b76d11160
+      coreDME: cp.icr.io/cp/gpfs/data-management/ibm-spectrum-scale-daemon@sha256:c4789f677a9d3c66484671f7227fa130c356ae416faf5a61f2cd31a250b122f7
+      coreDAE: cp.icr.io/cp/gpfs/data-access/ibm-spectrum-scale-daemon@sha256:6c146ab5ce9a9e4dd89fdb17c5797f76cef659e8c96cae48e640d9e0d9bf181a
+      coreInit: cp.icr.io/cp/gpfs/ibm-spectrum-scale-core-init@sha256:efc68a9efa10884325e075affb207875cc199b2ad8950eaad772456573ff2595
+      gui: cp.icr.io/cp/gpfs/ibm-spectrum-scale-gui@sha256:c2813671dac5715a90281b5d509539a691a0afd7a5b8a7b0b618b32e38207609
       postgres: cp.icr.io/cp/gpfs/postgres@sha256:aa6eb304ddb6dd26df23d05db4e5cb05af8951cda3e0dc57731b771e0ef4ab29
-      logs: cp.icr.io/cp/gpfs/ibm-spectrum-scale-logs@sha256:16754a6b3e1eaac73a3df6d6ded01d31e0f5d0cc75dc6f30d1cb8043d2dc0685
-      pmcollector: cp.icr.io/cp/gpfs/ibm-spectrum-scale-pmcollector@sha256:10dd10e7ab9c32d36b31924c266671573c48fe1fd4c43cb1a6d89d7644482a4c
-      sysmon: cp.icr.io/cp/gpfs/ibm-spectrum-scale-monitor@sha256:a15797ec26b5e6b54de4396ed4fdb9303169908c04337694ff2d2f2e9372df87
-      grafanaBridge: cp.icr.io/cp/gpfs/ibm-spectrum-scale-grafana-bridge@sha256:3843a5db15d214355d7c80751b7ab771cbaef9be025eea04745386d9210914e5
-      coreDNS: cp.icr.io/cp/gpfs/ibm-spectrum-scale-coredns@sha256:781db6ee6019ae2468b57f48abc17033ccfcdb88beb555b2797ee4fe32a2731b
-      mustGather: icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:39d5a03dcc657ce704299767e09408e52be040edf11d8a2cf4b72864178e4535
+      logs: cp.icr.io/cp/gpfs/ibm-spectrum-scale-logs@sha256:e4731ab55d571d722abfaa34d8efa29a4059430a2ef1096e51a80cdb0bbdd496
+      pmcollector: cp.icr.io/cp/gpfs/ibm-spectrum-scale-pmcollector@sha256:0d91c39b45ced31f6c05c021a104603e0f264d25877e7639f98044cfd8185aa2
+      sysmon: cp.icr.io/cp/gpfs/ibm-spectrum-scale-monitor@sha256:de4d18a1fb0182023d9ba827b2ed3258248522e7422940b3fb0d071fc0a89ac1
+      grafanaBridge: cp.icr.io/cp/gpfs/ibm-spectrum-scale-grafana-bridge@sha256:cd472a0b796eeee284963df4abc78a54bac6b7cd2ca88fa31ec699b14d823bc6
+      coreDNS: cp.icr.io/cp/gpfs/ibm-spectrum-scale-coredns@sha256:ffb912e9c0e80a87c6733df0df63e05b499ae575e90210db0d53e344bf4ec35c
+      mustGather: icr.io/cpopen/ibm-spectrum-scale-must-gather@sha256:7ad6859d4a6f59e638046ed5d99cba7f5da5934ae4b2e519769d635a2cc5f884
       csiSnapshotter: cp.icr.io/cp/gpfs/csi/csi-snapshotter@sha256:da081c27e8a6d91f36042c1942362d0515ced8d06e18c11b8f893e58c4d6d797
       csiAttacher: cp.icr.io/cp/gpfs/csi/csi-attacher@sha256:b74b05b39501565022883fc128002b4cb857a7bb6c858606bcb3fdedba0b0b80
       csiProvisioner: cp.icr.io/cp/gpfs/csi/csi-provisioner@sha256:6be9f63ca4caa6c46aae55aa372500949d8a21473d72f819da1f746076b32d4e
       csiLivenessprobe: cp.icr.io/cp/gpfs/csi/livenessprobe@sha256:c4cc074199c045dd73ab85f28897e2a32f4d6f38ffdba4f3b13b8007ccbd3570
       csiNodeRegistrar: cp.icr.io/cp/gpfs/csi/csi-node-driver-registrar@sha256:ab482308a4921e28a6df09a16ab99a457e9af9641ff44fb1be1a690d07ce8b70
       csiResizer: cp.icr.io/cp/gpfs/csi/csi-resizer@sha256:589e525cddef6d768e68da1f0bc9ffd0a24bf3add3dd010648eb7189976fde79
-      csiDriver: cp.icr.io/cp/gpfs/csi/ibm-spectrum-scale-csi-driver@sha256:35c2c45c0a8f6504cf50dda57fd0c827244e822e02febf449a37630fc6d01b9d
+      csiDriver: cp.icr.io/cp/gpfs/csi/ibm-spectrum-scale-csi-driver@sha256:512b2bcc5300b7356c423ddbae0f3413c46fc17c2b5c73c057019ddd34ef69a5
 kind: ConfigMap
 metadata:
   labels:
@@ -9326,7 +9377,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v6.0.1.0
+    app.kubernetes.io/version: v6.0.1.1
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale
@@ -9342,7 +9393,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v6.0.1.0
+        app.kubernetes.io/version: v6.0.1.1
         control-plane: controller-manager
     spec:
       affinity:
@@ -9389,7 +9440,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:5e2095f878f45b561e17fc00725d6ca69653d12f7693d295b0a53a40046f1a45
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:731987d4b3f39ca78017d227b5fc6fa9ed5db95567dde436fda7b86da8d7b8ae
         livenessProbe:
           httpGet:
             path: /healthz
