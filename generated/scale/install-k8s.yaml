@@ -9329,7 +9329,7 @@ data:
       csiLivenessprobe: cp.icr.io/cp/gpfs/csi/livenessprobe@sha256:c4cc074199c045dd73ab85f28897e2a32f4d6f38ffdba4f3b13b8007ccbd3570
       csiNodeRegistrar: cp.icr.io/cp/gpfs/csi/csi-node-driver-registrar@sha256:ab482308a4921e28a6df09a16ab99a457e9af9641ff44fb1be1a690d07ce8b70
       csiResizer: cp.icr.io/cp/gpfs/csi/csi-resizer@sha256:589e525cddef6d768e68da1f0bc9ffd0a24bf3add3dd010648eb7189976fde79
-      csiDriver: cp.icr.io/cp/gpfs/csi/ibm-spectrum-scale-csi-driver@sha256:512b2bcc5300b7356c423ddbae0f3413c46fc17c2b5c73c057019ddd34ef69a5
+      csiDriver: cp.icr.io/cp/gpfs/csi/ibm-spectrum-scale-csi-driver@sha256:75046ac9a5900572fa54b10839a68b8eb160bfba83bb54d4b3158424b6e992e8
     corePodConfig:
       createCorePodDisruptionBudget: true
       moveQuorumIfPodEvictedBy:
@@ -9365,7 +9365,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: ibm-spectrum-scale
     app.kubernetes.io/name: operator
-    app.kubernetes.io/version: v6.0.1.1
+    app.kubernetes.io/version: v6.0.1.1.1
     control-plane: controller-manager
   name: ibm-spectrum-scale-controller-manager
   namespace: ibm-spectrum-scale
@@ -9381,7 +9381,7 @@ spec:
       labels:
         app.kubernetes.io/instance: ibm-spectrum-scale
         app.kubernetes.io/name: operator
-        app.kubernetes.io/version: v6.0.1.1
+        app.kubernetes.io/version: v6.0.1.1.1
         control-plane: controller-manager
     spec:
       affinity:
@@ -9428,7 +9428,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:731987d4b3f39ca78017d227b5fc6fa9ed5db95567dde436fda7b86da8d7b8ae
+        image: icr.io/cpopen/ibm-spectrum-scale-operator@sha256:393d0086fde4813d81a69edb81b1d58af8f9289e16d49b7150441749c634266b
         livenessProbe:
           httpGet:
             path: /healthz
